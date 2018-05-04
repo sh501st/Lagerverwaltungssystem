@@ -1,4 +1,7 @@
-```sql
+```python
+s = "Python syntax highlighting"
+print s
+```
 CREATE TABLE `Artikel` 
 (
  `id` varchar(20) COLLATE utf8mb4_unicode_ci NOT NULL,
