@@ -26,7 +26,8 @@ CREATE TABLE `Regal` (
 DELIMITER $
 create trigger Zugriff_Increment after update on Regal for each row
 begin
+	if new.id <=> old.id then
 		update Logbuch set zugriff = zugriff + 1 where regal  = new.id;
+	end if;
 end; $
 DELIMITER ;
-```
