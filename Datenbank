@@ -22,4 +22,11 @@ CREATE TABLE `Regal` (
  KEY `inhalt` (`inhalt`),
  CONSTRAINT `Regal_ibfk_1` FOREIGN KEY (`inhalt`) REFERENCES `Artikel` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
+
+DELIMITER $
+create trigger Zugriff_Increment after update on Regal for each row
+begin
+		update Logbuch set zugriff = zugriff + 1 where regal  = new.id;
+end; $
+DELIMITER ;
 ```
