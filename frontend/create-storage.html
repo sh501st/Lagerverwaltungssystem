@@ -1,0 +1,20 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8"/>
+    <title>Create storage</title>
+    <style type="text/css" media="screen">
+      #bar { height: 38px; top: 0; }
+      #mainContainer {}
+    </style>
+    <script src="create-storage.js"></script>
+    <script src="konva.min.js"></script>
+  </head>
+  <body onload="main();">
+    <div id="bar">
+      <input type="button" id="export" value="Export to JSON" />
+      Hold LMB: add shelf. Hold RMB: remove. Middle click edge tile: entrance.
+    </div>
+    <div id="mainContainer" oncontextmenu="return false;"></div>
+  </body>
+</html>
