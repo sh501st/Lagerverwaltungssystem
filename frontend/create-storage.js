@@ -156,6 +156,8 @@ function exportJSON() {
     // TODO: transform to what backend expects and send valid json.
     if (checkReachability()) {
 	let data = {
+	    width: cols,
+	    height: rows,
 	    shelfs: [],
 	    entrances: []
 	};
