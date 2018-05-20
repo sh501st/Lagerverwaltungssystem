@@ -15,6 +15,8 @@ const Color = Object.freeze({
 const width = 640;
 const height = 480;
 const size = 32;
+const numSubShelves = 4;
+
 const cols = Math.floor(width / size);
 const rows = Math.floor(height / size);
 let mode = Mode.NONE;
@@ -141,40 +143,62 @@ function checkReachability() {
     layer.batchDraw();
     const timeDiff = new Date().getTime() - startTime;
     if (placed < 3) {
-	console.log("Too few shelfs placed.");
+	console.log("Too few shelves placed.");
 	return false;
     } else if (found < placed) {
-	console.log((placed - found) + " shelf(s) not reachable. (" + timeDiff + " ms)");
+	console.log("Shelves not reachable: " + (placed - found) + " (" + timeDiff + " ms)");
 	return false;
     } else {
-	console.log("All shelfs reachable. (" + timeDiff + " ms)");
+	console.log("All shelves reachable. (" + timeDiff + " ms)");
 	return true;
     }
 }
 
-function exportJSON() {
+let articles = [];
+function readInMockArticles() {
+    return fetch('articles.csv').then(response => response.text()).then(text => {
+	text.split('\n').map(line => {
+	    const art = line.split(',');
+	    const obj = { id: art[0], name: art[1], desc: art[2], prod: art[3] };
+	    if (obj.id !== '#id') {
+		articles.push(obj);
+	    }
+	});
+    });
+}
+
+function generateRandomSubShelf() {
+    return {
+	article: articles[Math.floor(Math.random() * articles.length)],
+	count: Math.floor(Math.random() * 100) + 1
+    };
+}
+
+async function exportJSON() {
     // TODO: transform to what backend expects and send valid json.
     if (checkReachability()) {
+	await readInMockArticles();
 	let data = {
 	    width: cols,
 	    height: rows,
-	    shelfs: [],
+	    shelves: [],
 	    entrances: []
 	};
 	layer.find('Rect').each((r) => {
+	    const col = Math.floor(r.x() / size);
+	    const row = Math.floor(r.y() / size);
 	    if (r.fill() === Color.SHELF) {
-		data.shelfs.push({
-		    x: Math.floor(r.x() / size),
-		    y: Math.floor(r.y() / size)
-		});
+		let subShelves = [];
+		for (let i = 0; i < numSubShelves; i++) {
+		    subShelves.push(generateRandomSubShelf());
+		}
+		data.shelves.push({ x: col, y: row, sub: subShelves });
 	    } else if (r.fill() === Color.ENTRANCE) {
-		data.entrances.push({
-		    x: Math.floor(r.x() / size),
-		    y: Math.floor(r.y() / size)
-		});
+		data.entrances.push({ x: col, y: row });
 	    }
 	});
-	console.log(JSON.stringify(data));
+	// console.log(JSON.stringify(data)); // minimized
+	console.log(JSON.stringify(data, null, 2));
 	console.log("Export ok.");
     } else {
 	console.log("Not exporting.");
