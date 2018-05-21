@@ -50,7 +50,7 @@ function createTile(col, row) {
 	strokeWidth: 1,
     });
     // workaround since konva has no mouseDownMove (w/o drag) event
-    quad.on('mousemove', (e) => {
+    quad.on('mouseenter', (e) => {
 	if (mode === Mode.NONE) {
 	    return;
 	}
