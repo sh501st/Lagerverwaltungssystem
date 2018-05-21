@@ -7,7 +7,8 @@ const Color = Object.freeze({
 });
 
 let storage, cols, rows;
-let stage, layer, greyOverlayLayer, popupLayer;
+let stage, layer, greyOverlayLayer, popupLayer, statusLayer;
+let orders = [];
 
 const width = window.innerWidth;
 const height = window.innerHeight;
@@ -73,6 +74,21 @@ async function main() {
     popupLayer.add(inventoryText);
     popupLayer.hide();
     stage.add(popupLayer);
+
+    statusLayer = new Konva.Layer();
+    let orderText = new Konva.Text({
+	id: 'ordLabel',
+	x: cols * size + 30,
+	y: 0,
+	fontSize: 16,
+	fill: Color.BORDER,
+	text: 'No orders yet.'
+    });
+    statusLayer.add(orderText);
+    stage.add(statusLayer);
+
+    generateOrders();
+    dispatchWorkers();
 }
 
 function handleMouseScroll(e) {
@@ -167,12 +183,12 @@ function createEntrances() {
 	if (ent.x === 0 || ent.x === cols - 1) {
 	    x = ent.x * size + (ent.x === 0 ? -size : size);
 	    y = ent.y * size + size / 2;
-	    points = [-size*0.75, 0, size*0.75, 0];
+	    points = [-size*0.6, 0, size*0.6, 0];
 	}
 	if (ent.y === 0 || ent.y === rows - 1) {
 	    x = ent.x * size + size / 2;
 	    y = ent.y * size + (ent.y === 0 ? -size : size);
-	    points = [0, -size*0.75, 0, size*0.75];
+	    points = [0, -size*0.6, 0, size*0.6];
 	}
 	let arrow = new Konva.Arrow({
 	    x: x,
@@ -187,6 +203,120 @@ function createEntrances() {
 	});
 	layer.add(arrow);
     });
+}
+
+let orderCounter = 0;
+function generateOrder() {
+    let order = {
+	id: ++orderCounter,
+	articles: []
+    };
+    let numItems = Math.floor(Math.random() * 5) + 1;
+    for (let i = 0; i < numItems; i++) {
+	let shelf = storage.shelves[Math.floor(Math.random() * storage.shelves.length)];
+	let article = shelf.sub[Math.floor(Math.random() * shelf.sub.length)].article;
+	order.articles.push({ id: article.id, name: article.name });
+    }
+    return order;
+}
+
+function generateOrders() {
+    // indefinetly for now
+    let f = () => {
+	if (orders.length < 8) {
+	    addOrderToQueue(generateOrder());
+	}
+	const minDelay = 1000;
+	const maxDelay = 5000;
+	const randDelay = Math.round(Math.random() * (maxDelay - minDelay) + minDelay);
+	setTimeout(f, randDelay);
+    };
+    f();
+}
+
+function addOrderToQueue(order) {
+    if (!order) {
+	console.log("No order specified, not adding.");
+	return;
+    }
+    orders.push(order)
+    updateOrderQueueLabel();
+    console.log('Order ' + order.id + ' added to queue.');
+}
+
+function takeOrderFromQueue() {
+    if (orders.length === 0) {
+	console.log('No orders left in queue. Come again later.');
+	return null;
+    }
+    let order = orders.shift();
+    updateOrderQueueLabel();
+    console.log('Order ' + order.id + ' has been removed by worker.');
+    return order;
+}
+
+function findShelf(article) {
+    if (!article) {
+	console.log('Article not valid, not searching.');
+	return null;
+    }
+    let target = null;
+    storage.shelves.forEach((shelf) => {
+	shelf.sub.forEach((sub) => {
+	    if (sub.article.id === article.id) {
+		target = shelf;
+	    }
+	});
+    });
+    return target;
+}
+
+function retrieveArticleFromStorage(article) {
+    let shelf = findShelf(article);
+    if (!shelf) {
+	console.log("Couldn't find that article in the storage", article);
+	return;
+    }
+    let rect;
+    layer.find('Rect').each((r) => {
+	if (r.x() === shelf.x * size && r.y() === shelf.y * size) {
+	    rect = r;
+	}
+    });
+
+    const durInSec = 0.75;
+    rect.to({ duration: durInSec, fill: Color.ACCESS });
+    setTimeout(() => {
+	rect.to({ duration: durInSec, fill: Color.DEFAULT });
+    }, durInSec * 1000);
+}
+
+function dispatchWorkers() {
+    // indefinetly for now
+    let f = () => {
+	if (orders.length > 0) {
+	    let order = takeOrderFromQueue();
+	    order.articles.forEach((art) => {
+		retrieveArticleFromStorage(art);
+	    });
+	}
+	setTimeout(f, 3500);
+    };
+    f();
+}
+
+function updateOrderQueueLabel() {
+    let label = statusLayer.find('#ordLabel');
+    let txt = 'Order queue:\n\n';
+    orders.forEach((ord) => {
+	txt += 'Order ' + ord.id + ':\n';
+	ord.articles.forEach((art) => {
+	    txt += '    - ' + art.name + '\n';
+	});
+	txt += '\n';
+    });
+    label.text(txt);
+    statusLayer.batchDraw();
 }
 
 async function importLayoutFromJSON() {
