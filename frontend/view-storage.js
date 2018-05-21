@@ -239,7 +239,7 @@ function addOrderToQueue(order) {
 	console.log("No order specified, not adding.");
 	return;
     }
-    orders.push(order)
+    orders.push(order);
     updateOrderQueueLabel();
     console.log('Order ' + order.id + ' added to queue.');
 }
@@ -320,5 +320,5 @@ function updateOrderQueueLabel() {
 }
 
 async function importLayoutFromJSON() {
-    return fetch('storage-layout-template.json').then(res => res.json())
+    return fetch('storage-layout-template.json').then(res => res.json());
 }
