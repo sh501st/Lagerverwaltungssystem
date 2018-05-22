@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8"/>
+    <title>View storage</title>
+    <style type="text/css" media="screen">
+      body { padding: 0; margin: 0; overflow: hidden; }
+      #mainContainer { }
+	  
+	index.pagination 
+	{
+		display: inline-block;
+		padding: 0;
+		margin: 0;
+	}
+
+	index.pagination li {display: inline;}
+
+	index.pagination li a 
+	{
+		color: black;
+		float: left;
+		padding: 8px 16px;
+		text-decoration: none;
+		transition: background-color .3s;
+		border: 1px solid #ddd;
+	}
+
+	index.pagination li a.active 
+	{
+		background-color: #4CAF50;
+		color: white;
+		border: 1px solid #4CAF50;
+	}
+
+	index.pagination li a:hover:not(.active) {background-color: #ddd;}
+
+    </style>
+	
+	
+    <script src="view-storage.js"></script>
+    <script src="konva.min.js"></script>
+  </head>
+  <body onload="main();">
+    <div id="mainContainer" oncontextmenu="return false;"></div>
+	
+	<index class="pagination">
+	<li><a href=
+	"file:///C:/Users/think/Desktop/Lagerverwaltungssystem-master/frontend/create-storage.html">
+	create storage</a></li>
+	
+	<li><a class="active" href=
+	"file:///C:/Users/think/Desktop/Lagerverwaltungssystem-master/frontend/view-storage.html">
+	view storage</a></li>
+
+  </body>
+</html>
