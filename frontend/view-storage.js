@@ -209,10 +209,14 @@ function randInt(from, to) /* inclusive */ {
     return Math.floor(Math.random() * (to - from + 1) + from);
 }
 
+function randWeightedBool(w) {
+    return (Math.random() * w) < 1;
+}
+
 let orderCounter = 0;
-function generateOrder() {
+function generateOrder(genValidID = true) {
     let order = {
-	id: ++orderCounter,
+	id: (genValidID ? ++orderCounter : -1),
 	articles: []
     };
     let numItems = randInt(1,5);
@@ -225,10 +229,24 @@ function generateOrder() {
 }
 
 function generateOrders() {
-    // indefinetly for now
+    // repeatable orders with invalid IDs for visible access pattern
+    let orderCache = [];
+    for (let i = 0; i < 5; i++) {
+	orderCache.push(generateOrder(false));
+    }
+
     let f = () => {
 	if (orders.length < 8) {
-	    addOrderToQueue(generateOrder());
+	    let shouldRecycleOrder = randWeightedBool(4);
+	    if (shouldRecycleOrder) {
+		let order = Object.assign(
+		    {}, orderCache[randInt(0, orderCache.length - 1)]
+		);
+		order.id = ++orderCounter;
+		addOrderToQueue(order);
+	    } else {
+		addOrderToQueue(generateOrder());
+	    }
 	}
 	const minDelay = 1000;
 	const maxDelay = 5000;
