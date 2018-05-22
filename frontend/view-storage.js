@@ -205,16 +205,20 @@ function createEntrances() {
     });
 }
 
+function randInt(from, to) /* inclusive */ {
+    return Math.floor(Math.random() * (to - from + 1) + from);
+}
+
 let orderCounter = 0;
 function generateOrder() {
     let order = {
 	id: ++orderCounter,
 	articles: []
     };
-    let numItems = Math.floor(Math.random() * 5) + 1;
+    let numItems = randInt(1,5);
     for (let i = 0; i < numItems; i++) {
-	let shelf = storage.shelves[Math.floor(Math.random() * storage.shelves.length)];
-	let article = shelf.sub[Math.floor(Math.random() * shelf.sub.length)].article;
+	let shelf = storage.shelves[randInt(0, storage.shelves.length - 1)];
+	let article = shelf.sub[randInt(0, shelf.sub.length - 1)].article;
 	order.articles.push({ id: article.id, name: article.name });
     }
     return order;
@@ -228,7 +232,7 @@ function generateOrders() {
 	}
 	const minDelay = 1000;
 	const maxDelay = 5000;
-	const randDelay = Math.round(Math.random() * (maxDelay - minDelay) + minDelay);
+	const randDelay = randInt(minDelay, maxDelay);
 	setTimeout(f, randDelay);
     };
     f();

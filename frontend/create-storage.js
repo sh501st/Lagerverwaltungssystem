@@ -167,10 +167,14 @@ function readInMockArticles() {
     });
 }
 
+function randInt(from, to) /* inclusive */ {
+    return Math.floor(Math.random() * (to - from + 1) + from);
+}
+
 function generateRandomSubShelf() {
     return {
-	article: articles[Math.floor(Math.random() * articles.length)],
-	count: Math.floor(Math.random() * 100) + 1
+	article: articles[randInt(0, articles.length -1)],
+	count: randInt(1, 100)
     };
 }
 
