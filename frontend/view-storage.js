@@ -260,15 +260,14 @@ function findShelf(article) {
 	console.log('Article not valid, not searching.');
 	return null;
     }
-    let target = null;
-    storage.shelves.forEach((shelf) => {
-	shelf.sub.forEach((sub) => {
+    for (shelf of storage.shelves) {
+	for (sub of shelf.sub) {
 	    if (sub.article.id === article.id) {
-		target = shelf;
+		return shelf;
 	    }
-	});
-    });
-    return target;
+	}
+    }
+    return null;
 }
 
 function retrieveArticleFromStorage(article) {
