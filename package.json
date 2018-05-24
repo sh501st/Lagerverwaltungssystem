@@ -1,0 +1,27 @@
+{
+  "name": "lagerverwaltungssystem",
+  "version": "0.1.0",
+  "description": "tucpp18-heatmap",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dwdv/Lagerverwaltungssystem.git"
+  },
+  "author": "",
+  "license": "BSD-3-Clause",
+  "bugs": {
+    "url": "https://github.com/dwdv/Lagerverwaltungssystem/issues"
+  },
+  "homepage": "https://github.com/dwdv/Lagerverwaltungssystem#readme",
+  "dependencies": {
+    "express": "^4.16.3",
+    "ws": "^5.2.0"
+  },
+  "devDependencies": {
+    "nodemon": "^1.17.5"
+  }
+}

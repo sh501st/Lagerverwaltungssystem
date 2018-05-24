@@ -6,8 +6,8 @@
     <style type="text/css" media="screen">
       body { padding: 0; margin: 0; overflow: hidden; }
       #mainContainer { }
-	  
-	index.pagination 
+
+	index.pagination
 	{
 		display: inline-block;
 		padding: 0;
@@ -16,7 +16,7 @@
 
 	index.pagination li {display: inline;}
 
-	index.pagination li a 
+	index.pagination li a
 	{
 		color: black;
 		float: left;
@@ -26,7 +26,7 @@
 		border: 1px solid #ddd;
 	}
 
-	index.pagination li a.active 
+	index.pagination li a.active
 	{
 		background-color: #4CAF50;
 		color: white;
@@ -36,22 +36,17 @@
 	index.pagination li a:hover:not(.active) {background-color: #ddd;}
 
     </style>
-	
-	
-    <script src="view-storage.js"></script>
-    <script src="konva.min.js"></script>
+
+
+    <script src="../js/view-storage.js"></script>
+    <script src="../js/konva.min.js"></script>
   </head>
   <body onload="main();">
     <div id="mainContainer" oncontextmenu="return false;"></div>
-	
+
 	<index class="pagination">
-	<li><a href=
-	"file:///./create-storage.html">
-	create storage</a></li>
-	
-	<li><a class="active" href=
-	"file:///./view-storage.html">
-	view storage</a></li>
+	<li><a href= "create-storage.html"> create storage</a></li>
+	<li><a class="active" href= "view-storage.html"> view storage</a></li>
 
   </body>
 </html>

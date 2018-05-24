@@ -1,2 +1,0 @@
-# Lagerverwaltungssystem
-TUCProgPrak18

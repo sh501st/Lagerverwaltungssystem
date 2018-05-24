@@ -1,0 +1,23 @@
+* Lagerverwaltungssystem
+
+TUCProgPrak18
+
+** Installation
+
+- clone or unzip this project from github
+- install =node= via distro's package manager or manually on windows
+- install =npm= via distro's package manager or manually on windows
+- run in project's root folder to download necessary dependencies: =npm install=
+
+(If package dependencies change throughout the coming weeks it might
+me necessary to rerun =npm install=, but I'll keep you posted on that
+matter.)
+
+** Usage
+
+- Start the server on the command line: =node server.js= (or
+  =./server.sh= when it's a dev session to restart the server
+  automatically whenever any relevant files within the working dir
+  change)
+- Open your favorite browser and type =localhost:8080= into the
+  address bar to connect a new client to the server
