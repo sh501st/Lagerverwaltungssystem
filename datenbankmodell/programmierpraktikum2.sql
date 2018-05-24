@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Erstellungszeit: 24. Mai 2018 um 02:16
+-- Erstellungszeit: 24. Mai 2018 um 02:23
 -- Server-Version: 10.1.26-MariaDB-0+deb9u1
 -- PHP-Version: 7.0.27-0+deb9u1
 
@@ -44,7 +44,8 @@ CREATE TABLE `compartments` (
 CREATE TABLE `log` (
   `id` int(11) NOT NULL,
   `product` int(11) DEFAULT NULL,
-  `unix` int(11) NOT NULL
+  `unix` int(11) NOT NULL,
+  `frontend-update` tinyint(1) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
@@ -97,7 +98,7 @@ ALTER TABLE `compartments`
 -- AUTO_INCREMENT für Tabelle `log`
 --
 ALTER TABLE `log`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 --
 -- AUTO_INCREMENT für Tabelle `products`
 --
