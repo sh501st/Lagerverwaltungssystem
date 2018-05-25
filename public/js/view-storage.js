@@ -355,15 +355,59 @@ function handleServerMessage(msg) {
 	break;
     case 'orderupdate':
 	updateOrderQueueLabel(content.orders);
-	if (content.removed) {
-	    content.removed.articles.forEach((article) => {
+	if (content.currentOrder) {
+	    content.currentOrder.articles.forEach((article) => {
 		flashShelf(article);
 	    });
+	    spawnWorker(content.currentOrder.path, content.currentOrder.speed);
 	}
 	break;
     default:
 	console.log('Unknown type provided in server message:', type);
     }
+}
+
+// spawns a imaginary worker and moves him along a server generated path.
+// expected path form: [startX, startY, x1, y1, ..., xn, xy, endx, endy]
+// speed is the rate at which the worker moves per second, e.g. 4 tiles per sec.
+function spawnWorker(path, speed) {
+    let worker = new Konva.Circle({
+	x: path.shift() * tileSize,
+	y: path.shift() * tileSize,
+	radius: tileSize / 2,
+	offsetX: -tileSize / 2,
+	offsetY: -tileSize / 2,
+	fill: Color.HIGHLIGHT
+    });
+    layer.add(worker);
+
+    let moving = new Konva.Animation((frame) => {
+	if (path.length < 2) {
+	    console.log('worker movement stopped');
+	    worker.destroy();
+	    moving.stop();
+	    delete moving; /// TODO: is konva.animation being cleaned
+			   /// up here or still lingering around?
+	}
+	const ddist = speed * tileSize * frame.timeDiff / 1000;
+	const tx = path[0] * tileSize;
+	const ty = path[1] * tileSize;
+	if (Math.abs(worker.x() - tx) <= ddist) {
+	    worker.x(tx);
+	} else {
+	    worker.x(worker.x() > tx ? worker.x() - ddist : worker.x() + ddist);
+	}
+	if (Math.abs(worker.y() - ty) <= ddist) {
+	    worker.y(ty);
+	} else {
+	    worker.y(worker.y() > ty ? worker.y() - ddist : worker.y() + ddist);
+	}
+	if (worker.x() === tx && worker.y() === ty) {
+	    path.shift();
+	    path.shift();
+	}
+    }, layer);
+    moving.start();
 }
 
 function requestStorageLayoutFromServer(sessionID) {

@@ -12,6 +12,9 @@ let activeStorages = new Map();
 let observingClients = new Map();
 let articles = []; // holds the csv articles
 
+// will be translated to 4 tiles per second on the client side
+const workerMovementSpeed = 4;
+
 main();
 
 // ======================================================================
@@ -133,7 +136,7 @@ function handleClientMessage(socket, msg) {
 	sendMessage(socket, 'storage', storage);
 	break;
     case 'shelfinventory':
-	let shelf = findShelf(content._id, content.x, content.y);
+	let shelf = findShelfByID(content._id, content.x, content.y);
 	sendMessage(socket, 'shelfinventory', shelf);
 	break;
     default:
@@ -141,7 +144,9 @@ function handleClientMessage(socket, msg) {
     }
 }
 
-function findShelf(id, x, y) {
+// client sends storage ID and click coordiantes and excepts back the
+// contents of that very shelf
+function findShelfByID(id, x, y) {
     let storage = activeStorages.get(id);
     let shelf;
     if (storage) {
@@ -150,6 +155,23 @@ function findShelf(id, x, y) {
 	});
     }
     return shelf;
+}
+
+// find the corresponing shelf that holds the provided article within
+// the given storage
+function findShelfByArticle(storage, article) {
+    if (!article) {
+	console.log('Article not valid, not searching.');
+	return null;
+    }
+    for (shelf of storage.shelves) {
+	for (sub of shelf.sub) {
+	    if (sub.article.id === article.id) {
+		return shelf;
+	    }
+	}
+    }
+    return null;
 }
 
 // TODO: article volume/capacity not yet specified in the csv, also
@@ -257,6 +279,8 @@ function dispatchWorkers() {
 	activeStorages.forEach((storage) => {
 	    if (storage.orders.length > 0) {
 		let order = takeOrderFromQueue(storage);
+		order.path = generateWorkerPath(storage, order);
+		order.speed = workerMovementSpeed;
 		notifyObservingClients(storage, order);
 	    }
 	});
@@ -265,13 +289,74 @@ function dispatchWorkers() {
     f();
 }
 
-function notifyObservingClients(storage, removed = null) {
+function manhattanDistance(x1, y1, x2, y2) {
+    return Math.abs(x2 - x1) + Math.abs(y2 - y1);
+}
+
+// try to find a rather efficient path for the worker to take, but not
+// necessarily the shortest path possible since we're only checking
+// shortest manhatten distance for the next shelf to go to. For now no
+// collision detection, worker are flying over the storage map.
+function generateWorkerPath(storage, order) {
+    // entrance chosen based on closed distance to first shelf
+    let closestEntrance;
+    let minDistance = storage.width + storage.height + 1;
+    storage.entrances.forEach((entrance) => {
+	order.articles.forEach((article) => {
+	    const shelf = findShelfByArticle(storage, article);
+	    const dist = manhattanDistance(entrance.x, entrance.y, shelf.x, shelf.y);
+	    if (dist < minDistance) {
+		minDistance = dist;
+		closestEntrace = entrance;
+	    }
+	});
+    });
+    let path = [closestEntrace.x, closestEntrace.y];
+    let unvisitedShelfs = order.articles.map(article => findShelfByArticle(storage, article));
+    while (unvisitedShelfs.length > 0) {
+	const currX = path[path.length - 2];
+	const currY = path[path.length - 1];
+	let closestFromCurrPos;
+	let minDistance = storage.width + storage.height + 1;
+	unvisitedShelfs.forEach((shelf) => {
+	    const dist = manhattanDistance(currX, currY, shelf.x, shelf.y);
+	    if (dist < minDistance) {
+		minDistance = dist;
+		closestFromCurrPos = shelf;
+	    }
+	});
+	path.push(closestFromCurrPos.x);
+	path.push(closestFromCurrPos.y);
+	// also eliminates shelfs that quite possibly hold more than
+	// one article from the order
+	unvisitedShelfs = unvisitedShelfs.filter((shelf) => {
+	    return shelf.x !== closestFromCurrPos.x || shelf.y !== closestFromCurrPos.y;
+	});
+    }
+    // exit chosen based on closed distance from last shelf
+    let closestExit;
+    minDistance = storage.width + storage.height + 1;
+    storage.entrances.forEach((entrance) => {
+	const currX = path[path.length - 2];
+	const currY = path[path.length - 1];
+	const dist = manhattanDistance(entrance.x, entrance.y, currX, currY);
+	if (dist < minDistance) {
+	    minDistance = dist;
+	    closestExit = entrance;
+	}
+    });
+    path.push(closestExit.x);
+    path.push(closestExit.y);
+    return path;
+}
+
+function notifyObservingClients(storage, currentOrder = null) {
     let clients = observingClients.get(storage._id);
     if (clients) {
 	clients.forEach((client) => {
 	    sendMessage(client, 'orderupdate', {
 		orders: storage.orders,
-		removed: removed
+		currentOrder: currentOrder
 	    });
 	});
     }
