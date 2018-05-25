@@ -380,10 +380,8 @@ function spawnWorker(path, speed) {
 	fill: Color.HIGHLIGHT
     });
     layer.add(worker);
-
     let moving = new Konva.Animation((frame) => {
 	if (path.length < 2) {
-	    console.log('worker movement stopped');
 	    worker.destroy();
 	    moving.stop();
 	    delete moving; /// TODO: is konva.animation being cleaned

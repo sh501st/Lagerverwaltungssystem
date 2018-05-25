@@ -11,6 +11,7 @@ const Color = Object.freeze({
     SHELF: '#30aaee',
     ENTRANCE: '#30ee8d',
     UNREACHABLE: '#ee3060',
+    INVALIDENTRANCE: '#303030',
     BORDER: '#606060'
 });
 
@@ -182,7 +183,8 @@ function areAllShelvesReachable() {
     }
 
     let placed = 0;
-    let found = 0;
+    let unreachableShelves = 0;
+    let unreachableEntrances = 0;
     let nodes = [];
     layer.find('Rect').each((r) => {
 	const col = Math.floor(r.x() / tileSize);
@@ -193,12 +195,19 @@ function areAllShelvesReachable() {
 	if (r.fill() === Color.SHELF || r.fill() === Color.UNREACHABLE) {
 	    r.fill(Color.UNREACHABLE);
 	    placed++;
-	} else if (r.fill() === Color.ENTRANCE) {
-	    nodes.push([col, row]);
+	    unreachableShelves++;
+	} else if (r.fill() === Color.ENTRANCE ||
+		   r.fill() === Color.INVALIDENTRANCE) {
+	    if (nodes.length === 0) {
+		nodes.push([col, row]);
+	    } else {
+		r.fill(Color.INVALIDENTRANCE);
+		unreachableEntrances++;
+	    }
 	}
     });
 
-    while (nodes.length > 0 && found < placed) {
+    while (nodes.length > 0) {
 	const node = nodes.pop();
 	const col = node[0];
 	const row = node[1];
@@ -212,7 +221,11 @@ function areAllShelvesReachable() {
 	    } else if (!alt.visited && alt.fill() === Color.UNREACHABLE) {
 		alt.visited = true;
 		alt.fill(Color.SHELF);
-		found++;
+		unreachableShelves--;
+	    } else if (!alt.visited && alt.fill() === Color.INVALIDENTRANCE) {
+		alt.fill(Color.ENTRANCE);
+		nodes.push([c, r]);
+		unreachableEntrances--;
 	    }
 	};
 
@@ -223,7 +236,7 @@ function areAllShelvesReachable() {
     }
 
     layer.batchDraw();
-    return found == placed && placed > 0;
+    return placed > 0 && unreachableShelves === 0 && unreachableEntrances === 0;
 }
 
 // send the placed tiles and entrances to the server, where the shelfs
@@ -234,7 +247,8 @@ function areAllShelvesReachable() {
 // used as a filename on the server-side.
 function sendJSONToServer() {
     if (!areAllShelvesReachable()) {
-	console.log('Not all shelves are reachable, not sending');
+	console.log('Not all shelves are reachable or not all entrances ' +
+		    'are connected with each other, not sending');
 	return;
     }
     let data = {
