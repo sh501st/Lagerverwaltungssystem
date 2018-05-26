@@ -234,36 +234,17 @@ function createEntrances() {
     });
 }
 
-// find the corresponing shelf that holds the provided article, used
-// for highlighting shelf access.
-function findShelf(article) {
-    if (!article) {
-	console.log('Article not valid, not searching.');
-	return null;
-    }
-    for (shelf of storage.shelves) {
-	for (sub of shelf.sub) {
-	    if (sub.article.id === article.id) {
-		return shelf;
-	    }
-	}
-    }
-    return null;
-}
-
 // temporarily highlight a shelf that was accessed by (for now)
 // imaginary worker
 function flashShelf(article) {
-    let shelf = findShelf(article);
-    if (!shelf) {
-	console.log("Couldn't find that article in the storage", article);
-	return;
-    }
     let rect;
     layer.find('Rect').each((r) => {
-	if (r.x() === shelf.x * tileSize && r.y() === shelf.y * tileSize) {
-	    rect = r; // TODO: elegant way to short-circuit this?
-		      // find('Rect') returns fake array.
+	if (r.x() === article.shelfX * tileSize &&
+	    r.y() === article.shelfY * tileSize)
+	{
+	    // TODO: elegant way to short-circuit this? find('Rect')
+	    // returns fake array.
+	    rect = r;
 	}
     });
 
@@ -356,10 +337,7 @@ function handleServerMessage(msg) {
     case 'orderupdate':
 	updateOrderQueueLabel(content.orders);
 	if (content.currentOrder) {
-	    content.currentOrder.articles.forEach((article) => {
-		flashShelf(article);
-	    });
-	    spawnWorker(content.currentOrder.path, content.currentOrder.speed);
+	    spawnWorker(content.currentOrder);
 	}
 	break;
     default:
@@ -367,45 +345,64 @@ function handleServerMessage(msg) {
     }
 }
 
-// spawns a imaginary worker and moves him along a server generated path.
-// expected path form: [startX, startY, x1, y1, ..., xn, xy, endx, endy]
-// speed is the rate at which the worker moves per second, e.g. 4 tiles per sec.
-function spawnWorker(path, speed) {
+// spawns a imaginary worker and moves him along a server generated
+// path. expected path form with subpaths: [[x1, y1, ..., xn, xy],
+// [...]] speed is the rate at which the worker moves per second, e.g.
+// 4 tiles per sec.
+function spawnWorker(order) {
+    let path = order.path;
+    let speed = order.speed;
     let worker = new Konva.Circle({
-	x: path.shift() * tileSize,
-	y: path.shift() * tileSize,
+	x: path[0].shift() * tileSize,
+	y: path[0].shift() * tileSize,
 	radius: tileSize / 2,
 	offsetX: -tileSize / 2,
 	offsetY: -tileSize / 2,
 	fill: Color.HIGHLIGHT
     });
     layer.add(worker);
-    let moving = new Konva.Animation((frame) => {
-	if (path.length < 2) {
-	    worker.destroy();
-	    moving.stop();
-	    delete moving; /// TODO: is konva.animation being cleaned
-			   /// up here or still lingering around?
-	}
-	const ddist = speed * tileSize * frame.timeDiff / 1000;
-	const tx = path[0] * tileSize;
-	const ty = path[1] * tileSize;
-	if (Math.abs(worker.x() - tx) <= ddist) {
-	    worker.x(tx);
-	} else {
-	    worker.x(worker.x() > tx ? worker.x() - ddist : worker.x() + ddist);
-	}
-	if (Math.abs(worker.y() - ty) <= ddist) {
-	    worker.y(ty);
-	} else {
-	    worker.y(worker.y() > ty ? worker.y() - ddist : worker.y() + ddist);
-	}
-	if (worker.x() === tx && worker.y() === ty) {
-	    path.shift();
-	    path.shift();
-	}
-    }, layer);
-    moving.start();
+
+    let moveAnimations = [];
+    path.forEach((subpath) => {
+	let moving = new Konva.Animation((frame) => {
+	    if (subpath.length < 2) {
+		if (moveAnimations.length === 0) {
+		    worker.destroy();
+		} else {
+		    flashShelf(order.articles.find((article) => {
+			const wx = worker.x() / tileSize;
+			const wy = worker.y() / tileSize;
+			const ax = article.shelfX;
+			const ay = article.shelfY;
+			return (wx == ax && (wy == ay+1 || wy == ay-1))
+			    || ((wx == ax+1 || wx == ax-1) && wy == ay);
+		    }));
+		    setTimeout(() => moveAnimations.shift().start(), 1000);
+		}
+		moving.stop();
+		delete moving; // TODO: is konva.animation being cleaned up here or still lingering around?
+	    }
+	    const ddist = speed * tileSize * frame.timeDiff / 1000;
+	    const tx = subpath[0] * tileSize;
+	    const ty = subpath[1] * tileSize;
+	    if (Math.abs(worker.x() - tx) <= ddist) {
+		worker.x(tx);
+	    } else {
+		worker.x(worker.x() > tx ? worker.x() - ddist : worker.x() + ddist);
+	    }
+	    if (Math.abs(worker.y() - ty) <= ddist) {
+		worker.y(ty);
+	    } else {
+		worker.y(worker.y() > ty ? worker.y() - ddist : worker.y() + ddist);
+	    }
+	    if (worker.x() === tx && worker.y() === ty) {
+		subpath.shift();
+		subpath.shift();
+	    }
+	}, layer);
+	moveAnimations.push(moving);
+    });
+    moveAnimations.shift().start();
 }
 
 function requestStorageLayoutFromServer(sessionID) {

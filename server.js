@@ -158,23 +158,6 @@ function findShelfByID(id, x, y) {
     return shelf;
 }
 
-// find the corresponing shelf that holds the provided article within
-// the given storage
-function findShelfByArticle(storage, article) {
-    if (!article) {
-	console.log('Article not valid, not searching.');
-	return null;
-    }
-    for (shelf of storage.shelves) {
-	for (sub of shelf.sub) {
-	    if (sub.article.id === article.id) {
-		return shelf;
-	    }
-	}
-    }
-    return null;
-}
-
 // TODO: article volume/capacity not yet specified in the csv, also
 // needs to be handled here later on.
 function readInMockArticles() {
@@ -210,7 +193,7 @@ function generateOrder(storage, genValidID = true) {
     for (let i = 0; i < numItems; i++) {
 	let shelf = storage.shelves[randInt(0, storage.shelves.length - 1)];
 	let article = shelf.sub[randInt(0, shelf.sub.length - 1)].article;
-	order.articles.push({ id: article.id, name: article.name });
+	order.articles.push(article);
     }
     return order;
 }
@@ -304,8 +287,8 @@ function generateWorkerPath(storage, order) {
     let minDistance = storage.width + storage.height + 1;
     storage.entrances.forEach((entrance) => {
 	order.articles.forEach((article) => {
-	    const shelf = findShelfByArticle(storage, article);
-	    const dist = manhattanDistance(entrance.x, entrance.y, shelf.x, shelf.y);
+	    const dist = manhattanDistance(
+		entrance.x, entrance.y, article.shelfX, article.shelfY);
 	    if (dist < minDistance) {
 		minDistance = dist;
 		closestEntrace = entrance;
@@ -313,7 +296,11 @@ function generateWorkerPath(storage, order) {
 	});
     });
     let path = [closestEntrace.x, closestEntrace.y];
-    let unvisitedShelfs = order.articles.map(article => findShelfByArticle(storage, article));
+    let unvisitedShelfs = order.articles.map((article) => {
+	return storage.shelves.find((shelf) => {
+	    return shelf.x === article.shelfX && shelf.y === article.shelfY;
+	})
+    });
     while (unvisitedShelfs.length > 0) {
 	const currX = path[path.length - 2];
 	const currY = path[path.length - 1];
@@ -351,7 +338,7 @@ function generateWorkerPath(storage, order) {
 
     // collision avoidance, allow workers to walk only walk on path
     // instead of crossing shelves.
-    let interpolatedPath = [path[0], path[1]];
+    let interpolatedPath = [];
     while (path.length >= 4) {
 	const x1 = path.shift();
 	const y1 = path.shift();
@@ -368,8 +355,10 @@ function generateWorkerPath(storage, order) {
 	    path[0] = subPath[subPath.length - 2];
 	    path[1] = subPath[subPath.length - 1];
 	}
-	if (subPath) {
-	    interpolatedPath = interpolatedPath.concat(subPath);
+	// create subpaths so that we can play an access animation on
+	// the associated shelf while the worker is waiting a bit
+	if (subPath && subPath.length > 0) {
+	    interpolatedPath.push(subPath);
 	}
     }
     return interpolatedPath;
@@ -399,15 +388,15 @@ function interpolateTilePath(storage, x1, y1, x2, y2) {
 
 	    // target shelf/exit found, traverse tree upwards to build
 	    // walking path tile by tile. Don't add target note since
-	    // it's not walkable. And dont' add starting point, would
-	    // lead to coord duplication
+	    // it's not walkable.
 	    walkPath = [];
-	    // walkPath = [parent.x, parent.y];
 	    while (parent.x !== x1 || parent.y !== y1) {
 		walkPath.push(parent.y);
 		walkPath.push(parent.x);
 		parent = parents.get(parent);
 	    }
+	    walkPath.push(y1);
+	    walkPath.push(x1);
 	    walkPath.reverse();
 	}
 	else if (!(grid[cx][cy].visited) && grid[cx][cy].walkable) {
@@ -450,28 +439,25 @@ function randBool(percent = 50) {
     return Math.random() * 100 < percent;
 }
 
-function getRandomArticle() {
-    return articles[randInt(0, articles.length -1)];
-}
-
-// count is the number of articles within this subshelf.
-function generateRandomSubShelf(subshelf) {
-    return {
-	article: getRandomArticle(),
-	count: randInt(1, 100)
-    };
-}
-
 // fill the newly created storage's shelves with random articles on
 // the server-side due to file reading issues in the frontend.
 // Currently every shelf has four subshelves (arbitrarily hardcoded).
 function fillShelvesRandomly(shelves) {
-    const numSubShelves = 4;
-    shelves.forEach((shelf) => {
+    for (let shelf of shelves) {
+	const numSubShelves = 4;
+	shelf.sub = [];
 	for (let i = 0; i < numSubShelves; i++) {
-	    shelf.sub.push(generateRandomSubShelf());
+	    let acopy = Object.assign({
+		shelfX: shelf.x,
+		shelfY: shelf.y
+	    }, articles[randInt(0, articles.length - 1)]);
+	    let subshelf = {
+		article: acopy,
+		count: randInt(1, 100)
+	    };
+	    shelf.sub[i] = subshelf;
 	}
-    });
+    }
 }
 
 // this is called when a client has sent over his empty storage draft
@@ -487,13 +473,12 @@ function createNewStorage(storage) {
     }
     fillShelvesRandomly(storage.shelves);
     const filename = 'data/storages/' + storage._id + '.json';
-    fs.writeFile(filename, JSON.stringify(storage), 'utf8', (err) => {
-	if (err) {
-	    console.log("Couldn't write storage json to disk: " + err);
-	} else {
-	    console.log("Storage written sucessfully");
-	}
-    })
+    try {
+	fs.writeFileSync(filename, JSON.stringify(storage), 'utf8');
+	console.log("Storage written sucessfully");
+    } catch (err) {
+	console.log("Couldn't write storage json to disk: " + err);
+    }
 }
 
 // when client requests a certain file via the provided sessionID we
