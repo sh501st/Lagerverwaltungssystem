@@ -365,6 +365,7 @@ function spawnWorker(order) {
     let moveAnimations = [];
     path.forEach((subpath) => {
 	let moving = new Konva.Animation((frame) => {
+	    const ddist = speed * tileSize * frame.timeDiff / 1000;
 	    if (subpath.length < 2) {
 		if (moveAnimations.length === 0) {
 		    worker.destroy();
@@ -377,12 +378,13 @@ function spawnWorker(order) {
 			return (wx == ax && (wy == ay+1 || wy == ay-1))
 			    || ((wx == ax+1 || wx == ax-1) && wy == ay);
 		    }));
+		    worker.x(worker.x() - ddist);
+		    worker.y(worker.y() - ddist);
 		    setTimeout(() => moveAnimations.shift().start(), 1000);
 		}
 		moving.stop();
 		delete moving; // TODO: is konva.animation being cleaned up here or still lingering around?
 	    }
-	    const ddist = speed * tileSize * frame.timeDiff / 1000;
 	    const tx = subpath[0] * tileSize;
 	    const ty = subpath[1] * tileSize;
 	    if (Math.abs(worker.x() - tx) <= ddist) {
