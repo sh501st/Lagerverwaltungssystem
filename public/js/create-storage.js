@@ -279,6 +279,7 @@ function sendJSONToServer() {
 // strings, thus we are converting our objects to strings before
 // sending them off.
 function sendMessage(type, data) {
+    console.log('Sent:', type);
     try {
 	socket.send(JSON.stringify({
 	    type: type,
@@ -287,5 +288,4 @@ function sendMessage(type, data) {
     } catch (err) {
 	console.log('Could not send message to server: ' + err);
     }
-    console.log('Successfully sent to server:', type);
 }

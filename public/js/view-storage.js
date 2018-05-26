@@ -418,10 +418,10 @@ function requestStorageLayoutFromServer(sessionID) {
 // stringify because that's what the websockets expect, other options
 // would be sending array or binary blob data.
 function sendMessage(type, data) {
+    console.log('Sent:', type);
     try {
 	socket.send(JSON.stringify({ type: type, content: data }));
     } catch (err) {
-	console.log('Could not send message to server: ' + err);
+	console.log('Could not send message to server:' + err);
     }
-    console.log('Sent:', type);
 }
