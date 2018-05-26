@@ -361,6 +361,18 @@ function generateWorkerPath(storage, order) {
 	    interpolatedPath.push(subPath);
 	}
     }
+
+    // add exit bit, otherwise worker would disappear on tile away
+    // from the exit
+    if (interpolatedPath.length >= 1) {
+	const lastSubPath = interpolatedPath[interpolatedPath.length - 1];
+	if (lastSubPath.length >= 2) {
+	    const lastX = lastSubPath[lastSubPath.length - 2];
+	    const lastY = lastSubPath[lastSubPath.length - 1];
+	    interpolatedPath.push([lastX, lastY, closestExit.x, closestExit.y]);
+	}
+    }
+
     return interpolatedPath;
 }
 
@@ -383,9 +395,6 @@ function interpolateTilePath(storage, x1, y1, x2, y2) {
     let walkPath;
     let visit = (parent, cx, cy) => {
 	if (cx == x2 && cy == y2) {
-	    // TODO: handle placing node on last exit tile instead of
-	    // quitting next to it
-
 	    // target shelf/exit found, traverse tree upwards to build
 	    // walking path tile by tile. Don't add target note since
 	    // it's not walkable.

@@ -369,6 +369,10 @@ function spawnWorker(order) {
 	    if (subpath.length < 2) {
 		if (moveAnimations.length === 0) {
 		    worker.destroy();
+		} else if (moveAnimations.length === 1) {
+		    worker.x(worker.x() - ddist);
+		    worker.y(worker.y() - ddist);
+		    moveAnimations.shift().start();
 		} else {
 		    flashShelf(order.articles.find((article) => {
 			const wx = worker.x() / tileSize;
