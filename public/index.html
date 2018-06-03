@@ -1,20 +1,118 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8"/>
+
+<head>
+    <meta charset="utf-8" />
     <title>Lagerverwaltungssystem</title>
-  </head>
-  <body>
-    <h2>Lagerverwaltungssystem</h2>
-    <ul>
-      <li>
-	<a href="create-storage.html">Neues Lager erstellen</a>
-      </li>
-      <li>
-	<a href="view-storage.html">Lagerübersicht anzeigen</a>
-      </li>
-      <li>
-	Lagerumräumung planen
-      </li>
-  </body>
+
+    <style type="text/css">
+        body {
+            background-color:azure;
+            text-align: center;
+             font-family: monospace;
+        }
+
+        .content {
+            width: 93vw;
+            height: 30vw;
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            margin-left: -46vw;
+            /*width/2*/
+            margin-top: -16.5vw;
+            /*height/2*/
+        }
+
+        .content div_title {
+            width: 93vw;
+            height: 5vw;
+            float: left;
+            font-weight: bold;
+            font-size: 3.5vw;
+            text-align: center;
+            color:darkblue;
+        }
+
+        .content div_image {
+            width: 30vw;
+            height: 30vw;
+            float: left;
+            margin-right: 0.5vw;
+            border: 0.2vw solid;
+            border-color: darkgrey;
+            border-radius: 2vw;
+        }
+
+        .container {
+            position: relative;
+            width: 50%;
+        }
+
+        .image {
+            display: block;
+            width: 100%;
+            height: 100%;
+            border-radius:1.8vw;
+        }
+
+        .overlay {
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 100%;
+            width: 100%;
+            opacity: 0;
+            transition: .5s ease;
+            border-radius:1.8vw;
+        }
+
+        .container:hover .overlay {
+            opacity: 1;
+        }
+        
+        .text {
+            color:darkblue;
+            font-size: 3.5vw;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            -ms-transform: translate(-50%, -50%);
+            text-align: center;
+            font-weight: 900;
+        }
+
+    </style>
+
+</head>
+
+<body>
+    <div class="content">
+        <div_title>Lagerverwaltungsystem</div_title>
+        <div_image class="container" onclick="location.href='create-storage.html';" style="cursor: pointer;">
+            <img src="../graphics/mockup-create.png" alt="Avatar" class="image">
+            <div class="overlay" style="background-color: brown">
+                <div class="text">Create Storage</div>
+            </div>
+        </div_image>
+
+        <div_image class="container" onclick="location.href='view-storage.html';" style="cursor: pointer;">
+            <img src="../graphics/mockup-view.png" alt="Avatar" class="image">
+            <div class="overlay" style="background-color:darkorange">
+                <div class="text">View Storage</div>
+            </div>
+        </div_image>
+
+        <div_image class="container" onclick="location.href='plan-storage.html';" style="cursor: pointer;">
+            <img src="../graphics/milestone_1_user_stories_storage.png" alt="Avatar" class="image">
+            <div class="overlay" style="background-color:darkgreen">
+                <div class="text">Plan Storage</div>
+            </div>
+        </div_image>
+    </div>
+</body>
+
 </html>
