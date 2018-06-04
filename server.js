@@ -1,10 +1,19 @@
 // express allows serving html files in the public subfolder quite
 // easily. 'fs' is for nicer file reading and writing.
+//'db' is data to establish connection to local databse
 const express = require('express');
 const app = express();
 const http = require('http');
 const WebSocket = require('ws');
 const fs = require('fs');
+const mysql = require('mysql');
+const db = mysql.createConnection({
+  host     : 'localhost',
+  user     : 'programmierpraktikum',
+  password : 'AaSfayZPU8Pvleff',
+  database : 'programmierpraktikum'
+});
+
 
 // TODO: close/delete inactive storage upon client disconnect and no
 // other client uses it

@@ -1,146 +1,66 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8"/>
-    <title>Create storage</title>
-    <style type="text/css" media="screen">
 
-    #bar { height: 38px; top: 0; }
-    #mainContainer {}
-
-	body
-	{
-		background-color:#f0f0f0;
-	}
-
-	index.pagination
-	{
-		display: inline-block;
-		padding: 0;
-		margin: 0;
-	}
-
-	index.pagination li {display: inline;}
-
-	index.pagination li a
-	{
-		color: black;
-		float: left;
-		padding: 8px 16px;
-		text-decoration: none;
-		transition: background-color .3s;
-		border: 1px solid #ddd;
-	}
-
-	index.pagination li a.active
-	{
-		background-color: #4CAF50;
-		color: white;
-		border: 1px solid #4CAF50;
-	}
-
-	index.pagination li a:hover:not(.active) {background-color: #ddd;}
-
-	.button_export
-	{
-	  display: inline-block;
-	  border-radius: 4px;
-	  background-color: #f4511e;
-	  border: none;
-	  color: #FFFFFF;
-	  text-align: center;
-	  font-size: 14px;
-	  padding: 14px;
-	  width: 160px;
-	  transition: all 0.5s;
-	  cursor: pointer;
-	  margin: 2px;
-	}
-
-	.button_export span
-	{
-	  cursor: pointer;
-	  display: inline-block;
-	  position: relative;
-	  transition: 0.5s;
-	}
-
-	.button_export span:after
-	{
-	  content: '»';
-	  position: absolute;
-	  opacity: 0;
-	  top: 0;
-	  right: -20px;
-	  transition: 0.5s;
-	}
-
-	.button_export:hover span
-	{
-	  padding-right: 25px;
-	}
-
-	.button_export:hover span:after
-	{
-	  opacity: 1;
-	  right: 0;
-	}
-
-	add_shelf
-	{
-		border:none;
-		padding:14px;
-		background:#30aaee;
-		width:160px;
-		border-radius:5px;
-		font-size: 14px;
-		margin: 2px;
-	}
-
-	remove
-	{
-		border:none;
-		padding:14px;
-		background:#FF0033;
-		width:160px;
-		border-radius:5px;
-		font-size: 14px;
-		margin: 2px;
-	}
-
-	entrance
-	{
-		border:none;
-		padding:14px;
-		background:#30ee8d;
-		width:160px;
-		border-radius:5px;
-		font-size: 14px;
-		margin: 2px;
-	}
-
-    </style>
+<head>
+    <meta charset="utf-8" />
+    <title>Create Storage</title>
+    <link rel="stylesheet" type="text/css" href="mystyle.css" />
 
     <script src="../js/create-storage.js"></script>
     <script src="../js/konva.min.js"></script>
 
-  </head>
-  <body onload="main();">
+</head>
 
-	<index class="pagination">
+<body onload="main();">
 
-	<li><a class="active" href= "create-storage.html"> create storage</a></li>
-	<li><a href= "view-storage.html"> view storage</a></li>
-	<br>
-	<br>
-	<button class="button_export" style="vertical-align:middle" onclick="sendJSONToServer();"><span> Send to server </span></button>
+    <div id="menu">
+        <div class="inside_menu">
+            <button class="button" style="background-color: darkred" onclick="location.href='index.html';">
+            <span> Cancel </span></button>
 
-	<add_shelf> Hold LMB: add shelf. </add_shelf>
-	<remove> Hold RMB: remove. </remove>
-	<entrance> Middle click edge tile: entrance. </entrance>
+            <div class="tooltip">
+                <button class="button" style="background-color:deepskyblue"><span> Help </span></button>
+                <span class="tooltiptext">Hold left click: add<br>Hold right click: remove<br>Middle click: add entrance</span></div>       
+        </div>
+        
 
-	<!-- input type="button" id="export" value="Export to JSON" -->
 
-	<div id="mainContainer" oncontextmenu="return false;"></div>
-  </body>
+        <div class="inside_menu">Load layout:
+            <form action="">
+                <select name="layout" class="input">
+            <option value="s1">s1</option>
+            <option value="s2">s2</option>
+            <option value="s3">s3</option>
+            <option value="s4">s4</option>
+            </select>
+            </form>
+        </div>
+
+        <div class="inside_menu">Storege name:
+        <form action=""><input type="text" name="name" class="input"></form>
+        </div><br>
+        
+
+        <div class="inside_menu">
+        Width:<br><br><br><br>
+
+        Height:<br><br><br><br>
+
+        Worker count:<br><br><br>
+        </div>
+        
+        <div class="inside_menu" style="border-bottom-style: none"><button class="button" style="width: 18vw; background-color: forestgreen;" onclick="sendJSONToServer(); location.href='view-storage.html';">
+            <span> Save and view </span></button></div>
+
+    </div>
+
+    <div id="mainContainer" oncontextmenu="return false"></div>
+
+
+
+
+
+
+</body>
+
 </html>
