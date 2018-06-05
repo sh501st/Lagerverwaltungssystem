@@ -124,44 +124,47 @@ function handleClientMessage(socket, msg) {
 	createNewStorage(content);
 	break;
     case 'reqlayout':
-	let sid = content._id ? content._id : 0;
-	let storage = activeStorages.get(sid);
-	if (!storage) {
-	    storage = loadStorageFromJSONFile(sid);
-	}
-	sid = storage._id; // TODO: necessary? deep checking.
-	let observers = observingClients.get(sid);
-	if (!observers) {
-	    observingClients.set(sid, [socket]);
-	} else {
-	    observers.push(socket);
-	}
-	observingClients.forEach((clients, id) => {
-	    console.log('Clients observing storage \"' + id + '\":', clients.length);
-	});
-	console.log('Active storages:', activeStorages.size);
-	sendMessage(socket, 'storage', storage);
+	sendLayoutToClient(content._id ? content._id : 0, socket);
 	break;
     case 'shelfinventory':
-	let shelf = findShelfByID(content._id, content.x, content.y);
-	sendMessage(socket, 'shelfinventory', shelf);
+	sendShelfToClient(content._id, content.x, content.y, socket);
 	break;
     default:
 	console.log('Unknown type provided in client message:', type);
     }
 }
 
-// client sends storage ID and click coordiantes and excepts back the
-// contents of that very shelf
-function findShelfByID(id, x, y) {
-    let storage = activeStorages.get(id);
-    let shelf;
-    if (storage) {
-	shelf = storage.shelves.find((elem) => {
-	    return elem.x === x && elem.y == y;
-	});
+// client sends storage ID and expects storage layout which is either
+// loaded from mem cache or json file on disk when not active
+function sendLayoutToClient(storageID, socket) {
+    let storage = activeStorages.get(storageID);
+    if (!storage) {
+	storage = loadStorageFromJSONFile(storageID);
     }
-    return shelf;
+    storageID = storage._id; // TODO: necessary? deep checking.
+    let observers = observingClients.get(storageID);
+    if (!observers) {
+	observingClients.set(storageID, [socket]);
+    } else {
+	observers.push(socket);
+    }
+    observingClients.forEach((clients, id) => {
+	console.log('Clients observing storage \"' + id + '\":', clients.length);
+    });
+    console.log('Active storages:', activeStorages.size);
+    sendMessage(socket, 'storage', storage);
+}
+
+// client sends storage ID and click coordiantes and expects the
+// contents of that very shelf
+function sendShelfToClient(storageID, shelfX, shelfY, socket) {
+    let storage = activeStorages.get(storageID);
+    if (storage) {
+	let shelf = storage.shelves.find((elem) => {
+	    return elem.x === shelfX && elem.y == shelfY;
+	});
+	sendMessage(socket, 'shelfinventory', shelf);
+    }
 }
 
 // TODO: article volume/capacity not yet specified in the csv, also
