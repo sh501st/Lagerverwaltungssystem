@@ -4,15 +4,17 @@
 <head>
     <meta charset="utf-8" />
     <title>Plan storage</title>
-    <link rel="stylesheet" type="text/css" href="mystyle.css" />
-
-    <script src="../js/view-storage.js"></script>
-    <script src="../js/konva.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="/css/storage.css"/>
 </head>
 
-<body onload="main();">
-    <div id="mainContainer" oncontextmenu="return false;"></div>
+<body>
+  <div id="mainContainer" oncontextmenu="return false;"></div>
 
+  <script>
+    window.addEventListener('DOMContentLoaded', () => main());
+  </script>
+  <script src="/js/konva.min.js"></script>
+  <script src="/js/plan-storage.js"></script>
 </body>
 
 </html>

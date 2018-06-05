@@ -15,8 +15,8 @@ const Color = Object.freeze({
     BORDER: '#606060'
 });
 
-const canvasWidth = 640;
-const canvasHeight = 480;
+const canvasWidth = document.querySelector('#mainContainer').offsetWidth;
+const canvasHeight = document.querySelector('#mainContainer').offsetHeight;
 const tileSize = 32;
 const cols = Math.floor(canvasWidth / tileSize);
 const rows = Math.floor(canvasHeight / tileSize);

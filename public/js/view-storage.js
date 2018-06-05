@@ -11,8 +11,8 @@ let storage, cols, rows;
 let stage, layer, greyOverlayLayer, popupLayer, statusLayer;
 let socket, sessionID;
 
-const canvasWidth = window.innerWidth;
-const canvasHeight = window.innerHeight;
+const canvasWidth = document.querySelector('#mainContainer').offsetWidth;
+const canvasHeight = document.querySelector('#mainContainer').offsetHeight;
 const tileSize = 32;
 
 function main() {
@@ -39,8 +39,6 @@ function storageReceivedFromServer() {
 function recreateStorageLayout() {
     stage = new Konva.Stage({
 	container: 'mainContainer',
-	x: (window.innerWidth - cols * tileSize) / 2,
-	y: (window.innerHeight - rows * tileSize) / 2,
 	width: canvasWidth,
 	height: canvasHeight,
 	draggable: true
@@ -285,7 +283,7 @@ function connectToServer() {
     socket.onmessage = (msg) => {
 	handleServerMessage(msg);
     };
-    return new Promise((resolve) => setTimeout(resolve, 500));
+    return new Promise((resolve) => setTimeout(resolve, 1000));
 }
 
 // if we can find a sessionID within the browser's html5 session
