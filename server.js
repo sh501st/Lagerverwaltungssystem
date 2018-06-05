@@ -14,16 +14,13 @@ const db = mysql.createConnection({
   database : 'programmierpraktikum'
 });
 
+const pathfinding = require('./include/pathfinding');
 
 // TODO: close/delete inactive storage upon client disconnect and no
 // other client uses it
 let activeStorages = new Map();
 let observingClients = new Map();
-let storageGridCache = new Map();
 let articles = []; // holds the csv articles
-
-// will be translated to 4 tiles per second on the client side
-const workerMovementSpeed = 4;
 
 main();
 
@@ -268,171 +265,20 @@ function takeOrderFromQueue(storage) {
 // queued up orders. Again, all watching clients will be notifed so
 // that they can update their order list next to the canvas.
 function dispatchWorkers() {
+    const moveSpeedInTilesPerSeconds = 4;
+
     let f = () => {
 	activeStorages.forEach((storage) => {
 	    if (storage.orders.length > 0) {
 		let order = takeOrderFromQueue(storage);
-		order.path = generateWorkerPath(storage, order);
-		order.speed = workerMovementSpeed;
+		order.path = pathfinding.generateWorkerPath(storage, order);
+		order.speed = moveSpeedInTilesPerSeconds;
 		notifyObservingClients(storage, order);
 	    }
 	});
 	setTimeout(f, 3500);
     };
     f();
-}
-
-function manhattanDistance(x1, y1, x2, y2) {
-    return Math.abs(x2 - x1) + Math.abs(y2 - y1);
-}
-
-// try to find a rather efficient path for the worker to take, but not
-// necessarily the shortest path possible since we're only checking
-// shortest manhatten distance for the next shelf to go to. For now no
-// collision detection, worker are flying over the storage map.
-function generateWorkerPath(storage, order) {
-    // entrance chosen based on closed distance to first shelf
-    let closestEntrance;
-    let minDistance = storage.width + storage.height + 1;
-    storage.entrances.forEach((entrance) => {
-	order.articles.forEach((article) => {
-	    const dist = manhattanDistance(
-		entrance.x, entrance.y, article.shelfX, article.shelfY);
-	    if (dist < minDistance) {
-		minDistance = dist;
-		closestEntrace = entrance;
-	    }
-	});
-    });
-    let path = [closestEntrace.x, closestEntrace.y];
-    let unvisitedShelfs = order.articles.map((article) => {
-	return storage.shelves.find((shelf) => {
-	    return shelf.x === article.shelfX && shelf.y === article.shelfY;
-	})
-    });
-    while (unvisitedShelfs.length > 0) {
-	const currX = path[path.length - 2];
-	const currY = path[path.length - 1];
-	let closestFromCurrPos;
-	let minDistance = storage.width + storage.height + 1;
-	unvisitedShelfs.forEach((shelf) => {
-	    const dist = manhattanDistance(currX, currY, shelf.x, shelf.y);
-	    if (dist < minDistance) {
-		minDistance = dist;
-		closestFromCurrPos = shelf;
-	    }
-	});
-	path.push(closestFromCurrPos.x);
-	path.push(closestFromCurrPos.y);
-	// also eliminates shelfs that quite possibly hold more than
-	// one article from the order
-	unvisitedShelfs = unvisitedShelfs.filter((shelf) => {
-	    return shelf.x !== closestFromCurrPos.x || shelf.y !== closestFromCurrPos.y;
-	});
-    }
-    // exit chosen based on closed distance from last shelf
-    let closestExit;
-    minDistance = storage.width + storage.height + 1;
-    storage.entrances.forEach((entrance) => {
-	const currX = path[path.length - 2];
-	const currY = path[path.length - 1];
-	const dist = manhattanDistance(entrance.x, entrance.y, currX, currY);
-	if (dist < minDistance) {
-	    minDistance = dist;
-	    closestExit = entrance;
-	}
-    });
-    path.push(closestExit.x);
-    path.push(closestExit.y);
-
-    // collision avoidance, allow workers to walk only walk on path
-    // instead of crossing shelves.
-    let interpolatedPath = [];
-    while (path.length >= 4) {
-	const x1 = path.shift();
-	const y1 = path.shift();
-	const x2 = path[0];
-	const y2 = path[1];
-	let subPath = interpolateTilePath(storage, x1, y1, x2, y2);
-	// since shelf is not walkable, reset to adjecent tile.
-	// Additional check necessary in case worker takes two items
-	// from same shelf, in that case we are not moving around.
-	if (subPath && subPath.length === 0) {
-	    path[0] = x1;
-	    path[1] = y1;
-	} else if (subPath && subPath.length >= 2) {
-	    path[0] = subPath[subPath.length - 2];
-	    path[1] = subPath[subPath.length - 1];
-	}
-	// create subpaths so that we can play an access animation on
-	// the associated shelf while the worker is waiting a bit
-	if (subPath && subPath.length > 0) {
-	    interpolatedPath.push(subPath);
-	}
-    }
-
-    // add exit bit, otherwise worker would disappear on tile away
-    // from the exit
-    if (interpolatedPath.length >= 1) {
-	const lastSubPath = interpolatedPath[interpolatedPath.length - 1];
-	if (lastSubPath.length >= 2) {
-	    const lastX = lastSubPath[lastSubPath.length - 2];
-	    const lastY = lastSubPath[lastSubPath.length - 1];
-	    interpolatedPath.push([lastX, lastY, closestExit.x, closestExit.y]);
-	}
-    }
-
-    return interpolatedPath;
-}
-
-// find shortest valid path between two shelves or between a shelf and
-// an entrance and note every tile for client-wise worker traversal.
-// For the sake of a simpler implementation I chose breadth-first
-// instead of a-star, but could change if performance requires it in
-// the future (for now not necessary at all).
-function interpolateTilePath(storage, x1, y1, x2, y2) {
-    // reset visited flag of all storage tiles
-    let grid = storageGridCache.get(storage._id);
-    for (let col = 0; col < grid.length; col++) {
-	for (let row = 0; row < grid[0].length; row++) {
-	    grid[col][row].visited = false;
-	}
-    }
-    let queue = [{ x:x1, y:y1 }];
-    let parents = new Map();
-
-    let walkPath;
-    let visit = (parent, cx, cy) => {
-	if (cx == x2 && cy == y2) {
-	    // target shelf/exit found, traverse tree upwards to build
-	    // walking path tile by tile. Don't add target note since
-	    // it's not walkable.
-	    walkPath = [];
-	    while (parent.x !== x1 || parent.y !== y1) {
-		walkPath.push(parent.y);
-		walkPath.push(parent.x);
-		parent = parents.get(parent);
-	    }
-	    walkPath.push(y1);
-	    walkPath.push(x1);
-	    walkPath.reverse();
-	}
-	else if (!(grid[cx][cy].visited) && grid[cx][cy].walkable) {
-	    const child = { x:cx, y:cy };
-	    queue.push(child);
-	    parents.set(child, parent);
-	    grid[cx][cy].visited = true;
-	}
-    };
-
-    while (queue.length > 0 && !walkPath) {
-	let node = queue.shift();
-	if (node.x > 0) { visit(node, node.x - 1, node.y); } // left
-	if (node.x < storage.width - 1) { visit(node, node.x + 1, node.y); } // right
-	if (node.y > 0) { visit(node, node.x, node.y - 1); } // up
-	if (node.y < storage.height - 1) { visit(node, node.x, node.y + 1); } // down
-    }
-    return walkPath;
 }
 
 function notifyObservingClients(storage, currentOrder = null) {
@@ -518,26 +364,10 @@ function loadStorageFromJSONFile(sessionID) {
 	storage.orders = [];
 	storage.orderCache = [];
 	generateOrderCache(storage);
-	generateGridRepresentation(storage);
 	activeStorages.set(storage._id, storage);
 	return storage;
     } catch (err) {
 	console.log("Couldn't read-in storage file with given sessionID:", err);
 	return;
     }
-}
-
-// for faster lookup in tight loops like path interpolation
-function generateGridRepresentation(storage) {
-    let grid = [];
-    for (let col = 0; col < storage.width; col++) {
-	grid[col] = [];
-	for (let row = 0; row < storage.height; row++) {
-	    grid[col][row] = { visited: false, walkable: true };
-	}
-    }
-    storage.shelves.forEach((shelf) => {
-	grid[shelf.x][shelf.y].walkable = false;
-    });
-    storageGridCache.set(storage._id, grid);
 }
