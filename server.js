@@ -14,6 +14,8 @@ const db = mysql.createConnection({
   database : 'programmierpraktikum'
 });
 
+const util = require('./include/util');
+const orders = require('./include/orders');
 const pathfinding = require('./include/pathfinding');
 
 // TODO: close/delete inactive storage upon client disconnect and no
@@ -49,7 +51,6 @@ function main() {
     server.listen(port, () => { console.log('Listening on port %s', port); });
 
     readInMockArticles();
-    generateOrders();
     dispatchWorkers();
 }
 
@@ -58,7 +59,6 @@ function quitServer() {
     // wss.server.close/terminate();
     // server.close();
 }
-
 
 // Send unique ID to the session upon connecting, it will be used to
 // name the created json storage file from the client side for later
@@ -159,7 +159,9 @@ function sendLayoutToClient(storageID, socket) {
 // contents of that very shelf
 function sendShelfToClient(storageID, shelfX, shelfY, socket) {
     let storage = activeStorages.get(storageID);
-    if (storage) {
+    if (storage && (shelfX >= 0 || shelfX <= storage.width) &&
+	(shelfY >= 0 || shelfY <= storage.height))
+    {
 	let shelf = storage.shelves.find((elem) => {
 	    return elem.x === shelfX && elem.y == shelfY;
 	});
@@ -186,96 +188,19 @@ function readInMockArticles() {
     });
 }
 
-// newly generated order consistens of up to five randomly chosen
-// articles from all available shelves within the provided storage,
-// but will not contain any articles which are present in the csv but
-// not in the current storage. 'genValid' is used for filling up the
-// initial order cache, which is used to fake access patterns to get a
-// nice looking heatmap, without increasing the inital order count, so
-// a new storage will always begin with order number one.
-function generateOrder(storage, genValidID = true) {
-    let order = {
-	id: (genValidID ? ++storage.orderCounter : -1),
-	articles: []
-    };
-    let numItems = randInt(1,5);
-    for (let i = 0; i < numItems; i++) {
-	let shelf = storage.shelves[randInt(0, storage.shelves.length - 1)];
-	let article = shelf.sub[randInt(0, shelf.sub.length - 1)].article;
-	order.articles.push(article);
-    }
-    return order;
-}
-
-// repeatable orders with invalid IDs for visible access pattern,
-// otherwise you would get no clear heatmap pattern in a
-// pseudoranom scenario
-function generateOrderCache(storage, cacheSize = 5) {
-    for (let i = 0; i < cacheSize; i++) {
-	storage.orderCache.push(generateOrder(storage, false));
-    }
-}
-
-// endless generation of fake orders from imaginary customers. Some
-// will not be generated anew but reused from the cache to fight
-// pseudo-random access distribution.
-function generateOrders() {
-    let f = () => {
-	activeStorages.forEach((storage) => {
-	    if (storage.orders.length < 8) {
-		if (randBool(25)) { // 25% chance to recycle cached order
-		    let order = Object.assign(
-			{}, storage.orderCache[randInt(0, storage.orderCache.length - 1)]
-		    );
-		    order.id = ++storage.orderCounter;
-		    addOrderToQueue(storage, order);
-		} else {
-		    addOrderToQueue(storage, generateOrder(storage));
-		}
-	    }
-	});
-	const minDelay = 1000;
-	const maxDelay = 5000;
-	const randDelay = randInt(minDelay, maxDelay);
-	setTimeout(f, randDelay);
-    };
-    f();
-}
-
-// once a new order was generated, add it to the storage's internal
-// queue and notify all client which are currenly viewing this storage
-// so they can update their order queue list besides the canvas.
-function addOrderToQueue(storage, order) {
-    if (!order) {
-	console.log("No order specified, not adding.");
-	return;
-    }
-    storage.orders.push(order);
-    notifyObservingClients(storage);
-}
-
-// simulated worker handling an order.
-function takeOrderFromQueue(storage) {
-    if (storage.orders.length === 0) {
-	console.log('No orders left in queue. Come again later.');
-	return null;
-    }
-    let order = storage.orders.shift();
-    return order;
-}
-
 // simulate and endless stream of workers that are handling all the
 // queued up orders. Again, all watching clients will be notifed so
 // that they can update their order list next to the canvas.
 function dispatchWorkers() {
-    const moveSpeedInTilesPerSeconds = 4;
+    orders.generateOrders(activeStorages, notifyObservingClients);
 
+    const moveSpeedInTilesPerSec = 4;
     let f = () => {
 	activeStorages.forEach((storage) => {
-	    if (storage.orders.length > 0) {
-		let order = takeOrderFromQueue(storage);
+	    let order = orders.takeOrderFromQueue(storage);
+	    if (order) {
 		order.path = pathfinding.generateWorkerPath(storage, order);
-		order.speed = moveSpeedInTilesPerSeconds;
+		order.speed = moveSpeedInTilesPerSec;
 		notifyObservingClients(storage, order);
 	    }
 	});
@@ -296,16 +221,6 @@ function notifyObservingClients(storage, currentOrder = null) {
     }
 }
 
-// random ranged integer, both inclusive
-function randInt(from, to) {
-    return Math.floor(Math.random() * (to - from + 1) + from);
-}
-
-// weighted random bool, used for order cache reuse
-function randBool(percent = 50) {
-    return Math.random() * 100 < percent;
-}
-
 // fill the newly created storage's shelves with random articles on
 // the server-side due to file reading issues in the frontend.
 // Currently every shelf has four subshelves (arbitrarily hardcoded).
@@ -317,10 +232,10 @@ function fillShelvesRandomly(shelves) {
 	    let acopy = Object.assign({
 		shelfX: shelf.x,
 		shelfY: shelf.y
-	    }, articles[randInt(0, articles.length - 1)]);
+	    }, articles[util.randInt(0, articles.length - 1)]);
 	    let subshelf = {
 		article: acopy,
-		count: randInt(1, 100)
+		count: util.randInt(1, 100)
 	    };
 	    shelf.sub[i] = subshelf;
 	}
@@ -366,7 +281,7 @@ function loadStorageFromJSONFile(sessionID) {
 	storage.orderCounter = 0;
 	storage.orders = [];
 	storage.orderCache = [];
-	generateOrderCache(storage);
+	orders.generateOrderCache(storage);
 	activeStorages.set(storage._id, storage);
 	return storage;
     } catch (err) {
