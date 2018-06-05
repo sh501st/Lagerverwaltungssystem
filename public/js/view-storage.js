@@ -363,13 +363,14 @@ function spawnWorker(order) {
     let moveAnimations = [];
     path.forEach((subpath) => {
 	let moving = new Konva.Animation((frame) => {
-	    const ddist = speed * tileSize * frame.timeDiff / 1000;
 	    if (subpath.length < 2) {
+		// end of subpath reached, either finish up subpath
+		// animations and delete workers since we're done, or
+		// flash up associated shelf nearby when it's only a
+		// temp stop.
 		if (moveAnimations.length === 0) {
 		    worker.destroy();
 		} else if (moveAnimations.length === 1) {
-		    worker.x(worker.x() - ddist);
-		    worker.y(worker.y() - ddist);
 		    moveAnimations.shift().start();
 		} else {
 		    flashShelf(order.articles.find((article) => {
@@ -380,28 +381,34 @@ function spawnWorker(order) {
 			return (wx == ax && (wy == ay+1 || wy == ay-1))
 			    || ((wx == ax+1 || wx == ax-1) && wy == ay);
 		    }));
-		    worker.x(worker.x() - ddist);
-		    worker.y(worker.y() - ddist);
 		    setTimeout(() => moveAnimations.shift().start(), 1000);
 		}
 		moving.stop();
-		delete moving; // TODO: is konva.animation being cleaned up here or still lingering around?
-	    }
-	    const tx = subpath[0] * tileSize;
-	    const ty = subpath[1] * tileSize;
-	    if (Math.abs(worker.x() - tx) <= ddist) {
-		worker.x(tx);
+		// TODO: is konva.animation being cleaned up here or still lingering around?
+		delete moving;
 	    } else {
-		worker.x(worker.x() > tx ? worker.x() - ddist : worker.x() + ddist);
-	    }
-	    if (Math.abs(worker.y() - ty) <= ddist) {
-		worker.y(ty);
-	    } else {
-		worker.y(worker.y() > ty ? worker.y() - ddist : worker.y() + ddist);
-	    }
-	    if (worker.x() === tx && worker.y() === ty) {
-		subpath.shift();
-		subpath.shift();
+		// fps based movements, move worker towards target in
+		// delta steps, if distance is smaller than the delta
+		// frame movement required, teleport right on target
+		// to avoid jitter.
+		const tx = subpath[0] * tileSize;
+		const ty = subpath[1] * tileSize;
+		const ddist = speed * tileSize * frame.timeDiff / 1000;
+		if (Math.abs(worker.x() - tx) <= ddist) {
+		    worker.x(tx);
+		} else {
+		    worker.x(worker.x() > tx ? worker.x() - ddist : worker.x() + ddist);
+		}
+		if (Math.abs(worker.y() - ty) <= ddist) {
+		    worker.y(ty);
+		} else {
+		    worker.y(worker.y() > ty ? worker.y() - ddist : worker.y() + ddist);
+		}
+		// once target is reached, get the next target coords
+		if (worker.x() === tx && worker.y() === ty) {
+		    subpath.shift();
+		    subpath.shift();
+		}
 	    }
 	}, layer);
 	moveAnimations.push(moving);
