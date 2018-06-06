@@ -232,27 +232,6 @@ function createEntrances() {
     });
 }
 
-// temporarily highlight a shelf that was accessed by (for now)
-// imaginary worker
-function flashShelf(article) {
-    let rect;
-    layer.find('Rect').each((r) => {
-	if (r.x() === article.shelfX * tileSize &&
-	    r.y() === article.shelfY * tileSize)
-	{
-	    // TODO: elegant way to short-circuit this? find('Rect')
-	    // returns fake array.
-	    rect = r;
-	}
-    });
-
-    const durInSec = 0.5;
-    rect.to({ duration: durInSec, fill: Color.ACCESS });
-    setTimeout(() => {
-	rect.to({ duration: durInSec, fill: Color.DEFAULT });
-    }, durInSec * 1000);
-}
-
 // update the list beside the storage area whenever new updates from
 // the server come in. TODO: should really be html+css instead of this
 // inelegant horror show.
@@ -343,6 +322,34 @@ function handleServerMessage(msg) {
     }
 }
 
+// since we now support the heatmap, avoid flashing shelves and
+// instead of an actual article representation being moved from the
+// shelf towards the worker, simulating an item retrieval.
+function visualizeArticleRetrieval(fromX, fromY, toX, toY) {
+    const boxSize = tileSize / 2;
+    let itemBox = new Konva.Rect({
+	x: fromX * tileSize + boxSize / 2,
+	y: fromY * tileSize + boxSize / 2,
+	width: boxSize,
+	height: boxSize,
+	fill: Color.HIGHLIGHT,
+	opacity: 0
+    });
+    layer.add(itemBox);
+
+    const timeStepInMs = 500;
+    itemBox.to({ // fade in
+	duration: timeStepInMs / 1000,
+	opacity: 1
+    });
+    setTimeout(() => itemBox.to({ // move
+	duration: timeStepInMs / 1000,
+	x: toX * tileSize + boxSize / 2,
+	y: toY * tileSize + boxSize / 2
+    }), timeStepInMs);
+    setTimeout(() => itemBox.destroy(), timeStepInMs * 2);
+}
+
 // spawns a imaginary worker and moves him along a server generated
 // path. expected path form with subpaths: [[x1, y1, ..., xn, xy],
 // [...]] speed is the rate at which the worker moves per second, e.g.
@@ -366,21 +373,24 @@ function spawnWorker(order) {
 	    if (subpath.length < 2) {
 		// end of subpath reached, either finish up subpath
 		// animations and delete workers since we're done, or
-		// flash up associated shelf nearby when it's only a
-		// temp stop.
+		// animate item retrieval from associated shelf nearby
+		// when it's only a temp stop.
 		if (moveAnimations.length === 0) {
 		    worker.destroy();
 		} else if (moveAnimations.length === 1) {
 		    moveAnimations.shift().start();
 		} else {
-		    flashShelf(order.articles.find((article) => {
-			const wx = worker.x() / tileSize;
-			const wy = worker.y() / tileSize;
+		    const wx = worker.x() / tileSize;
+		    const wy = worker.y() / tileSize;
+		    const article = order.articles.find((article) => {
 			const ax = article.shelfX;
 			const ay = article.shelfY;
 			return (wx == ax && (wy == ay+1 || wy == ay-1))
 			    || ((wx == ax+1 || wx == ax-1) && wy == ay);
-		    }));
+		    });
+		    if (article) {
+			visualizeArticleRetrieval(article.shelfX, article.shelfY, wx, wy);
+		    }
 		    setTimeout(() => moveAnimations.shift().start(), 1000);
 		}
 		moving.stop();
