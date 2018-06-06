@@ -153,11 +153,13 @@ function createShelves() {
 	});
 	rect.accessCounter = 0;
 	rect.on('mouseenter', (e) => {
+	    e.target.prevColor = e.target.fill();
 	    e.target.fill(Color.HIGHLIGHT);
 	    layer.batchDraw();
 	});
 	rect.on('mouseleave', (e) => {
-	    e.target.fill(Color.DEFAULT);
+	    const col = e.target.prevColor;
+	    e.target.fill(col ? col : Color.DEFAULT);
 	    layer.batchDraw();
 	});
 	rect.on('click', (e) => {
