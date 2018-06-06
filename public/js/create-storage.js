@@ -15,11 +15,9 @@ const Color = Object.freeze({
     BORDER: '#606060'
 });
 
-const canvasWidth = document.querySelector('#mainContainer').offsetWidth;
-const canvasHeight = document.querySelector('#mainContainer').offsetHeight;
 const tileSize = 32;
-const cols = Math.floor(canvasWidth / tileSize);
-const rows = Math.floor(canvasHeight / tileSize);
+const cols = 20;
+const rows = 15;
 const numSubShelves = 4;
 
 let mode = Mode.NONE;
@@ -27,22 +25,39 @@ let stage, layer;
 let socket, sessionID;
 
 function main() {
+    setupStageCanvas();
+    clearSessionStorage();
+    connectToServer();
+}
+
+// initial the canvas and mouse interactable tiles. Canvas scales to
+// container width and height upon 'resize' window event.
+function setupStageCanvas() {
+    const canvasContainer = document.querySelector('#mainContainer');
     stage = new Konva.Stage({
 	container: 'mainContainer',
-	width: canvasWidth,
-	height: canvasHeight
+	width: canvasContainer.offsetWidth,
+	height: canvasContainer.offsetHeight,
     });
+    scaleStageToContainer(canvasContainer);
+    window.addEventListener('resize', () => scaleStageToContainer(canvasContainer));
     layer = new Konva.Layer();
-
     for (let row = 0; row < rows; row++) {
 	for (let col = 0; col < cols; col++) {
 	    createTile(col, row);
 	}
     }
     stage.add(layer);
+}
 
-    clearSessionStorage();
-    connectToServer();
+function scaleStageToContainer(container) {
+    stage.scale({
+	x: container.offsetWidth / (tileSize * cols),
+	y: container.offsetHeight / (tileSize * rows)
+    });
+    stage.width(container.offsetWidth);
+    stage.height(container.offsetHeight);
+    stage.batchDraw();
 }
 
 // currently we are only clearing the session storage, which holds the
