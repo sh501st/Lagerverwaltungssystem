@@ -91,6 +91,7 @@ body {
     width: 18vw;
     height: 3vw;
     background-color: azure;
+	color: black;
 }
 
 .tooltip {
