@@ -10,6 +10,7 @@ const Color = Object.freeze({
 let storage, cols, rows;
 let stage, layer, greyOverlayLayer, popupLayer, statusLayer;
 let socket, sessionID;
+let heatmapMaxAccessCounter;
 
 const canvasWidth = document.querySelector('#mainContainer').offsetWidth;
 const canvasHeight = document.querySelector('#mainContainer').offsetHeight;
@@ -31,6 +32,7 @@ function storageReceivedFromServer() {
     }
     cols = storage.width;
     rows = storage.height;
+    heatmapMaxAccessCounter = 0;
     recreateStorageLayout();
 }
 
@@ -149,6 +151,7 @@ function createShelves() {
 	    stroke: Color.BORDER,
 	    strokeWidth: 2
 	});
+	rect.accessCounter = 0;
 	rect.on('mouseenter', (e) => {
 	    e.target.fill(Color.HIGHLIGHT);
 	    layer.batchDraw();
@@ -350,6 +353,41 @@ function visualizeArticleRetrieval(fromX, fromY, toX, toY) {
     setTimeout(() => itemBox.destroy(), timeStepInMs * 2);
 }
 
+// for now heatmap get's updated on each shelf access, could be
+// switched to timebased approach, e.g. once every two seconds, if
+// performance suffers on fifty+ workers accessing multiple times per
+// second concurrently. Slowly shifting fill from default to specified
+// access color, where highest access counter per shelf influences the
+// shift factor.
+function updateHeatmap(shelfX, shelfY) {
+    const defCol = Konva.Util.getRGB(Color.DEFAULT);
+    const accCol = Konva.Util.getRGB(Color.ACCESS);
+    const redDiff = Math.abs(defCol.r - accCol.r);
+    const greenDiff = Math.abs(defCol.g - accCol.g);
+    const blueDiff = Math.abs(defCol.b - accCol.b);
+    layer.find('Rect').each((rect) => {
+	if (rect.fill() === Color.HIGHLIGHT) {
+	    return; // item box instead of shelf
+	}
+	if (rect.x() === shelfX * tileSize && rect.y() === shelfY * tileSize) {
+	    rect.accessCounter++;
+	    if (rect.accessCounter > heatmapMaxAccessCounter) {
+		heatmapMaxAccessCounter++;
+	    }
+	}
+	if (heatmapMaxAccessCounter !== 0) {
+	    const colShiftFactor = rect.accessCounter / heatmapMaxAccessCounter;
+	    const fillRed = defCol.r +
+		  (defCol.r > accCol.r ? -redDiff : redDiff) * colShiftFactor;
+	    const fillGreen = defCol.g +
+		  (defCol.g > accCol.g ? -greenDiff : greenDiff) * colShiftFactor;
+	    const fillBlue = defCol.b +
+		  (defCol.b > accCol.b ? -blueDiff : blueDiff) * colShiftFactor;
+	    rect.fill(`rgb(${fillRed},${fillGreen},${fillBlue})`);
+	}
+    });
+}
+
 // spawns a imaginary worker and moves him along a server generated
 // path. expected path form with subpaths: [[x1, y1, ..., xn, xy],
 // [...]] speed is the rate at which the worker moves per second, e.g.
@@ -390,6 +428,7 @@ function spawnWorker(order) {
 		    });
 		    if (article) {
 			visualizeArticleRetrieval(article.shelfX, article.shelfY, wx, wy);
+			updateHeatmap(article.shelfX, article.shelfY);
 		    }
 		    setTimeout(() => moveAnimations.shift().start(), 1000);
 		}
