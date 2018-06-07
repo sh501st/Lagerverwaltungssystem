@@ -7,3 +7,6 @@ exports.randInt = (from, to) => {
 exports.randBool = (percent = 50) => {
     return Math.random() * 100 < percent;
 }
+
+// current unix time in seconds
+exports.unix = Math.round((new Date).getTime()/1000);

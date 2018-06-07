@@ -6,17 +6,11 @@ const app = express();
 const http = require('http');
 const WebSocket = require('ws');
 const fs = require('fs');
-const mysql = require('mysql');
-const db = mysql.createConnection({
-  host     : 'localhost',
-  user     : 'programmierpraktikum',
-  password : 'AaSfayZPU8Pvleff',
-  database : 'programmierpraktikum'
-});
 
 const util = require('./include/util');
 const orders = require('./include/orders');
 const pathfinding = require('./include/pathfinding');
+const db = require('./include/db');
 
 // TODO: close/delete inactive storage upon client disconnect and no
 // other client uses it
@@ -199,9 +193,10 @@ function dispatchWorkers() {
 	activeStorages.forEach((storage) => {
 	    let order = orders.takeOrderFromQueue(storage);
 	    if (order) {
-		order.path = pathfinding.generateWorkerPath(storage, order);
-		order.speed = moveSpeedInTilesPerSec;
-		notifyObservingClients(storage, order);
+            order.path = pathfinding.generateWorkerPath(storage, order);
+            order.speed = moveSpeedInTilesPerSec;
+            notifyObservingClients(storage, order);
+            db.updateLog(order);
 	    }
 	});
 	setTimeout(f, 3500);
