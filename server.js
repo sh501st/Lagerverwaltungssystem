@@ -193,10 +193,10 @@ function dispatchWorkers() {
 	activeStorages.forEach((storage) => {
 	    let order = orders.takeOrderFromQueue(storage);
 	    if (order) {
-            order.path = pathfinding.generateWorkerPath(storage, order);
-            order.speed = moveSpeedInTilesPerSec;
-            notifyObservingClients(storage, order);
-            db.updateLog(order);
+		order.path = pathfinding.generateWorkerPath(storage, order);
+		order.speed = moveSpeedInTilesPerSec;
+		notifyObservingClients(storage, order);
+		db.updateLog(order);
 	    }
 	});
 	setTimeout(f, 3500);
