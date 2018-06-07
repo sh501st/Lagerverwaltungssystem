@@ -12,8 +12,6 @@ let stage, layer, greyOverlayLayer, popupLayer, statusLayer;
 let socket, sessionID;
 let heatmapMaxAccessCounter;
 
-const canvasWidth = document.querySelector('#mainContainer').offsetWidth;
-const canvasHeight = document.querySelector('#mainContainer').offsetHeight;
 const tileSize = 32;
 
 function main() {
@@ -39,13 +37,7 @@ function storageReceivedFromServer() {
 // initialize the canvas and setup all the graphical fluff (tiles,
 // borders, layers, popup, etc)
 function recreateStorageLayout() {
-    stage = new Konva.Stage({
-	container: 'mainContainer',
-	width: canvasWidth,
-	height: canvasHeight,
-	draggable: true
-    });
-    window.addEventListener('wheel', handleMouseScroll);
+    setupStageCanvas();
 
     layer = new Konva.Layer();
     createStorageBorder();
@@ -108,17 +100,68 @@ function recreateStorageLayout() {
     stage.add(statusLayer);
 }
 
+// rescale whenever window dimensions and thus canvas container
+// change. Allow dragging and also zooming the canvas with mouse wheel
+// scroll.
+function setupStageCanvas() {
+    const canvasContainer = document.querySelector('#mainContainer');
+    stage = new Konva.Stage({
+	container: 'mainContainer',
+	width: canvasContainer.offsetWidth,
+	height: canvasContainer.offsetHeight,
+	draggable: true
+    });
+    window.addEventListener('wheel', (evt) => {
+	evt.preventDefault(); // disable browser handling the scroll
+	handleMouseScroll(canvasContainer, evt.deltaY);
+    });
+    window.addEventListener('resize', (evt) => {
+	scaleStageToContainer(canvasContainer);
+    });
+    scaleStageToContainer(canvasContainer);
+}
+
+function scaleStageToContainer(container) {
+    const fitScale = getMinStageScale(container);
+    stage.scale({ x: fitScale, y: fitScale });
+    stage.width(container.offsetWidth);
+    stage.height(container.offsetHeight);
+    stage.batchDraw();
+}
+
+// disallow zooming out beyond storage bounds
+function getMinStageScale(container) {
+    if (container.offsetWidth > container.offsetHeight) {
+	return container.offsetWidth / (tileSize * cols);
+    } else {
+	return container.offsetHeight / (tileSize * rows);
+    }
+}
+
+// limit zooming in to a reasonable default
+function getMaxStageScale(container) {
+    const maxFactor = 3;
+    return getMinStageScale(container) * maxFactor;
+}
+
+// restrict val to specified min and max bounds
+function clamp(val, min, max) {
+    return val < min ? min : val > max ? max : val;
+}
+
 // zoom in at and out of mouse position instead of left upper corner
 // (default behaviour)
-function handleMouseScroll(e) {
-    e.preventDefault();
+function handleMouseScroll(container, scrollDelta) {
     const fact = 1.1;
-    const origScale = stage.scaleX();
-    const newScale = e.deltaY < 0 ? origScale * fact : origScale / fact;
+    const maxScale = getMaxStageScale(container);
+    const minScale = getMinStageScale(container);
+    const prevScale = stage.scaleX();
+    const newScale = clamp(prevScale * (scrollDelta < 0 ? fact : 1/fact),
+			   minScale, maxScale);
     const mx = stage.getPointerPosition().x;
     const my = stage.getPointerPosition().y;
-    const nx = (mx - stage.x()) / origScale;
-    const ny = (my - stage.y()) / origScale;
+    const nx = (mx - stage.x()) / prevScale;
+    const ny = (my - stage.y()) / prevScale;
     stage.scale({ x: newScale, y: newScale });
     stage.position({
 	x: mx - nx * newScale,
@@ -153,11 +196,13 @@ function createShelves() {
 	});
 	rect.accessCounter = 0;
 	rect.on('mouseenter', (e) => {
+	    e.target.prevColor = e.target.fill();
 	    e.target.fill(Color.HIGHLIGHT);
 	    layer.batchDraw();
 	});
 	rect.on('mouseleave', (e) => {
-	    e.target.fill(Color.DEFAULT);
+	    const col = e.target.prevColor;
+	    e.target.fill(col ? col : Color.DEFAULT);
 	    layer.batchDraw();
 	});
 	rect.on('click', (e) => {
