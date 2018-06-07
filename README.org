@@ -21,5 +21,16 @@ matter.)
   change)
 - Open your favorite browser and type =localhost:8080= into the
   address bar to connect a new client to the server
-  
-Server handles multiple clients (browser tabs) and storages in parallel. Clients that request the same storage layout will both the same orders and shelf accesses. 
+
+Server handles multiple clients (browser tabs) and storages in parallel. Clients that request the same storage layout will both the same orders and shelf accesses.
+
+** MYSQL raw
+
+install =mysql= or =mariadb=
+start mysql: =systemctl start mysql.service=
+login as def root user: =mysql -u root= (no password required, just press enter)
+create new database: =create database programmierpraktikum;=
+switch to db: =use programmierpraktikum;=
+create new user: =create user 'programmierpraktikum'@'localhost' identified by 'AaSfayZPU8Pvleff';=
+give persmission to user: =grant all privileges on programmierpraktikum.* to 'programmierpraktikum'@'localhost' with grant option;=
+load provided sql file (while in mysql git root dir): =source datenbankmodell/programmierpraktikum.sql=
