@@ -23,7 +23,7 @@ Since names need to match exactly to work in combination with nodeJS, it's recom
 - switch to it: =USE programmierpraktikum;=
 - create new user with required password: =CREATE USER 'programmierpraktikum'@'localhost' IDENTIFIED BY 'AaSfayZPU8Pvleff';=
 - give required permissions to user: =GRANT ALL PRIVILEGES ON programmierpraktikum.* TO 'programmierpraktikum'@'localhost' WITH GRANT OPTION;=
-- include and execute predefined sql project configuration (inside of mariadb): =SOURCE datenbankmodell/programmierpraktikum.sql=
+- include and execute predefined sql project configuration (inside of mariadb): =SOURCE datenbankmodell/programmierpraktikum.sql;=
 
 Unfortunately, some of these steps need to be repeated whenever the predefined sql file changes, which shouldn't happen that often.
 
