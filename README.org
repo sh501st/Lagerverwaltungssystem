@@ -5,32 +5,36 @@ TUCProgPrak18
 ** Installation
 
 - clone or unzip this project from github
-- install =node= via distro's package manager or manually on windows
-- install =npm= via distro's package manager or manually on windows
+- install =node=, =npm= and =mariadb= (or =mysql=) via distro's package manager or manually on windows
 - run in project's root folder to download necessary dependencies: =npm install=
 
 (If package dependencies change throughout the coming weeks it might
 me necessary to rerun =npm install=, but I'll keep you posted on that
 matter.)
 
+*** Database setup (linux command line):
+
+Since names need to match exactly to work in combination with nodeJS, it's recommended to copy-paste steps below when it makes sense:
+
+- goto git project's root directory (where you installed the npm deps)
+- start mariadb: =systemctl start mysql.service=
+- log into db as root user (no password required, just press enter): =mysql -u root=
+- create new database: =CREATE DATABASE programmierpraktikum;=
+- switch to it: =USE programmierpraktikum;=
+- create new user with required password: =CREATE USER 'programmierpraktikum'@'localhost' IDENTIFIED BY 'AaSfayZPU8Pvleff';=
+- give required permissions to user: =GRANT ALL PRIVILEGES ON programmierpraktikum.* TO 'programmierpraktikum'@'localhost' WITH GRANT OPTION;=
+- include and execute predefined sql project configuration (inside of mariadb): =SOURCE datenbankmodell/programmierpraktikum.sql=
+
+Unfortunately, some of these steps need to be repeated whenever the predefined sql file changes, which shouldn't happen that often.
+
+*** Database setup (graphical, GUI):
+
+TODO: specify procedure.
+
 ** Usage
 
-- Start the server on the command line: =node server.js= (or
-  =./server.sh= when it's a dev session to restart the server
-  automatically whenever any relevant files within the working dir
-  change)
-- Open your favorite browser and type =localhost:8080= into the
-  address bar to connect a new client to the server
+- Make sure the database is running in the background, if not, start it from your favourite GUI or the command line: =systemctl start mysql.service=
+- Start the server on the command line: =node server.js= (or =./server.sh= when it's a dev session to restart the server automatically whenever any relevant files within the working dir change)
+- Open your favorite browser and type =localhost:8080= into the address bar to connect a new client to the server
 
 Server handles multiple clients (browser tabs) and storages in parallel. Clients that request the same storage layout will both the same orders and shelf accesses.
-
-** MYSQL raw
-
-install =mysql= or =mariadb=
-start mysql: =systemctl start mysql.service=
-login as def root user: =mysql -u root= (no password required, just press enter)
-create new database: =create database programmierpraktikum;=
-switch to db: =use programmierpraktikum;=
-create new user: =create user 'programmierpraktikum'@'localhost' identified by 'AaSfayZPU8Pvleff';=
-give persmission to user: =grant all privileges on programmierpraktikum.* to 'programmierpraktikum'@'localhost' with grant option;=
-load provided sql file (while in mysql git root dir): =source datenbankmodell/programmierpraktikum.sql=
