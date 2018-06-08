@@ -522,7 +522,7 @@ function requestStorageLayoutFromServer(sessionID) {
 	console.log('Server connection not established, try refreshing the page');
 	return;
     }
-    sendMessage('reqlayout', { _id: sessionID });
+    sendMessage('reqlayout', { _id: sessionID, observeStorage: true });
 }
 
 // stringify because that's what the websockets expect, other options

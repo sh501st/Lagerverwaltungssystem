@@ -41,8 +41,9 @@ function setupStageCanvas() {
 	width: canvasContainer.offsetWidth,
 	height: canvasContainer.offsetHeight,
     });
-    scaleStageToContainer(canvasContainer);
     window.addEventListener('resize', () => scaleStageToContainer(canvasContainer));
+    scaleStageToContainer(canvasContainer);
+
     layer = new Konva.Layer();
     for (let row = 0; row < rows; row++) {
 	for (let col = 0; col < cols; col++) {

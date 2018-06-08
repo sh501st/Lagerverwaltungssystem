@@ -118,7 +118,8 @@ function handleClientMessage(socket, msg) {
 	createNewStorage(content);
 	break;
     case 'reqlayout':
-	sendLayoutToClient(content._id ? content._id : 0, socket);
+	sendLayoutToClient(content._id ? content._id : 0, socket,
+			   content.observeStorage);
 	break;
     case 'shelfinventory':
 	sendShelfToClient(content._id, content.x, content.y, socket);
@@ -130,22 +131,24 @@ function handleClientMessage(socket, msg) {
 
 // client sends storage ID and expects storage layout which is either
 // loaded from mem cache or json file on disk when not active
-function sendLayoutToClient(storageID, socket) {
+function sendLayoutToClient(storageID, socket, observeStorage = true) {
     let storage = activeStorages.get(storageID);
     if (!storage) {
-	storage = loadStorageFromJSONFile(storageID);
+	storage = loadStorageFromJSONFile(storageID, observeStorage);
     }
-    storageID = storage._id; // TODO: necessary? deep checking.
-    let observers = observingClients.get(storageID);
-    if (!observers) {
-	observingClients.set(storageID, [socket]);
-    } else {
-	observers.push(socket);
+    if (observeStorage) {
+	storageID = storage._id; // TODO: necessary? deep checking.
+	let observers = observingClients.get(storageID);
+	if (!observers) {
+	    observingClients.set(storageID, [socket]);
+	} else {
+	    observers.push(socket);
+	}
+	observingClients.forEach((clients, id) => {
+	    console.log('Clients observing storage \"' + id + '\":', clients.length);
+	});
+	console.log('Active storages:', activeStorages.size);
     }
-    observingClients.forEach((clients, id) => {
-	console.log('Clients observing storage \"' + id + '\":', clients.length);
-    });
-    console.log('Active storages:', activeStorages.size);
     sendMessage(socket, 'storage', storage);
 }
 
@@ -264,7 +267,7 @@ function createNewStorage(storage) {
 // will also happen when the client chooses the view-storage.html from
 // the index.html before building his/her own with
 // create-storage.html.
-function loadStorageFromJSONFile(sessionID) {
+function loadStorageFromJSONFile(sessionID, observeStorage = true) {
     if (!sessionID) { sessionID = 0; }
     const dir = 'data/storages/';
     const templateFile = dir + 'template.json';
@@ -273,11 +276,13 @@ function loadStorageFromJSONFile(sessionID) {
 
     try {
 	let storage = JSON.parse(fs.readFileSync(toLoad, 'utf8'));
-	storage.orderCounter = 0;
-	storage.orders = [];
-	storage.orderCache = [];
-	orders.generateOrderCache(storage);
-	activeStorages.set(storage._id, storage);
+	if (observeStorage) {
+	    storage.orderCounter = 0;
+	    storage.orders = [];
+	    storage.orderCache = [];
+	    orders.generateOrderCache(storage);
+	    activeStorages.set(storage._id, storage);
+	}
 	return storage;
     } catch (err) {
 	console.log("Couldn't read-in storage file with given sessionID:", err);
