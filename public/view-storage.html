@@ -4,13 +4,10 @@
 <head>
     <meta charset="utf-8" />
     <title>View storage</title>
-    <link rel="stylesheet" type="text/css" href="./css/storage.css" />
-
-    <script src="../js/view-storage.js"></script>
-    <script src="../js/konva.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="/css/storage.css" />
 </head>
 
-<body onload="main();">
+<body>
     <div id="menu">
         <div class="inside_menu" >
             <button class="button" style="background-color: darkred" onclick="location.href='index.html';">
@@ -38,7 +35,7 @@
 
         <div class="inside_menu">
             Workers:
-        <br><br><br><br><br><br><br><br><br><br><br><br><br>      
+        <br><br><br><br><br><br><br><br><br><br><br><br><br>
         </div>
 
         <div class="inside_menu" style="border-bottom-style: none">
@@ -47,8 +44,12 @@
              <span> Opimize </span></button></div>
     </div>
 
-    <div id="mainContainer" oncontextmenu="return false"></div>
-
+    <div id="mainContainer" oncontextmenu="return false;"></div>
+    <script>
+      window.addEventListener('DOMContentLoaded', () => main());
+    </script>
+    <script src="/js/konva.min.js"></script>
+    <script src="/js/view-storage.js"></script>
 </body>
 
 </html>

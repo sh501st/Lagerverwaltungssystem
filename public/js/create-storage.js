@@ -15,7 +15,9 @@ const Color = Object.freeze({
     BORDER: '#606060'
 });
 
-const tileSize = window.innerWidth*0.04;
+// keep at integer values, otherwise we have to audit the code for
+// possible floating rounding errors
+const tileSize = 32;
 const cols = 15;
 const rows = 10;
 const numSubShelves = 4;

@@ -4,14 +4,10 @@
 <head>
     <meta charset="utf-8" />
     <title>Create Storage</title>
-    <link rel="stylesheet" type="text/css" href="./css/storage.css" />
-
-    <script src="../js/create-storage.js"></script>
-    <script src="../js/konva.min.js"></script>
-
+    <link rel="stylesheet" type="text/css" href="/css/storage.css" />
 </head>
 
-<body onload="main();">
+<body>
 
     <div id="menu">
         <div class="inside_menu" style="height: 5vw">
@@ -51,8 +47,12 @@
 
     </div>
 
-    <div id="mainContainer" oncontextmenu="return false"></div>
-
+    <div id="mainContainer" oncontextmenu="return false;"></div>
+    <script>
+      window.addEventListener('DOMContentLoaded', () => main());
+    </script>
+    <script src="/js/konva.min.js"></script>
+    <script src="/js/create-storage.js"></script>
 </body>
 
 </html>

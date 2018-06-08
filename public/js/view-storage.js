@@ -12,7 +12,9 @@ let stage, layer, greyOverlayLayer, popupLayer, statusLayer;
 let socket, sessionID;
 let heatmapMaxAccessCounter;
 
-const tileSize = window.innerWidth*0.04;
+// keep at integer values, otherwise we have to audit the code for
+// possible floating rounding errors
+const tileSize = 32;
 
 function main() {
     sessionID = readFromSessionStorage('sessionID');
@@ -131,7 +133,7 @@ function scaleStageToContainer(container) {
 
 // disallow zooming out beyond storage bounds
 function getMinStageScale(container) {
-    if (container.offsetWidth > container.offsetHeight) {
+    if (container.offsetWidth < container.offsetHeight) {
 	return container.offsetWidth / (tileSize * cols);
     } else {
 	return container.offsetHeight / (tileSize * rows);
