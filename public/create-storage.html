@@ -1,58 +1,58 @@
 <!doctype html>
 <html lang="en">
-  <head>
+
+<head>
     <meta charset="utf-8" />
     <title>Create Storage</title>
-    <link rel="stylesheet" type="text/css" href="/css/storage.css" />
-  </head>
-  <body>
+    <link rel="stylesheet" type="text/css" href="./css/storage.css" />
+
+    <script src="../js/create-storage.js"></script>
+    <script src="../js/konva.min.js"></script>
+
+</head>
+
+<body onload="main();">
+
     <div id="menu">
-      <div class="inside_menu">
-        <button class="button" style="background-color: darkred" onclick="location.href='index.html';">
-          <span> Cancel </span>
-	</button>
-        <div class="tooltip">
-          <button class="button" style="background-color:deepskyblue">
-	    <span> Help </span>
-	  </button>
-          <span class="tooltiptext">Hold left click: add<br>Hold right click: remove<br>Middle click: add entrance</span>
-	</div>
-      </div>
+        <div class="inside_menu" style="height: 5vw">
+            <button class="button" style="background-color: darkred" onclick="location.href='index.html';">
+            <span> Cancel </span></button>
 
-      <div class="inside_menu">Load layout:
-        <form action="">
-          <select name="layout" class="input">
-            <option value="s1">s1</option>
-            <option value="s2">s2</option>
-            <option value="s3">s3</option>
-            <option value="s4">s4</option>
-          </select>
-        </form>
-      </div>
+            <div class="tooltip">
+                <button class="button" style="background-color:deepskyblue"><span> Help </span></button>
+                <span class="tooltiptext">Hold left click: add<br>Hold right click: remove<br>Middle click: add entrance<br>Red shelves means unreachable, please reset if you see them!</span></div>
+        </div>
 
-      <div class="inside_menu">Storege name:
-        <form action=""><input type="text" name="name" class="input"></form>
-      </div><br>
 
-      <div class="inside_menu">
-        Width:<br><br><br><br>
-        Height:<br><br><br><br>
-        Worker count:<br><br><br>
-      </div>
 
-      <div class="inside_menu" style="border-bottom-style: none">
-	<button class="button" style="width: 18vw; background-color: forestgreen;" onclick="sendJSONToServer(); location.href='view-storage.html';">
-          <span> Save and view </span>
-	</button>
-      </div>
+        <div class="inside_menu" style="height: 5vw">Load layout:
+            <form action="">
+                <select>
+                <option>s1</option>
+                <option>s2</option>
+                <option>s3</option>
+                </select>
+            </form>
+        </div>
+
+
+        <div class="inside_menu" style="height: 5vw">Storege name:
+            <form action=""><input type="text" name="name" class="input"></form>
+        </div><br>
+
+
+        <div class="inside_menu" style="height: 8vw">
+            Width:<br><br> Height:
+            <br><br> Worker count:<br><br>
+        </div>
+
+        <div class="inside_menu" style="height: 5vw; border-bottom-style: none"><button class="button" style="width: 18vw; background-color: forestgreen;" onclick="sendJSONToServer();">
+            <span> Save and view </span></button></div>
+
     </div>
 
     <div id="mainContainer" oncontextmenu="return false"></div>
 
-    <script>
-      window.addEventListener('DOMContentLoaded', () => main());
-    </script>
-    <script src="/js/konva.min.js"></script>
-    <script src="/js/create-storage.js"></script>
-  </body>
+</body>
+
 </html>

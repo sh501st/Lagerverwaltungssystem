@@ -4,17 +4,57 @@
 <head>
     <meta charset="utf-8" />
     <title>Plan storage</title>
-    <link rel="stylesheet" type="text/css" href="/css/storage.css"/>
+    <link rel="stylesheet" type="text/css" href="./css/storage.css" />
+
+    <script src="../js/view-storage.js"></script>
+    <script src="../js/konva.min.js"></script>
 </head>
 
-<body>
-  <div id="mainContainer" oncontextmenu="return false;"></div>
+<body onload="main();">
 
-  <script>
-    window.addEventListener('DOMContentLoaded', () => main());
-  </script>
-  <script src="/js/konva.min.js"></script>
-  <script src="/js/plan-storage.js"></script>
+    <div id="menu">
+        <div class="inside_menu" style="height: 5vw">
+            <button class="button" style="background-color: darkred" onclick="location.href='index.html';">
+            <span> Cancel </span></button>
+
+            <div class="tooltip">
+                <button class="button" style="background-color:deepskyblue"><span> Help </span></button>
+                <span class="tooltiptext">Hold left click: add<br>Hold right click: remove<br>Middle click: add entrance</span></div>
+        </div>
+
+
+
+        <div class="inside_menu" style="height: 8vw">
+            Unoptim.storage:
+            <form action="">
+                <select style="margin-bottom: 0.5vw">
+                <option>s1</option>
+                <option>s2</option>
+                <option>s3</option>
+                </select>
+            </form>
+            Size:<br>
+            Access range:<br>
+        </div>
+
+
+        <div class="inside_menu" style="height: 10vw">
+        Live sort:<br>
+        Assign. wrks: 3/7<br>
+        </div><br>
+
+
+        <div class="inside_menu" style="height: 10vw">
+        Closed storage 
+        </div>
+
+        <div class="inside_menu" style="height: 5vw; border-bottom-style: none"><button class="button" style="width: 18vw; background-color: forestgreen;">
+            <span> Save and view </span></button></div>
+
+    </div>
+
+    <div id="mainContainer" oncontextmenu="return false"></div>
+
 </body>
 
 </html>
