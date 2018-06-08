@@ -162,8 +162,14 @@ function sendLayoutToClient(storageID, socket, observeStorage = true) {
 // between the current state and what it could look once subshelves
 // were reordered.
 function sendOptimizedStoragePreviewToClient(storageID, socket, fromTime, toTime) {
-    console.log('to implement');
-    // send 'preview'
+    const observeStorage = false;
+    const storage = loadStorageFromJSONFile(storageID, observeStorage);
+    if (storage) {
+	const optimizedStorage = optimize.sortSubShelvesByAccess(storage, fromTime, toTime);
+	if (optimizedStorage) {
+	    sendMessage(socket, 'preview', optimizedStorage);
+	}
+    }
 }
 
 // client sends storage ID and click coordiantes and expects the

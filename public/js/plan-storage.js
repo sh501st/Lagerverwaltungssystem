@@ -6,10 +6,9 @@ const Color = Object.freeze({
     OPTIMIZED: '#30ee60'
 });
 
-let storage, cols, rows;
-let stage, layer;
+let storage, optimizedStorage, cols, rows;
+let stage, defaultLayer, optimizedLayer;
 let socket, sessionID;
-let heatmapMaxAccessCounter;
 
 const tileSize = 32;
 
@@ -22,24 +21,29 @@ function main() {
 
 // called by message handler as soon as the requested server response
 // is available
-function storageReceivedFromServer() {
-    if (!storage || !storage.width || !storage.height) {
-	console.log("Requested storage layout is not valid:", storage);
+function storageReceivedFromServer(recvStorage) {
+    if (!recvStorage || !recvStorage.width || !recvStorage.height) {
+	console.log("Requested storage layout is not valid:", recvStorage);
 	return;
     }
+    storage = recvStorage;
     cols = storage.width;
     rows = storage.height;
-    heatmapMaxAccessCounter = 0;
-    recreateStorageLayout();
+    defaultLayer = new Konva.Layer({ opacity: 1 });
+    recreateStorageLayout(storage, defaultLayer);
+    console.log('storage', defaultLayer);
     requestOptimizedStorageSetupPreview();
 }
 
-// initialize the canvas and setup all the graphical fluff
-function recreateStorageLayout() {
-    setupStageCanvas();
-    layer = new Konva.Layer();
-    createShelves();
-    createEntrances();
+// initialize the canvas and setup all the graphical fluff; will also
+// be called once we receive an optimized storage preview from the
+// server to display it on top of the default storage.
+function recreateStorageLayout(storage, layer) {
+    if (!stage) {
+	setupStageCanvas();
+    }
+    createShelves(storage, layer);
+    createEntrances(storage, layer);
     stage.add(layer);
 }
 
@@ -80,26 +84,27 @@ function scaleStageToContainer(container) {
     stage.batchDraw();
 }
 
-// setup tiles
-function createShelves() {
+// setup tiles, absolute access color for the time being till db access
+// log is up and running
+function createShelves(storage, layer) {
+    const fillColor = storage === optimizedStorage ? Color.OPTIMIZED : Color.ACCESS;
     storage.shelves.forEach(shelf => {
 	let rect = new Konva.Rect({
 	    x: shelf.x * tileSize,
 	    y: shelf.y * tileSize,
 	    width: tileSize,
 	    height: tileSize,
-	    fill: Color.DEFAULT,
+	    fill: fillColor,
 	    stroke: Color.BORDER,
 	    strokeWidth: 2
 	});
-	rect.accessCounter = 0;
 	layer.add(rect);
     });
 }
 
 // fancy looking arrows instead of simple rectangles for entrance
 // representation.
-function createEntrances() {
+function createEntrances(storage, layer) {
     storage.entrances.forEach(ent => {
 	let x, y, points;
 	if (ent.x === 0 || ent.x === cols - 1) {
@@ -125,6 +130,28 @@ function createEntrances() {
 	});
 	layer.add(arrow);
     });
+}
+
+function optimizedPreviewReceived(storage) {
+    optimizedStorage = storage;
+    optimizedLayer = new Konva.Layer({ opacity: 0 });
+    recreateStorageLayout(optimizedStorage, optimizedLayer);
+    animatePreviewTransition();
+}
+
+// preliminary color flipping; once db access log supports storages
+// this show actual color shifts based on access counter
+function animatePreviewTransition() {
+    const animDelay = 5000;
+    let showPreview = true;
+    let f = () => {
+	optimizedLayer.opacity(showPreview ? 1 : 0);
+	defaultLayer.opacity(showPreview ? 0 : 1);
+	stage.batchDraw(); // TODO: fix transition flickering on opt overlay layer
+	showPreview = !showPreview;
+	setTimeout(f, animDelay);
+    };
+    setTimeout(f, animDelay);
 }
 
 // TODO: close connection of tab refresh or close events socket events
@@ -183,54 +210,18 @@ function handleServerMessage(msg) {
     case 'id':
 	break;
     case 'storage':
-	storage = content;
-	storageReceivedFromServer();
+	storageReceivedFromServer(content);
 	break;
     case 'shelfinventory':
 	break;
     case 'orderupdate':
 	break;
     case 'preview':
-	console.log('to implement');
+	optimizedPreviewReceived(content);
 	break;
     default:
 	console.log('Unknown type provided in server message:', type);
     }
-}
-
-// for now heatmap get's updated on each shelf access, could be
-// switched to timebased approach, e.g. once every two seconds, if
-// performance suffers on fifty+ workers accessing multiple times per
-// second concurrently. Slowly shifting fill from default to specified
-// access color, where highest access counter per shelf influences the
-// shift factor.
-function updateHeatmap(shelfX, shelfY) {
-    const defCol = Konva.Util.getRGB(Color.DEFAULT);
-    const accCol = Konva.Util.getRGB(Color.ACCESS);
-    const redDiff = Math.abs(defCol.r - accCol.r);
-    const greenDiff = Math.abs(defCol.g - accCol.g);
-    const blueDiff = Math.abs(defCol.b - accCol.b);
-    layer.find('Rect').each((rect) => {
-	if (rect.fill() === Color.HIGHLIGHT) {
-	    return; // item box instead of shelf
-	}
-	if (rect.x() === shelfX * tileSize && rect.y() === shelfY * tileSize) {
-	    rect.accessCounter++;
-	    if (rect.accessCounter > heatmapMaxAccessCounter) {
-		heatmapMaxAccessCounter++;
-	    }
-	}
-	if (heatmapMaxAccessCounter !== 0) {
-	    const colShiftFactor = rect.accessCounter / heatmapMaxAccessCounter;
-	    const fillRed = defCol.r +
-		  (defCol.r > accCol.r ? -redDiff : redDiff) * colShiftFactor;
-	    const fillGreen = defCol.g +
-		  (defCol.g > accCol.g ? -greenDiff : greenDiff) * colShiftFactor;
-	    const fillBlue = defCol.b +
-		  (defCol.b > accCol.b ? -blueDiff : blueDiff) * colShiftFactor;
-	    rect.fill(`rgb(${fillRed},${fillGreen},${fillBlue})`);
-	}
-    });
 }
 
 function requestStorageLayoutFromServer(sessionID) {
