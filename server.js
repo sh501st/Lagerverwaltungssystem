@@ -7,10 +7,11 @@ const http = require('http');
 const WebSocket = require('ws');
 const fs = require('fs');
 
-const util = require('./include/util');
+const db = require('./include/db');
+const optimize = require('./include/optimize');
 const orders = require('./include/orders');
 const pathfinding = require('./include/pathfinding');
-const db = require('./include/db');
+const util = require('./include/util');
 
 // TODO: close/delete inactive storage upon client disconnect and no
 // other client uses it
@@ -121,6 +122,10 @@ function handleClientMessage(socket, msg) {
 	sendLayoutToClient(content._id ? content._id : 0, socket,
 			   content.observeStorage);
 	break;
+    case 'reqpreview':
+	sendOptimizedStoragePreviewToClient(
+	    content._id ? content._id : 0, socket, content.from, content.to);
+	break;
     case 'shelfinventory':
 	sendShelfToClient(content._id, content.x, content.y, socket);
 	break;
@@ -150,6 +155,15 @@ function sendLayoutToClient(storageID, socket, observeStorage = true) {
 	console.log('Active storages:', activeStorages.size);
     }
     sendMessage(socket, 'storage', storage);
+}
+
+// client sends storage ID and log access range and expects and
+// optimized storage setup preview to later animate the transition
+// between the current state and what it could look once subshelves
+// were reordered.
+function sendOptimizedStoragePreviewToClient(storageID, socket, fromTime, toTime) {
+    console.log('to implement');
+    // send 'preview'
 }
 
 // client sends storage ID and click coordiantes and expects the
