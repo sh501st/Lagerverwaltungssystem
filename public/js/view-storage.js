@@ -12,7 +12,7 @@ let stage, layer, greyOverlayLayer, popupLayer, statusLayer;
 let socket, sessionID;
 let heatmapMaxAccessCounter;
 
-const tileSize = 32;
+const tileSize = window.innerWidth*0.04;
 
 function main() {
     sessionID = readFromSessionStorage('sessionID');

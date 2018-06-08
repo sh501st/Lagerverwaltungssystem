@@ -15,9 +15,9 @@ const Color = Object.freeze({
     BORDER: '#606060'
 });
 
-const tileSize = 32;
-const cols = 20;
-const rows = 15;
+const tileSize = window.innerWidth*0.04;
+const cols = 15;
+const rows = 10;
 const numSubShelves = 4;
 
 let mode = Mode.NONE;
@@ -288,6 +288,7 @@ function sendJSONToServer() {
     } else {
 	console.log("Connection to server isn't ready");
     }
+    window.location.href = "view-storage.html";
 }
 
 // websocket protocol requires sending arrays, binary blobs or
