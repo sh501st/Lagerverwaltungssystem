@@ -31,7 +31,6 @@ function storageReceivedFromServer(recvStorage) {
     rows = storage.height;
     defaultLayer = new Konva.Layer({ opacity: 1 });
     recreateStorageLayout(storage, defaultLayer);
-    console.log('storage', defaultLayer);
     requestOptimizedStorageSetupPreview();
 }
 
