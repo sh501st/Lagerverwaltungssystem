@@ -24,7 +24,7 @@ function generateOrder(storage, genValidID = true) {
 // repeatable orders with invalid IDs for visible access pattern,
 // otherwise you would get no clear heatmap pattern in a
 // pseudoranom scenario
-exports.generateOrderCache = (storage, cacheSize = 5) => {
+exports.generateOrderCache = (storage, cacheSize = 7) => {
     for (let i = 0; i < cacheSize; i++) {
 	storage.orderCache.push(generateOrder(storage, false));
     }
