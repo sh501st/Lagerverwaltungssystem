@@ -144,9 +144,10 @@ function animatePreviewTransition() {
     const animDelay = 5000;
     let showPreview = true;
     let f = () => {
-	optimizedLayer.opacity(showPreview ? 1 : 0);
-	defaultLayer.opacity(showPreview ? 0 : 1);
-	stage.batchDraw(); // TODO: fix transition flickering on opt overlay layer
+	optimizedLayer.to({
+	    opacity: (showPreview ? 1 : 0),
+	    duration: 1
+	});
 	showPreview = !showPreview;
 	setTimeout(f, animDelay);
     };
