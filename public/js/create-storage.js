@@ -52,10 +52,24 @@ function setupStageCanvas() {
     stage.add(layer);
 }
 
+// sets zoom level to always display full storage
+function getMinStageScale(container) {
+    const tilemapWidth = tileSize * cols;
+    const tilemapHeight = tileSize * rows;
+    const widthDiff = container.offsetWidth - tilemapWidth;
+    const heightDiff = container.offsetHeight - tilemapHeight;
+
+    if (widthDiff < heightDiff) {
+	return container.offsetWidth / tilemapWidth;
+    } else {
+	return container.offsetHeight / tilemapHeight;
+    }
+}
+
 function scaleStageToContainer(container) {
     stage.scale({
-	x: container.offsetWidth / (tileSize * cols),
-	y: container.offsetHeight / (tileSize * rows)
+	x: getMinStageScale(container),
+	y: getMinStageScale(container)
     });
     stage.width(container.offsetWidth);
     stage.height(container.offsetHeight);

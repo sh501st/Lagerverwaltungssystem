@@ -133,10 +133,15 @@ function scaleStageToContainer(container) {
 
 // disallow zooming out beyond storage bounds
 function getMinStageScale(container) {
-    if (container.offsetWidth < container.offsetHeight) {
-	return container.offsetWidth / (tileSize * cols);
+    const tilemapWidth = tileSize * cols;
+    const tilemapHeight = tileSize * rows;
+    const widthDiff = container.offsetWidth - tilemapWidth;
+    const heightDiff = container.offsetHeight - tilemapHeight;
+
+    if (widthDiff < heightDiff) {
+	return container.offsetWidth / tilemapWidth;
     } else {
-	return container.offsetHeight / (tileSize * rows);
+	return container.offsetHeight / tilemapHeight;
     }
 }
 
