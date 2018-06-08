@@ -49,7 +49,7 @@ exports.generateOrders = (activeStorages, notifyObservingClientsCB) => {
     let f = () => {
 	activeStorages.forEach((storage) => {
 	    if (storage.orders.length < 8) {
-		if (util.randBool(25)) { // 25% chance to recycle cached order
+		if (util.randBool(35)) { // 35% chance to recycle cached order
 		    let order = Object.assign(
 			{}, storage.orderCache[util.randInt(0, storage.orderCache.length - 1)]
 		    );
