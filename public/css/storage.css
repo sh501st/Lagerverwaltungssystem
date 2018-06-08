@@ -1,120 +1,135 @@
-body {
-    background-color:azure;
-    font-weight: bold;
-    font-family: serif;
-    float: left;
-}
+        body {
+            background-color: azure;
+            font-weight: bold;
+            font-family: serif;
+            float: left;
+            font-size: 1vw;
+            border-width: 0.15vw;
+        }
 
-#menu {
-    width: 20vw;
-    height: 35.4vw;
-    position: absolute;
-    margin-left: 0.5vw;
-    margin-top: 0vw;
-    padding-left: 0;
-    border-color: black;
-    border-style: solid;
-}
+        #menu {
+            width: 20vw;
+            height: 47vw;
+            position: absolute;
+            margin-left: 0.5vw;
+            margin-top: 0vw;
+            padding-left: 0;
+            border-color: black;
+            border-style: solid;
+        }
 
-.inside_menu {
-    padding-left: 0.5vw;
-    padding-bottom: 0.5vw;
-    border-bottom-style: solid;
-    border-bottom-color: black;
-    margin-bottom: 0.5vw;
-}
+        .inside_menu {
+            padding-left: 0.5vw;
+            padding-bottom: 0.5vw;
+            border-bottom-style: solid;
+            border-bottom-color: black;
+            margin-bottom: 0.5vw;
+        }
 
-#mainContainer {
-    position: absolute;
-    width: 43.5vw;
-    height: 35.4vw;
-    margin-left: 20.8vw;
-    border-style: solid;
-    border-left-style: none;
-}
+        #mainContainer {
+            position: absolute;
+            width: 77vw;
+            height: 47vw;
+            margin-left: 21.5vw;
+            border-style: none;
+        }
 
-.input {
-    width: 18vw;
-    height: 3vw;
-    border-color: black;
-    border-style: solid;
-    font-size: 1.5vw;
-    border-radius: 0.5vw;
-}
+        .button {
+            display: inline-block;
+            border-radius: 0.5vw;
+            border-color: black;
+            border-style: solid;
+            border-width: 0.15vw;
+            text-align: center;
+            font-size: 1vw;
+            padding: 1vw;
+            width: 9vw;
+            transition: all 0.5s;
+            cursor: pointer;
+            margin-top: 0.5vw;
+            margin-right: 0.4vw;
+        }
 
-.button {
-    display: inline-block;
-    border-radius: 0.5vw;
-    border-color: black;
-    border-style: solid;
-    text-align: center;
-    font-size: 1vw;
-    padding: 1vw;
-    width: 9vw;
-    transition: all 0.5s;
-    cursor: pointer;
-    margin-top: 0.5vw;
-    margin-right: 0.4vw;
-}
+        .button span {
+            cursor: pointer;
+            display: inline-block;
+            position: relative;
+            transition: 0.5s;
+        }
 
-.button span {
-    cursor: pointer;
-    display: inline-block;
-    position: relative;
-    transition: 0.5s;
-}
+        .button span:after {
+            content: '»';
+            position: absolute;
+            opacity: 0;
+            top: 0;
+            right: -1vw;
+            transition: 0.5s;
+        }
 
-.button span:after {
-    content: '»';
-    position: absolute;
-    opacity: 0;
-    top: 0;
-    right: -1vw;
-    transition: 0.5s;
-}
+        .button:hover span {
+            padding-right: 1vw;
+        }
 
-.button:hover span {
-    padding-right: 1vw;
-}
+        .button:hover span:after {
+            opacity: 1;
+            right: 0;
+        }
 
-.button:hover span:after {
-    opacity: 1;
-    right: 0;
-}
+        .input {
+            border-radius: 0.5vw;
+            border-color: black;
+            border-style: solid;
+            border-width: 0.15vw;
+            font-size: 1.5vw;
+            width: 18vw;
+            height: 2.5vw;
+            background-color: azure;
+        }
 
-.input {
-    border-radius: 0.5vw;
-    border-color: black;
-    border-style: solid;
-    border-width: medium;
-    font-size: 1.5vw;
-    width: 18vw;
-    height: 3vw;
-    background-color: azure;
-	color: black;
-}
+        .tooltip {
+            position: relative;
+            display: inline-block;
+            border-width: 0.15vw;
+            border-bottom-style: none;
+        }
 
-.tooltip {
-    position: relative;
-    display: inline-block;
-    border-bottom-style: none;
-}
+        .tooltip .tooltiptext {
+            visibility: hidden;
+            width: 16vw;
+            background-color: black;
+            color: #fff;
+            text-align: center;
+            border-radius: 0.5vw;
+            padding: 0.5vw;
+            position: absolute;
+            z-index: 1;
+            top: -0.2vw;
+            left: 105%;
+        }
 
-.tooltip .tooltiptext {
-    visibility: hidden;
-    width: 16vw;
-    background-color: black;
-    color: #fff;
-    text-align: center;
-    border-radius: 0.5vw;
-    padding: 0.5vw;
+        .tooltip:hover .tooltiptext {
+            visibility: visible;
+        }
 
-    position: absolute;
-    z-index: 1;
-    top: -0.2vw;
-    left: 105%;
-}
 
-.tooltip:hover .tooltiptext {
-    visibility: visible;
-}
+        select {
+            font-size: 1.5vw;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+            border-radius: 0.5vw;
+            border-color: black;
+            border-style: solid;
+            border-width: 0.15vw;
+            line-height: 1;
+            outline: 0;
+            color: black;
+            background-color: azure;
+            padding: 0.5vw 15.2vw 0.5vw 1vw;
+            background: linear-gradient(black, black) no-repeat,
+            linear-gradient(-135deg, rgba(255, 255, 255, 0) 50%, azure 50%) no-repeat,
+            linear-gradient(-225deg, rgba(255, 255, 255, 0) 50%, azure 50%) no-repeat,
+            linear-gradient(black, black) no-repeat;
+            background-size: 0.15vw 100%, 2vw 2vw, 2vw 2vw, 2vw 60%;
+            background-position: right 2vw center, right bottom, right bottom, right bottom;
+        }
