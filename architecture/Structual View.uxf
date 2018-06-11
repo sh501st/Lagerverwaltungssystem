@@ -1,0 +1,214 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<diagram program="umlet" version="14.2">
+  <zoom_level>10</zoom_level>
+  <element>
+    <id>UMLGeneric</id>
+    <coordinates>
+      <x>510</x>
+      <y>560</y>
+      <w>540</w>
+      <h>210</h>
+    </coordinates>
+    <panel_attributes>symbol=component
+Server</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLGeneric</id>
+    <coordinates>
+      <x>520</x>
+      <y>690</y>
+      <w>520</w>
+      <h>50</h>
+    </coordinates>
+    <panel_attributes>symbol=component
+Database</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLGeneric</id>
+    <coordinates>
+      <x>520</x>
+      <y>610</y>
+      <w>520</w>
+      <h>60</h>
+    </coordinates>
+    <panel_attributes>symbol=component
+Nodejs
+--
+-websocket</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>1030</x>
+      <y>620</y>
+      <w>100</w>
+      <h>80</h>
+    </coordinates>
+    <panel_attributes>lt=-(</panel_attributes>
+    <additional_attributes>10.0;10.0;70.0;10.0;70.0;50.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>1030</x>
+      <y>680</y>
+      <w>90</w>
+      <h>60</h>
+    </coordinates>
+    <panel_attributes>lt=()-</panel_attributes>
+    <additional_attributes>70.0;10.0;70.0;40.0;10.0;40.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>450</x>
+      <y>620</y>
+      <w>90</w>
+      <h>80</h>
+    </coordinates>
+    <panel_attributes>lt=-()</panel_attributes>
+    <additional_attributes>70.0;10.0;10.0;10.0;10.0;60.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>440</x>
+      <y>680</y>
+      <w>100</w>
+      <h>80</h>
+    </coordinates>
+    <panel_attributes>lt=)-</panel_attributes>
+    <additional_attributes>20.0;20.0;20.0;60.0;80.0;60.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLGeneric</id>
+    <coordinates>
+      <x>510</x>
+      <y>270</y>
+      <w>540</w>
+      <h>140</h>
+    </coordinates>
+    <panel_attributes>symbol=component
+Client
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLGeneric</id>
+    <coordinates>
+      <x>520</x>
+      <y>330</y>
+      <w>520</w>
+      <h>60</h>
+    </coordinates>
+    <panel_attributes>symbol=component
+Javascript Interpreter
+--
+-websocket</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>440</x>
+      <y>360</y>
+      <w>100</w>
+      <h>140</h>
+    </coordinates>
+    <panel_attributes>lt=-()
+</panel_attributes>
+    <additional_attributes>80.0;20.0;10.0;20.0;10.0;120.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>430</x>
+      <y>480</y>
+      <w>110</w>
+      <h>200</h>
+    </coordinates>
+    <panel_attributes>lt=)-</panel_attributes>
+    <additional_attributes>20.0;20.0;20.0;180.0;90.0;180.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>1030</x>
+      <y>370</y>
+      <w>110</w>
+      <h>140</h>
+    </coordinates>
+    <panel_attributes>lt=-(</panel_attributes>
+    <additional_attributes>10.0;10.0;80.0;10.0;80.0;110.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>1030</x>
+      <y>490</y>
+      <w>100</w>
+      <h>190</h>
+    </coordinates>
+    <panel_attributes>lt=()-</panel_attributes>
+    <additional_attributes>80.0;10.0;80.0;170.0;10.0;170.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLGeneric</id>
+    <coordinates>
+      <x>1120</x>
+      <y>380</y>
+      <w>180</w>
+      <h>100</h>
+    </coordinates>
+    <panel_attributes>übergibt an Client:
+-
+-Bestellungseingänge
+-Wegefindung
+-Heatmap
+-Lagerinhalt</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLGeneric</id>
+    <coordinates>
+      <x>190</x>
+      <y>400</y>
+      <w>250</w>
+      <h>70</h>
+    </coordinates>
+    <panel_attributes>übergibt an Server:
+-
+-Lageraufbau bei Lagererstellung
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLGeneric</id>
+    <coordinates>
+      <x>1120</x>
+      <y>680</y>
+      <w>180</w>
+      <h>90</h>
+    </coordinates>
+    <panel_attributes>übergibt an Nodejs:
+-
+-gefilterter Zugriffslog</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLGeneric</id>
+    <coordinates>
+      <x>260</x>
+      <y>680</y>
+      <w>180</w>
+      <h>90</h>
+    </coordinates>
+    <panel_attributes>übergibt an Database:
+-
+-aktuelle Zugriffe</panel_attributes>
+    <additional_attributes/>
+  </element>
+</diagram>
