@@ -219,7 +219,7 @@ function dispatchWorkers() {
 		order.path = pathfinding.generateWorkerPath(storage, order);
 		order.speed = moveSpeedInTilesPerSec;
 		notifyObservingClients(storage, order);
-		db.updateLog(order);
+		db.updateLog(storage, order);    
 	    }
 	});
 	setTimeout(f, 3500);
