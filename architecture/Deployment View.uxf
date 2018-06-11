@@ -7,7 +7,7 @@
       <x>140</x>
       <y>170</y>
       <w>410</w>
-      <h>270</h>
+      <h>300</h>
     </coordinates>
     <panel_attributes>Client</panel_attributes>
     <additional_attributes/>
@@ -18,7 +18,7 @@
       <x>160</x>
       <y>230</y>
       <w>370</w>
-      <h>200</h>
+      <h>230</h>
     </coordinates>
     <panel_attributes>Browser</panel_attributes>
     <additional_attributes/>
@@ -29,7 +29,7 @@
       <x>180</x>
       <y>270</y>
       <w>320</w>
-      <h>140</h>
+      <h>180</h>
     </coordinates>
     <panel_attributes>Javascript Interpreter</panel_attributes>
     <additional_attributes/>
@@ -40,9 +40,15 @@
       <x>200</x>
       <y>340</y>
       <w>270</w>
-      <h>40</h>
+      <h>100</h>
     </coordinates>
-    <panel_attributes>Socket</panel_attributes>
+    <panel_attributes>Websocket
+--
+-create-storage.js
+-konva.min.js
+-plan.storage.js
+-view-storage.js
+</panel_attributes>
     <additional_attributes/>
   </element>
   <element>
@@ -51,7 +57,7 @@
       <x>140</x>
       <y>520</y>
       <w>410</w>
-      <h>230</h>
+      <h>290</h>
     </coordinates>
     <panel_attributes>Server</panel_attributes>
     <additional_attributes/>
@@ -62,7 +68,7 @@
       <x>160</x>
       <y>560</y>
       <w>370</w>
-      <h>100</h>
+      <h>180</h>
     </coordinates>
     <panel_attributes>Node JS</panel_attributes>
     <additional_attributes/>
@@ -70,19 +76,27 @@
   <element>
     <id>UMLGeneric</id>
     <coordinates>
-      <x>200</x>
+      <x>170</x>
       <y>600</y>
-      <w>270</w>
-      <h>40</h>
+      <w>340</w>
+      <h>130</h>
     </coordinates>
-    <panel_attributes>Socket</panel_attributes>
+    <panel_attributes>Websocket
+--
+-server.js
+-db.js
+-optimize.js
+-orders.js
+-pathfinding.js
+-utils.js
+</panel_attributes>
     <additional_attributes/>
   </element>
   <element>
     <id>UMLGeneric</id>
     <coordinates>
       <x>160</x>
-      <y>690</y>
+      <y>760</y>
       <w>360</w>
       <h>40</h>
     </coordinates>
@@ -98,17 +112,17 @@
       <h>290</h>
     </coordinates>
     <panel_attributes>lt=-</panel_attributes>
-    <additional_attributes>140.0;270.0;10.0;270.0;10.0;10.0;140.0;10.0</additional_attributes>
+    <additional_attributes>110.0;270.0;10.0;270.0;10.0;10.0;140.0;10.0</additional_attributes>
   </element>
   <element>
     <id>Relation</id>
     <coordinates>
       <x>330</x>
-      <y>650</y>
+      <y>730</y>
       <w>30</w>
-      <h>60</h>
+      <h>50</h>
     </coordinates>
     <panel_attributes>lt=-</panel_attributes>
-    <additional_attributes>10.0;40.0;10.0;10.0</additional_attributes>
+    <additional_attributes>10.0;30.0;10.0;10.0</additional_attributes>
   </element>
 </diagram>
