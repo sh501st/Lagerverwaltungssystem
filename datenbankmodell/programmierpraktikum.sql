@@ -3,9 +3,9 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Erstellungszeit: 02. Jun 2018 um 00:55
+-- Erstellungszeit: 11. Jun 2018 um 16:47
 -- Server-Version: 10.1.33-MariaDB
--- PHP-Version: 7.2.6
+-- PHP-Version: 7.2.5
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET AUTOCOMMIT = 0;
@@ -47,7 +47,7 @@ CREATE TABLE `log` (
   `id` int(11) NOT NULL,
   `product` int(11) DEFAULT NULL,
   `unix` int(11) NOT NULL,
-  `frontend_update` tinyint(1) DEFAULT NULL
+  `storage_id` int(13) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
@@ -316,7 +316,7 @@ ALTER TABLE `compartments`
 -- AUTO_INCREMENT für Tabelle `log`
 --
 ALTER TABLE `log`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=21;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT für Tabelle `products`
