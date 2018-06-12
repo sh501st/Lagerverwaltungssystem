@@ -220,10 +220,10 @@ function dispatchWorkers() {
 		order.path = pathfinding.generateWorkerPath(storage, order);
 		order.speed = moveSpeedInTilesPerSec;
 		notifyObservingClients(storage, order);
-		db.updateLog(storage, order);    
+		db.updateLog(storage, order);
 	    }
 	});
-	setTimeout(f, 3500);
+	setTimeout(f, 2000);
     };
     f();
 }

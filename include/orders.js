@@ -60,7 +60,7 @@ exports.generateOrders = (activeStorages, notifyObservingClientsCB) => {
 		}
 	    }
 	});
-	const randDelayInMS = util.randInt(1000, 5000);
+	const randDelayInMS = util.randInt(1000, 2500);
 	setTimeout(f, randDelayInMS);
     };
     f();
