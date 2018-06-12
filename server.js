@@ -188,6 +188,7 @@ function sendShelfToClient(storageID, shelfX, shelfY, socket) {
 
 // TODO: article volume/capacity not yet specified in the csv, also
 // needs to be handled here later on.
+// Needs to be transitioned to MySQL
 function readInMockArticles() {
     fs.readFile('data/articles.csv', 'utf8', (err, text) => {
 	if (err) {

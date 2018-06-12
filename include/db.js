@@ -24,7 +24,7 @@ exports.updateLog = (storage, order) => {
         db_conn.query("SELECT id from products WHERE name = '"+article_name+"' LIMIT 1", function(err, rows, fields) {
             if (err)  throw err;
             let prod_id = rows[0].id;
-            console.log("INSERT INTO log (product, unix, storage_id) VALUES ('"+prod_id+"', '"+unixtime+"', '"+storage_id+"')");
+            //console.log("INSERT INTO log (product, unix, storage_id) VALUES ('"+prod_id+"', '"+unixtime+"', '"+storage_id+"')");
             db_conn.query("INSERT INTO log (product, unix, storage_id) VALUES ('"+prod_id+"', '"+unixtime+"', '"+storage_id+"')", function (err, result) {
                 if (err)  throw err;
             });
@@ -72,3 +72,6 @@ exports.accessById = (article_id,start,end,storage_id,callback) => {
         callback(null, rows.length)
     });
 }
+
+
+// exports.readInMockArticles
