@@ -10,3 +10,9 @@ exports.randBool = (percent = 50) => {
 
 // current unix time in seconds
 exports.unix = () => Math.round((new Date).getTime()/1000);
+
+// Tile distance between two coords when only allowed to walk
+// directions up, down, left or right.
+exports.manhattanDistance = (fromX, fromY, toX, toY) => {
+    return Math.abs(toX - fromX) + Math.abs(toY - fromY);
+}
