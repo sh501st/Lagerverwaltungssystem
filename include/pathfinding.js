@@ -1,3 +1,5 @@
+const util = require('./util');
+
 let storageGridCache;
 
 // all storage entrances are checked against all shelf coords included
@@ -7,7 +9,7 @@ function findClosestEntrance(storage, order) {
     let minDistance = storage.width + storage.height + 1;
     storage.entrances.forEach((entrance) => {
 	order.articles.forEach((article) => {
-	    const dist = manhattanDistance(
+	    const dist = util.manhattanDistance(
 		entrance.x, entrance.y, article.shelfX, article.shelfY);
 	    if (dist < minDistance) {
 		minDistance = dist;
@@ -34,7 +36,7 @@ function appendNearestShelves(path, storage, order) {
 	let closestFromCurrPos;
 	let minDistance = storage.width + storage.height + 1;
 	unvisitedShelfs.forEach((shelf) => {
-	    const dist = manhattanDistance(currX, currY, shelf.x, shelf.y);
+	    const dist = util.manhattanDistance(currX, currY, shelf.x, shelf.y);
 	    if (dist < minDistance) {
 		minDistance = dist;
 		closestFromCurrPos = shelf;
@@ -57,7 +59,7 @@ function findClosestExit(path, storage) {
     storage.entrances.forEach((entrance) => {
 	const currX = path[path.length - 2];
 	const currY = path[path.length - 1];
-	const dist = manhattanDistance(entrance.x, entrance.y, currX, currY);
+	const dist = util.manhattanDistance(entrance.x, entrance.y, currX, currY);
 	if (dist < minDistance) {
 	    minDistance = dist;
 	    closestExit = entrance;
@@ -124,12 +126,6 @@ exports.generateWorkerPath = (storage, order) => {
     // shelves, respecting non-walkable areas.
     return getInterpolatedPath(path, storage, closestExit);
 };
-
-// Tile distance between two coords when only allowed to walk
-// directions up, down, left or right.
-function manhattanDistance(x1, y1, x2, y2) {
-    return Math.abs(x2 - x1) + Math.abs(y2 - y1);
-}
 
 function resetVisitFlagForAllTiles(grid) {
     for (let col = 0; col < grid.length; col++) {
@@ -198,19 +194,58 @@ function tilePathBetweenCoords(storage, x1, y1, x2, y2) {
 }
 
 // 2d array representation for constant-time lookup in tight loops
-// like path interpolation
-function generateGridRepresentation(storage) {
+// like path interpolation and finding nearest available subshelves.
+function generateGridRepresentation(storage, shouldCache = true) {
+    const numSubShelvesPerShelf = 4;
     let grid = [];
     for (let col = 0; col < storage.width; col++) {
 	grid[col] = [];
 	for (let row = 0; row < storage.height; row++) {
-	    grid[col][row] = { visited: false, walkable: true };
+	    grid[col][row] = { visited: false, walkable: true, availableSubs: 0 };
 	}
     }
     storage.shelves.forEach((shelf) => {
 	grid[shelf.x][shelf.y].walkable = false;
+	grid[shelf.x][shelf.y].availableSubs = numSubShelvesPerShelf - shelf.sub.length;
     });
 
-    storageGridCache.set(storage._id, grid);
+    if (shouldCache) {
+	storageGridCache.set(storage._id, grid);
+    }
     return grid;
+}
+
+// find (starting at the entrance positions) and return the first
+// shelf that has still at least one free subshelf. Breath-first
+// search approach without backwards pathwalking since we only care
+// about the target, not the path. There is no thresholding for now
+// which could lead to an order being split up between to different
+// entrances.
+exports.findNearestAvailableShelf = (storage) => {
+    let grid = generateGridRepresentation(storage, false);
+    let queue = [];
+    storage.entrances.forEach((ent) => {
+	queue.push({ x: ent.x, y: ent.y });
+    });
+
+    let foundShelf;
+    let visit = (x, y) => {
+	let tile = grid[x][y];
+	if (tile.availableSubs > 0 && !foundShelf) {
+	    foundShelf = storage.shelves.find(
+		(shelf) => shelf.x === x && shelf.y === y);
+	} else if (!tile.visited && tile.walkable) {
+	    queue.push({ x:x, y:y });
+	    tile.visited = true;
+	}
+    };
+
+    while (queue.length > 0 && !foundShelf) {
+	const node = queue.shift();
+	if (node.x > 0) { visit(node.x - 1, node.y); } // left
+	if (node.x < storage.width - 1) { visit(node.x + 1, node.y); } // right
+	if (node.y > 0) { visit(node.x, node.y - 1); } // up
+	if (node.y < storage.height - 1) { visit(node.x, node.y + 1); } // down
+    }
+    return foundShelf;
 }

@@ -160,15 +160,18 @@ function sendLayoutToClient(storageID, socket, observeStorage = true) {
 // client sends storage ID and log access range and expects and
 // optimized storage setup preview to later animate the transition
 // between the current state and what it could look once subshelves
-// were reordered.
+// were to be rearranged.
 function sendOptimizedStoragePreviewToClient(storageID, socket, fromTime, toTime) {
     const observeStorage = false;
     const storage = loadStorageFromJSONFile(storageID, observeStorage);
     if (storage) {
-	const optimizedStorage = optimize.sortSubShelvesByAccess(storage, fromTime, toTime);
-	if (optimizedStorage) {
-	    sendMessage(socket, 'preview', optimizedStorage);
-	}
+	optimize.rearrangeSubShelves(storage, fromTime, toTime, (optimizedStorage) => {
+	    console.log('Storage "' + storage._id + '" optimized');
+	    sendMessage(socket, 'preview', {
+		regular: storage,
+		optimized: optimizedStorage
+	    });
+	});
     }
 }
 

@@ -3,10 +3,10 @@ const Color = Object.freeze({
     DEFAULT: '#f0f0f0',
     BORDER: '#606060',
     ACCESS: '#ee3060',
-    OPTIMIZED: '#30ee60'
+    OPTIMIZED: '#3b8c1d',
 });
 
-let storage, optimizedStorage, cols, rows;
+let defaultStorage, optimizedStorage, cols, rows;
 let stage, defaultLayer, optimizedLayer;
 let socket, sessionID;
 
@@ -15,23 +15,8 @@ const tileSize = 32;
 function main() {
     sessionID = readFromSessionStorage('sessionID');
     connectToServer().then(() => {
-	requestStorageLayoutFromServer(sessionID);
+	requestOptimizedStorageSetupPreview(0, Math.floor((new Date).getTime() / 1000));
     });
-}
-
-// called by message handler as soon as the requested server response
-// is available
-function storageReceivedFromServer(recvStorage) {
-    if (!recvStorage || !recvStorage.width || !recvStorage.height) {
-	console.log("Requested storage layout is not valid:", recvStorage);
-	return;
-    }
-    storage = recvStorage;
-    cols = storage.width;
-    rows = storage.height;
-    defaultLayer = new Konva.Layer({ opacity: 1 });
-    recreateStorageLayout(storage, defaultLayer);
-    requestOptimizedStorageSetupPreview();
 }
 
 // initialize the canvas and setup all the graphical fluff; will also
@@ -93,12 +78,29 @@ function createShelves(storage, layer) {
 	    y: shelf.y * tileSize,
 	    width: tileSize,
 	    height: tileSize,
-	    fill: fillColor,
+	    fill: calculateHeatmapColor(
+		storage.heatmapMaxAccessCounter, shelf, fillColor),
 	    stroke: Color.BORDER,
 	    strokeWidth: 2
 	});
 	layer.add(rect);
     });
+}
+
+// sum all subshelf accesses of a given shelf, calc factor and shift
+// default color towards provided fill color
+function calculateHeatmapColor(maxAccess, shelf, fillColor) {
+    const defCol = Konva.Util.getRGB(Color.DEFAULT);
+    const accCol = Konva.Util.getRGB(fillColor);
+    const redDiff = Math.abs(defCol.r - accCol.r);
+    const greenDiff = Math.abs(defCol.g - accCol.g);
+    const blueDiff = Math.abs(defCol.b - accCol.b);
+    const shelfAccess = shelf.sub.reduce((res, sub) => res + sub.accessCounter, 0);
+    const colShiftFactor = shelfAccess / maxAccess;
+    const fillRed = defCol.r + (defCol.r > accCol.r ? -redDiff : redDiff) * colShiftFactor;
+    const fillGreen = defCol.g + (defCol.g > accCol.g ? -greenDiff : greenDiff) * colShiftFactor;
+    const fillBlue = defCol.b + (defCol.b > accCol.b ? -blueDiff : blueDiff) * colShiftFactor;
+    return `rgb(${fillRed},${fillGreen},${fillBlue})`;
 }
 
 // fancy looking arrows instead of simple rectangles for entrance
@@ -131,22 +133,36 @@ function createEntrances(storage, layer) {
     });
 }
 
-function optimizedPreviewReceived(storage) {
-    optimizedStorage = storage;
+function optimizationPreviewReceived(defStorage, optStorage) {
+    if (!defStorage || !defStorage.width || !defStorage.height || !optStorage ||
+	defStorage.width !== optStorage.width || defStorage.height != optStorage.height)
+    {
+	console.log("Requested previews are not valid:", defStorage, optStorage);
+	return;
+    }
+
+    defaultStorage = defStorage;
+    cols = defaultStorage.width;
+    rows = defaultStorage.height;
+    defaultLayer = new Konva.Layer();
+    recreateStorageLayout(defaultStorage, defaultLayer);
+
+    optimizedStorage = optStorage;
     optimizedLayer = new Konva.Layer({ opacity: 0 });
     recreateStorageLayout(optimizedStorage, optimizedLayer);
+
     animatePreviewTransition();
 }
 
 // preliminary color flipping; once db access log supports storages
 // this show actual color shifts based on access counter
 function animatePreviewTransition() {
-    const animDelay = 5000;
+    const animDelay = 3000;
     let showPreview = true;
     let f = () => {
 	optimizedLayer.to({
 	    opacity: (showPreview ? 1 : 0),
-	    duration: 1
+	    duration: 0.5
 	});
 	showPreview = !showPreview;
 	setTimeout(f, animDelay);
@@ -207,29 +223,16 @@ function handleServerMessage(msg) {
 	console.log('Received:', type);
     }
     switch (type) {
-    case 'id':
-	break;
-    case 'storage':
-	storageReceivedFromServer(content);
-	break;
-    case 'shelfinventory':
-	break;
-    case 'orderupdate':
-	break;
+    case 'id': break;
+    case 'storage': break;
+    case 'shelfinventory': break;
+    case 'orderupdate': break;
     case 'preview':
-	optimizedPreviewReceived(content);
+	optimizationPreviewReceived(content.regular, content.optimized);
 	break;
     default:
 	console.log('Unknown type provided in server message:', type);
     }
-}
-
-function requestStorageLayoutFromServer(sessionID) {
-    if (!socket || socket.readyState !== socket.OPEN) {
-	console.log('Server connection not established, try refreshing the page');
-	return;
-    }
-    sendMessage('reqlayout', { _id: sessionID, observeStorage: false });
 }
 
 // ask server to calculate a preview of an optimized storage setup
@@ -238,8 +241,7 @@ function requestStorageLayoutFromServer(sessionID) {
 // db's start and end unix timestamps in seconds. For now we request
 // all access log entries, will change once we have working range
 // sliders in place.
-function requestOptimizedStorageSetupPreview(
-    accessRangeFrom = 0, accessRangeTo = Math.floor((new Date).getTime()/1000))
+function requestOptimizedStorageSetupPreview(accessRangeFrom, accessRangeTo)
 {
     if (!socket || socket.readyState !== socket.OPEN) {
 	console.log('Server connection not established, try refreshing the page');
