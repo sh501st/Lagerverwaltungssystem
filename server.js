@@ -58,9 +58,9 @@ function quitServer() {
 // Send unique ID to the session upon connecting, it will be used to
 // name the created json storage file from the client side for later
 // retrieval in the view-storage.html. For now it's just a unix
-// millisecond timestamp, might change to something more elgant.
+// second timestamp, might change to something more elgant.
 function generateSessionID() {
-    return "" + Date.now();
+    return util.unix();
 }
 
 function sendMessage(socket, type, data) {

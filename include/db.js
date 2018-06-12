@@ -11,11 +11,11 @@ const db_conn = mysql.createConnection({
 //add log entry for each article that's part of given order
 exports.updateLog = (storage, order) => {
     //isolate article name from order
-	let storage_id = storage._id;
-    let unixtime = util.unix;
+    let storage_id = storage._id;
+    let unixtime = util.unix();
     let article_names = new Array();
     for (let i=0; i<order.articles.length; i++) {
-        article_names.push(order.articles[i].name);        
+        article_names.push(order.articles[i].name);
     }
     //for each article determine id and add log entry
     article_names.forEach(function(article_name) {
@@ -34,7 +34,7 @@ exports.updateLog = (storage, order) => {
 
 //returns number of accesses to given article_name in given timeframe via callback. 'article_name' must be a string e.g 'BookQ', 'start' and 'end' unix time in seconds.
 /*example use to log number of accesses to 'BookQ' within the last 5 minutes:
-db.accessByArticle('BookQ',util.unix-60*5,util.unix,storage._id, (err, number) => {
+db.accessByArticle('BookQ',util.unix()-60*5,util.unix(),storage._id (err, number) => {
     if (err) {
         return console.log(err.message);
     }
@@ -58,7 +58,7 @@ exports.accessByArticle = (article_name,start,end,storage_id,callback) => {
 
 //returns number of accesses to given article_id in given timeframe via callback. 'article_id' must be the article id, 'start' and 'end' unix time in seconds.
 /*example use:
-db.accessById('42',1528336516,util.unix,2147483647, (err, number) => {
+db.accessById('42',1528336516,util.unix(),2147483647, (err, number) => {
     if (err) {
         return console.log(err.message);
     }

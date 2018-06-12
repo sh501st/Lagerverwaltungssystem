@@ -9,4 +9,4 @@ exports.randBool = (percent = 50) => {
 }
 
 // current unix time in seconds
-exports.unix = Math.round((new Date).getTime()/1000);
+exports.unix = () => Math.round((new Date).getTime()/1000);
