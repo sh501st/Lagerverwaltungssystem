@@ -24,7 +24,6 @@ exports.updateLog = (storage, order) => {
         db_conn.query("SELECT id from products WHERE name = '"+article_name+"' LIMIT 1", function(err, rows, fields) {
             if (err)  throw err;
             let prod_id = rows[0].id;
-            //console.log("INSERT INTO log (product, unix, storage_id) VALUES ('"+prod_id+"', '"+unixtime+"', '"+storage_id+"')");
             db_conn.query("INSERT INTO log (product, unix, storage_id) VALUES ('"+prod_id+"', '"+unixtime+"', '"+storage_id+"')", function (err, result) {
                 if (err)  throw err;
             });
@@ -73,5 +72,21 @@ exports.accessById = (article_id,start,end,storage_id,callback) => {
     });
 }
 
-
 // exports.readInMockArticles
+// get all articleIDs and the access count per article in a given
+// start and end time range; sort the matches in ascending descening
+// order. Results is an array in the following form: [{product: 12,
+// accesses: 3,}, {...}, ...]
+exports.sortedAccessesInRange = (start, end, storage_id, callback) => {
+    const sqlStr =
+	  `SELECT product, COUNT(*) AS accesses FROM log
+           WHERE unix >= '${start}' AND unix <= '${end}' AND storage_id = '${storage_id}'
+           GROUP BY product ORDER BY accesses DESC`;
+    db_conn.query(sqlStr, (err, rows, fields) => {
+	if (err) {
+	    console.log("Can't get sorted articles in time range from database");
+	} else {
+	    callback(rows);
+	}
+    });
+}
