@@ -196,9 +196,6 @@ function sendShelfToClient(storageID, shelfX, shelfY, socket) {
 // values straight from the db access log that are associated with the
 // given id.
 function sendAccessTimeRangeToClient(storageID, socket) {
-    if (!fs.existsSync('data/storages/' + storageID + '.json')) {
-	storageID = 0;
-    }
     db.getTimeRange(storageID, (minTime, maxTime) => {
 	if (minTime >= 0 && maxTime <= util.unix()) {
 	    sendMessage(socket, 'range', { min: minTime, max: maxTime });

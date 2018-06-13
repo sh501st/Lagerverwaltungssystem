@@ -88,7 +88,7 @@ function clearSessionStorage() {
 	console.log('Session storage not available in your browser. Are your cookies disabled?');
 	return;
     }
-    storage.clear();
+    writeToSessionStorage('sessionID', "0");
 }
 
 // we're using html5 storage to keep the sessionID between 'create'
@@ -137,7 +137,6 @@ function handleServerMessage(msg) {
     switch (type) {
     case 'id':
 	sessionID = content._id;
-	writeToSessionStorage('sessionID', content._id);
 	break;
     default:
 	console.log('Unknown type provided in server message:', type);
@@ -302,10 +301,11 @@ function sendJSONToServer() {
 
     if (socket && socket.readyState === socket.OPEN && data._id > 0) {
 	sendMessage('newstorage', data);
+	writeToSessionStorage('sessionID', sessionID);
+	window.location.href = "view-storage.html";
     } else {
 	console.log("Connection to server isn't ready");
     }
-    window.location.href = "view-storage.html";
 }
 
 // websocket protocol requires sending arrays, binary blobs or
