@@ -32,6 +32,7 @@ function setupAccessSlider() {
 	orientation: 'horizontal',
 	tooltips: [true, true],
 	step: 1,
+	padding: 1,
 	range: { 'min': 0, 'max': 100 },
 	format: {
 	    to: (val) => new Date(val * 1000).toISOString(),
@@ -119,6 +120,9 @@ function createShelves(storage, layer) {
 // sum all subshelf accesses of a given shelf, calc factor and shift
 // default color towards provided fill color
 function calculateHeatmapColor(maxAccess, shelf, fillColor) {
+    if (maxAccess === 0) {
+	return Color.DEFAULT;
+    }
     const defCol = Konva.Util.getRGB(Color.DEFAULT);
     const accCol = Konva.Util.getRGB(fillColor);
     const redDiff = Math.abs(defCol.r - accCol.r);
@@ -174,10 +178,12 @@ function optimizationPreviewReceived(defStorage, optStorage) {
     }
 
     // remove old setup when requesting another time range via slider
+    let firstRun = true;
     if (stage && defaultLayer && optimizedLayer) {
 	defaultLayer.destroy();
 	optimizedLayer.destroy();
 	stage.batchDraw();
+	firstRun = false;
     }
 
     defaultStorage = defStorage;
@@ -191,12 +197,15 @@ function optimizationPreviewReceived(defStorage, optStorage) {
     recreateStorageLayout(optimizedStorage, optimizedLayer);
 
     accessSlider.removeAttribute('disabled');
-    animatePreviewTransition();
+
+    if (firstRun) {
+	animatePreviewTransition();
+    }
 }
 
 // response from server with min and max timestamps from db log
 function sliderTimeRangeReceived(minTime, maxTime) {
-    if (minTime >= 0 && maxTime <= new Date().now() / 1000) {
+    if (minTime >= 0 && maxTime <= Date.now() / 1000) {
 	accessSlider.noUiSlider.updateOptions({
 	    range: { min: minTime, max: maxTime },
 	    start: [minTime, maxTime]
