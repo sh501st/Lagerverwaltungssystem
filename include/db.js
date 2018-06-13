@@ -90,3 +90,18 @@ exports.sortedAccessesInRange = (start, end, storage_id, callback) => {
 	}
     });
 }
+
+// lookup max and min timestamp values for a given storage ID to set
+// access sliders accordingly
+exports.getTimeRange = (storage_id, callback) => {
+    const sqlStr = `SELECT MIN(unix), MAX(unix) FROM log WHERE storage_id='${storage_id}'`;
+    db_conn.query(sqlStr, (err, res, fields) => {
+	if (err) {
+	    console.log("Can't get unix timestamp range for given storage ID:", storage_id);
+	} else if (res && res.length === 1) {
+	    const minTime = res[0]['MIN(unix)'];
+	    const maxTime = res[0]['MAX(unix)'];
+	    callback(minTime, maxTime);
+	}
+    });
+}

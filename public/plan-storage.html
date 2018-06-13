@@ -5,6 +5,7 @@
     <meta charset="utf-8" />
     <title>Plan storage</title>
     <link rel="stylesheet" type="text/css" href="/css/storage.css" />
+    <link rel="stylesheet" type="text/css" href="/css/nouislider.min.css" />
 </head>
 
 <body>
@@ -32,6 +33,7 @@
             </form>
             Size:<br>
             Access range:<br>
+	    <div id="accessSlider"></div>
         </div>
 
 
@@ -54,6 +56,7 @@
     <script>
       window.addEventListener('DOMContentLoaded', () => main());
     </script>
+    <script src="/js/nouislider.min.js"></script>
     <script src="/js/konva.min.js"></script>
     <script src="/js/plan-storage.js"></script>
 </body>

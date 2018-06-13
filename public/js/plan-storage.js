@@ -9,13 +9,42 @@ const Color = Object.freeze({
 let defaultStorage, optimizedStorage, cols, rows;
 let stage, defaultLayer, optimizedLayer;
 let socket, sessionID;
+let accessSlider;
 
 const tileSize = 32;
 
 function main() {
+    setupAccessSlider();
     sessionID = readFromSessionStorage('sessionID');
     connectToServer().then(() => {
+	requestAccessSliderRange();
 	requestOptimizedStorageSetupPreview(0, Math.floor((new Date).getTime() / 1000));
+    });
+}
+
+// slider range is updated to unix timestamp min and max values once
+// the server connection is established
+function setupAccessSlider() {
+    accessSlider = document.getElementById('accessSlider');
+    noUiSlider.create(accessSlider, {
+	start: [0, 100],
+	connect: true,
+	orientation: 'horizontal',
+	tooltips: [true, true],
+	step: 1,
+	range: { 'min': 0, 'max': 100 },
+	format: {
+	    to: (val) => new Date(val * 1000).toISOString(),
+	    from: (val) => val
+	}
+    });
+    accessSlider.setAttribute('disabled', true);
+    accessSlider.noUiSlider.on('change', () => {
+	accessSlider.setAttribute('disabled', true);
+	const vals = accessSlider.noUiSlider.get();
+	const minTime = Date.parse(vals[0]) / 1000;
+	const maxTime = Date.parse(vals[1]) / 1000;
+	requestOptimizedStorageSetupPreview(minTime, maxTime);
     });
 }
 
@@ -133,12 +162,22 @@ function createEntrances(storage, layer) {
     });
 }
 
+// response from server that includes both the (red) access heatmap
+// based on time range as well as the (green) optimized setup which is
+// derived from the default one; initate the animated transition between the two.
 function optimizationPreviewReceived(defStorage, optStorage) {
     if (!defStorage || !defStorage.width || !defStorage.height || !optStorage ||
 	defStorage.width !== optStorage.width || defStorage.height != optStorage.height)
     {
 	console.log("Requested previews are not valid:", defStorage, optStorage);
 	return;
+    }
+
+    // remove old setup when requesting another time range via slider
+    if (stage && defaultLayer && optimizedLayer) {
+	defaultLayer.destroy();
+	optimizedLayer.destroy();
+	stage.batchDraw();
     }
 
     defaultStorage = defStorage;
@@ -151,7 +190,19 @@ function optimizationPreviewReceived(defStorage, optStorage) {
     optimizedLayer = new Konva.Layer({ opacity: 0 });
     recreateStorageLayout(optimizedStorage, optimizedLayer);
 
+    accessSlider.removeAttribute('disabled');
     animatePreviewTransition();
+}
+
+// response from server with min and max timestamps from db log
+function sliderTimeRangeReceived(minTime, maxTime) {
+    if (minTime >= 0 && maxTime <= new Date().now() / 1000) {
+	accessSlider.noUiSlider.updateOptions({
+	    range: { min: minTime, max: maxTime },
+	    start: [minTime, maxTime]
+	}, true);
+	accessSlider.removeAttribute('disabled');
+    }
 }
 
 // preliminary color flipping; once db access log supports storages
@@ -230,6 +281,9 @@ function handleServerMessage(msg) {
     case 'preview':
 	optimizationPreviewReceived(content.regular, content.optimized);
 	break;
+    case 'range':
+	sliderTimeRangeReceived(content.min, content.max);
+	break;
     default:
 	console.log('Unknown type provided in server message:', type);
     }
@@ -253,6 +307,15 @@ function requestOptimizedStorageSetupPreview(accessRangeFrom, accessRangeTo)
 	to: accessRangeTo
     });
 }
+
+function requestAccessSliderRange() {
+    if (!socket || socket.readyState !== socket.OPEN) {
+	console.log('Server connection not established, try refreshing the page');
+	return;
+    }
+    sendMessage('reqrange', { _id: sessionID });
+}
+
 
 // stringify because that's what the websockets expect, other options
 // would be sending array or binary blob data.

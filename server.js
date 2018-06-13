@@ -129,6 +129,9 @@ function handleClientMessage(socket, msg) {
     case 'shelfinventory':
 	sendShelfToClient(content._id, content.x, content.y, socket);
 	break;
+    case 'reqrange':
+	sendAccessTimeRangeToClient(content._id ? content_id : 0, socket);
+	break;
     default:
 	console.log('Unknown type provided in client message:', type);
     }
@@ -187,6 +190,17 @@ function sendShelfToClient(storageID, shelfX, shelfY, socket) {
 	});
 	sendMessage(socket, 'shelfinventory', shelf);
     }
+}
+
+// client sends storage id and expects the min and max timestamp
+// values straight from the db access log that are associated with the
+// given id.
+function sendAccessTimeRangeToClient(storageID, socket) {
+    db.getTimeRange(storageID, (minTime, maxTime) => {
+	if (minTime >= 0 && maxTime <= util.unix()) {
+	    sendMessage(socket, 'range', { min: minTime, max: maxTime });
+	}
+    });
 }
 
 // TODO: article volume/capacity not yet specified in the csv, also

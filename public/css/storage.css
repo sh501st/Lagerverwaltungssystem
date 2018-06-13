@@ -133,3 +133,8 @@
             background-size: 0.15vw 100%, 2vw 2vw, 2vw 2vw, 2vw 60%;
             background-position: right 2vw center, right bottom, right bottom, right bottom;
         }
+
+	#accessSlider {
+	    width: 90%;
+	    margin: 0.5vw;
+	}
