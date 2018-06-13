@@ -101,7 +101,9 @@ exports.getTimeRange = (storage_id, callback) => {
 	} else if (res && res.length === 1) {
 	    const minTime = res[0]['MIN(unix)'];
 	    const maxTime = res[0]['MAX(unix)'];
-	    callback(minTime, maxTime);
+	    if (minTime && maxTime) {
+		callback(minTime, maxTime);
+	    }
 	}
     });
 }

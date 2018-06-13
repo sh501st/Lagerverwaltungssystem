@@ -27,13 +27,13 @@ function main() {
 function setupAccessSlider() {
     accessSlider = document.getElementById('accessSlider');
     noUiSlider.create(accessSlider, {
-	start: [0, 100],
+	start: [0, 10],
 	connect: true,
 	orientation: 'horizontal',
 	tooltips: [true, true],
 	step: 1,
 	padding: 1,
-	range: { 'min': 0, 'max': 100 },
+	range: { 'min': 0, 'max': 10 },
 	format: {
 	    to: (val) => new Date(val * 1000).toISOString(),
 	    from: (val) => val
@@ -196,7 +196,11 @@ function optimizationPreviewReceived(defStorage, optStorage) {
     optimizedLayer = new Konva.Layer({ opacity: 0 });
     recreateStorageLayout(optimizedStorage, optimizedLayer);
 
-    accessSlider.removeAttribute('disabled');
+    // keep slider disabled in case the db access log has no entries
+    const timeRange = accessSlider.noUiSlider.get();
+    if (Date.parse(timeRange[1]) > Date.parse('1970-01-01T00:00:09.000Z')) {
+	accessSlider.removeAttribute('disabled');
+    }
 
     if (firstRun) {
 	animatePreviewTransition();
@@ -205,7 +209,7 @@ function optimizationPreviewReceived(defStorage, optStorage) {
 
 // response from server with min and max timestamps from db log
 function sliderTimeRangeReceived(minTime, maxTime) {
-    if (minTime >= 0 && maxTime <= Date.now() / 1000) {
+    if (minTime >= 0 && maxTime <= Date.now() / 1000 && minTime !== maxTime) {
 	accessSlider.noUiSlider.updateOptions({
 	    range: { min: minTime, max: maxTime },
 	    start: [minTime, maxTime]
