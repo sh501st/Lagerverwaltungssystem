@@ -190,14 +190,13 @@ function sendOptimizedStoragePreviewToClient(storageID, socket, fromTime, toTime
 // after the subshelf transformation. Optimized storage is written to
 // a new file, preserving the original storage setup.
 function applyOptimizedStoragePreview(storageID, fromTime, toTime, socket) {
-    if (!storageID || fromTime === 0 || toTime === 10) {
+    if ((!storageID && storageID !== 0) || fromTime === 0 || toTime === 10) {
 	console.log('Provided optimization parameters are not valid.');
 	return;
     }
     const storage = loadStorageFromJSONFile(storageID, false);
     optimize.rearrangeSubShelves(storage, fromTime, toTime, (optimizedStorage) => {
 	const updatedID = writeStorageToJSONFile(optimizedStorage);
-	console.log('okok');
 	if (updatedID > 0) {
 	    sendMessage(socket, 'applied', { _id: updatedID });
 	}
