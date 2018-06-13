@@ -130,7 +130,7 @@ function handleClientMessage(socket, msg) {
 	sendShelfToClient(content._id, content.x, content.y, socket);
 	break;
     case 'reqrange':
-	sendAccessTimeRangeToClient(content._id ? content_id : 0, socket);
+	sendAccessTimeRangeToClient(content._id ? content._id : 0, socket);
 	break;
     default:
 	console.log('Unknown type provided in client message:', type);
