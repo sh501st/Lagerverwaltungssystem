@@ -210,7 +210,7 @@ function optimizationPreviewReceived(defStorage, optStorage) {
 
     // keep slider disabled in case the db access log has no entries
     const timeRange = accessSlider.noUiSlider.get();
-    if (Date.parse(timeRange[1]) > Date.parse('1970-01-01T00:00:09.000Z')) {
+    if (new Date(timeRange[1]).valueOf() > new Date('1970-01-02').valueOf()) {
 	accessSlider.removeAttribute('disabled');
     }
 
