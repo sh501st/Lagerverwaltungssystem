@@ -65,11 +65,17 @@ function removeAllSubShelves(optimizedStorage) {
 // shelf
 function fillSubShelvesByAccess(optimizedStorage, subShelves, dbRows) {
     dbRows.forEach((row) => {
-	const foundSubShelf = subShelves.find((subShelf) => subShelf.article.id == row.product);
-	if (foundSubShelf) {
+	const idx = subShelves.findIndex((subShelf) => subShelf.article.id == row.product);
+	if (idx != -1) {
+	    const len = subShelves.length - 1;
+	    [subShelves[idx], subShelves[len]] = [subShelves[len], subShelves[idx]];
+	    let foundSubShelf = subShelves.pop();
 	    reassignNewSubShelfPosition(optimizedStorage, foundSubShelf);
 	}
     });
+    // distribute the ones that were not yet logged by the db because
+    // they weren't part of any order yet
+    subShelves.forEach((sub) => reassignNewSubShelfPosition(optimizedStorage, sub));
 }
 
 // find closest shelf from entrance that still has empty subshelves
