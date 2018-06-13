@@ -25,6 +25,7 @@ function generateOrder(storage, genValidID = true) {
 // otherwise you would get no clear heatmap pattern in a
 // pseudoranom scenario
 exports.generateOrderCache = (storage, cacheSize = 7) => {
+    storage.orderCache = [];
     for (let i = 0; i < cacheSize; i++) {
 	storage.orderCache.push(generateOrder(storage, false));
     }

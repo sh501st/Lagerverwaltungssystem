@@ -130,6 +130,10 @@ function handleClientMessage(socket, msg) {
 	sendOptimizedStoragePreviewToClient(
 	    content._id ? content._id : 0, socket, content.from, content.to);
 	break;
+    case 'applypreview':
+	applyOptimizedStoragePreview(
+	    content._id ? content._id : 0, content.from, content.to, socket);
+	break;
     case 'shelfinventory':
 	sendShelfToClient(content._id, content.x, content.y, socket);
 	break;
@@ -180,6 +184,24 @@ function sendOptimizedStoragePreviewToClient(storageID, socket, fromTime, toTime
 	    });
 	});
     }
+}
+
+// client sends storage ID and gets back the optimized storage ID
+// after the subshelf transformation. Optimized storage is written to
+// a new file, preserving the original storage setup.
+function applyOptimizedStoragePreview(storageID, fromTime, toTime, socket) {
+    if (!storageID || fromTime === 0 || toTime === 10) {
+	console.log('Provided optimization parameters are not valid.');
+	return;
+    }
+    const storage = loadStorageFromJSONFile(storageID, false);
+    optimize.rearrangeSubShelves(storage, fromTime, toTime, (optimizedStorage) => {
+	const updatedID = writeStorageToJSONFile(optimizedStorage);
+	console.log('okok');
+	if (updatedID > 0) {
+	    sendMessage(socket, 'applied', { _id: updatedID });
+	}
+    });
 }
 
 // client sends storage ID and click coordiantes and expects the
@@ -241,10 +263,18 @@ function notifyObservingClients(storage, currentOrder = null) {
     }
 }
 
-// fill the newly created storage's shelves with random articles on
-// the server-side due to file reading issues in the frontend.
-// Currently every shelf has four subshelves (arbitrarily hardcoded).
+// fill the newly created storage's shelves with random articles
+// coming from a predefined set in the database. Currently every shelf
+// has four subshelves (arbitrarily hardcoded) and of which each and
+// every one is unique, meaning that no two subshelves contain the
+// same article.
 function fillShelvesRandomly(shelves) {
+    if (articles.length === 0) {
+	console.log('No articles available, database running?');
+	return;
+    }
+    util.shuffle(articles);
+    let articleIdx = 0;
     for (let shelf of shelves) {
 	const numSubShelves = 4;
 	shelf.sub = [];
@@ -252,7 +282,7 @@ function fillShelvesRandomly(shelves) {
 	    let acopy = Object.assign({
 		shelfX: shelf.x,
 		shelfY: shelf.y
-	    }, articles[util.randInt(0, articles.length - 1)]);
+	    }, articles[articleIdx++]);
 	    let subshelf = {
 		article: acopy,
 		count: util.randInt(1, 100)
@@ -273,13 +303,54 @@ function createNewStorage(storage) {
 	console.log("Can't access shelves in newly created storage");
 	return;
     }
+    if (storage.width < 5 || storage.height < 5 ||
+	storage.width > 20 || storage.height > 20)
+    {
+	console.log('Storage dimensions are invalid, need to be within 5x5 to 20x20:',
+		    storage.width, storage.height);
+	return;
+    }
     fillShelvesRandomly(storage.shelves);
-    const filename = 'data/storages/' + storage._id + '.json';
+    writeStorageToJSONFile(storage);
+}
+
+// Copy on write behaviour: if storage with same ID (or filename in
+// this case) already exists, create to a new file and return that
+// very ID as an usable sessionID. Mainly to avoid overwriting the
+// default template.json over and over again.
+function writeStorageToJSONFile(storage) {
     try {
-	fs.writeFileSync(filename, JSON.stringify(storage), 'utf8');
+	let storageCopy;
+	let filename = 'data/storages/' +
+	    (storage._id === 0 ? 'template' : storage._id) + '.json';
+	if (fs.existsSync(filename)) {
+	    storageCopy = JSON.parse(JSON.stringify(storage));
+	    storageCopy._id = generateSessionID();
+	    filename = 'data/storages/' + storageCopy._id + '.json';
+	}
+	const serialized = JSON.stringify(storageCopy ? storageCopy : storage);
+	fs.writeFileSync(filename, serialized, 'utf8');
 	console.log("Storage written sucessfully");
+	return storageCopy ? storageCopy._id : storage._id;
     } catch (err) {
-	console.log("Couldn't write storage json to disk: " + err);
+	console.log("Couldn't write storage json to disk:", err);
+	return -1;
+    }
+}
+
+// when reloading the same storage file we want to reload a certain
+// set of pre-generated orders to retain the occuring heatmap pattern
+// even after optimizing the subshelf structure. Essentially a simple
+// write-back after generating the order cache.
+function bindOrderCacheToStorageFile(storage) {
+    try {
+	let filename = 'data/storages/' +
+	    (storage._id === 0 ? 'template' : storage._id) + '.json';
+	if (fs.existsSync(filename)) {
+	    fs.writeFileSync(filename, JSON.stringify(storage), 'utf8');
+	}
+    } catch (err) {
+	console.log("Couldn't update storage's order cache:", err);
     }
 }
 
@@ -301,8 +372,10 @@ function loadStorageFromJSONFile(sessionID, observeStorage = true) {
 	if (observeStorage) {
 	    storage.orderCounter = 0;
 	    storage.orders = [];
-	    storage.orderCache = [];
-	    orders.generateOrderCache(storage);
+	    if (!storage.orderCache) {
+		orders.generateOrderCache(storage);
+		bindOrderCacheToStorageFile(storage);
+	    }
 	    activeStorages.set(storage._id, storage);
 	}
 	return storage;

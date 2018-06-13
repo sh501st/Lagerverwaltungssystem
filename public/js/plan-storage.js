@@ -42,11 +42,19 @@ function setupAccessSlider() {
     accessSlider.setAttribute('disabled', true);
     accessSlider.noUiSlider.on('change', () => {
 	accessSlider.setAttribute('disabled', true);
-	const vals = accessSlider.noUiSlider.get();
-	const minTime = new Date(vals[0]).valueOf() / 1000;
-	const maxTime = new Date(vals[1]).valueOf() / 1000;
+	const [minTime, maxTime] = getSliderMinMaxValues();
 	requestOptimizedStorageSetupPreview(minTime, maxTime);
     });
+}
+
+function getSliderMinMaxValues() {
+    if (accessSlider && accessSlider.noUiSlider) {
+	const vals = accessSlider.noUiSlider.get();
+	return [new Date(vals[0]).valueOf() / 1000,
+		new Date(vals[1]).valueOf() / 1000];
+    } else {
+	return [0, 10];
+    }
 }
 
 // initialize the canvas and setup all the graphical fluff; will also
@@ -230,6 +238,32 @@ function sliderTimeRangeReceived(minTime, maxTime) {
     }
 }
 
+// response from server when 'optimize' button was pressed, provided
+// storageID matches new storage json file that containes the
+// optimized setup.
+function optimizedStorageIDReceived(storageID) {
+    if (storageID > 0) {
+	writeToSessionStorage('sessionID', storageID);
+	window.location.href = 'view-storage.html';
+    }
+}
+
+// we're using html5 storage to keep the sessionID between 'create'
+// and 'view' html pages to later request the created and stored
+// storage layout from the server.
+function writeToSessionStorage(key, value) {
+    let storage = window['sessionStorage'];
+    if (!storage) {
+	console.log('Session storage not available in your browser. Are your cookies disabled?');
+	return;
+    }
+    if (!key || !value) {
+	console.log("Can't store provided key value pair:", key, value);
+	return;
+    }
+    storage.setItem(key, value);
+}
+
 // preliminary color flipping; once db access log supports storages
 // this show actual color shifts based on access counter
 function animatePreviewTransition() {
@@ -309,6 +343,9 @@ function handleServerMessage(msg) {
     case 'range':
 	sliderTimeRangeReceived(content.min, content.max);
 	break;
+    case 'applied':
+	optimizedStorageIDReceived(content._id);
+	break;
     default:
 	console.log('Unknown type provided in server message:', type);
     }
@@ -329,10 +366,31 @@ function requestOptimizedStorageSetupPreview(accessRangeFrom, accessRangeTo)
     });
 }
 
+// ask server for min and max timestamps straight from the db access
+// log to set the slider accordingly
 function requestAccessSliderRange() {
     sendMessage('reqrange', { _id: sessionID });
 }
 
+// ask the server to transform the regular storage into the optimized
+// one described via access range slider
+function requestSavingOptimization() {
+    if (!defaultStorage || !optimizedStorage ||
+	defaultStorage.heatmapMaxAccessCounter === 0 ||
+	optimizedStorage.heatmapMaxAccessCounter === 0)
+    {
+	console.log('Received storage previews are not valid candidates');
+	return;
+    }
+    if (!accessSlider.hasAttribute('disabled')) {
+	const [minVal, maxVal] = getSliderMinMaxValues();
+	sendMessage('applypreview', {
+	    _id: sessionID,
+	    from: minVal,
+	    to: maxVal
+	});
+    }
+}
 
 // stringify because that's what the websockets expect, other options
 // would be sending array or binary blob data.

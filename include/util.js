@@ -16,3 +16,13 @@ exports.unix = () => Math.round((new Date).getTime()/1000);
 exports.manhattanDistance = (fromX, fromY, toX, toY) => {
     return Math.abs(toX - fromX) + Math.abs(toY - fromY);
 }
+
+// fisher-yates shuffle the provided array
+exports.shuffle = (array) => {
+    for (let i = array.length - 1; i > 0; i--) {
+	const j = module.exports.randInt(0, i);
+	const tmp = array[i];
+	array[i] = array[j];
+	array[j] = tmp;
+    }
+}
