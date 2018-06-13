@@ -322,10 +322,6 @@ function handleServerMessage(msg) {
 // sliders in place.
 function requestOptimizedStorageSetupPreview(accessRangeFrom, accessRangeTo)
 {
-    if (!socket || socket.readyState !== socket.OPEN) {
-	console.log('Server connection not established, try refreshing the page');
-	return;
-    }
     sendMessage('reqpreview', {
 	_id: sessionID,
 	from: accessRangeFrom,
@@ -334,10 +330,6 @@ function requestOptimizedStorageSetupPreview(accessRangeFrom, accessRangeTo)
 }
 
 function requestAccessSliderRange() {
-    if (!socket || socket.readyState !== socket.OPEN) {
-	console.log('Server connection not established, try refreshing the page');
-	return;
-    }
     sendMessage('reqrange', { _id: sessionID });
 }
 
@@ -345,9 +337,13 @@ function requestAccessSliderRange() {
 // stringify because that's what the websockets expect, other options
 // would be sending array or binary blob data.
 function sendMessage(type, data) {
-    console.log('Sent:', type);
+    if (!socket || socket.readyState !== socket.OPEN) {
+	console.log('Server connection not established, try refreshing the page');
+	return;
+    }
     try {
 	socket.send(JSON.stringify({ type: type, content: data }));
+	console.log('Sent:', type);
     } catch (err) {
 	console.log('Could not send message to server:' + err);
     }
