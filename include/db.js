@@ -10,26 +10,14 @@ const db_conn = mysql.createConnection({
 
 //add log entry for each article that's part of given order
 exports.updateLog = (storage, order) => {
-    //isolate article name from order
-    let storage_id = storage._id;
-    let unixtime = util.unix();
-    let article_names = new Array();
-    for (let i=0; i<order.articles.length; i++) {
-        article_names.push(order.articles[i].name);
-    }
-    //for each article determine id and add log entry
-    article_names.forEach(function(article_name) {
-        let prod_id;
-        //get product id based on name
-        //console.log("SELECT id from products WHERE name = '"+article_name+"' LIMIT 1");
-        db_conn.query("SELECT id from products WHERE name = '"+article_name+"' LIMIT 1", function(err, rows, fields) {
-            if (err)  throw err;
-            let prod_id = rows[0].id;
-            db_conn.query("INSERT INTO log (product, unix, storage_id) VALUES ('"+prod_id+"', '"+unixtime+"', '"+storage_id+"')", function (err, result) {
-                if (err)  throw err;
-            });
-        });
-    })
+    const timestamp = util.unix();
+    order.articles.forEach((article) => {
+	const sqlStr = `INSERT INTO log (product, unix, storage_id) VALUES
+                        ('${article.id}', '${timestamp}', '${storage._id}')`;
+	db_conn.query(sqlStr, (err, res) => {
+	    if (err) { console.log('Inserting access updates failed:', err); }
+	});
+    });
 }
 
 //returns number of accesses to given article_name in given timeframe via callback. 'article_name' must be a string e.g 'BookQ', 'start' and 'end' unix time in seconds.
@@ -118,10 +106,10 @@ exports.readInMockArticles = (callback) => {
         let articles_db = [];
         rows.forEach(function(row) {
             //console.log("row.length: "+row.id);
-            
+
             let obj = { id: row.id, name: row.name, desc: row.description, prod: row.producer };
             articles_db.push(obj);
-            
+
             callback(null, articles_db);
         });
 
