@@ -45,7 +45,11 @@ function main() {
     app.use(express.static(__dirname + '/public'));
     server.listen(port, () => { console.log('Listening on port %s', port); });
 
-    readInMockArticles();
+    db.readInMockArticles((err, articles_db) => {
+        if (err) { return console.log(err.message); }
+        articles = articles_db;
+    });
+
     dispatchWorkers();
 }
 
@@ -200,26 +204,6 @@ function sendAccessTimeRangeToClient(storageID, socket) {
 	if (minTime >= 0 && maxTime <= util.unix()) {
 	    sendMessage(socket, 'range', { min: minTime, max: maxTime });
 	}
-    });
-}
-
-// TODO: article volume/capacity not yet specified in the csv, also
-// needs to be handled here later on.
-// Needs to be transitioned to MySQL
-function readInMockArticles() {
-    fs.readFile('data/articles.csv', 'utf8', (err, text) => {
-	if (err) {
-	    console.log("Couldn't read-in mock articles: " + err);
-	    quitServer();
-	    return;
-	}
-	text.split('\n').map(line => {
-	    const art = line.split(',');
-	    const obj = { id: art[0], name: art[1], desc: art[2], prod: art[3] };
-	    if (obj.id !== '#id') {
-		articles.push(obj);
-	    }
-	});
     });
 }
 

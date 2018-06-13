@@ -1,13 +1,15 @@
 -- phpMyAdmin SQL Dump
--- version 4.6.6deb4
+-- version 4.8.1
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Erstellungszeit: 12. Jun 2018 um 20:46
--- Server-Version: 10.1.26-MariaDB-0+deb9u1
--- PHP-Version: 7.0.27-0+deb9u1
+-- Erstellungszeit: 13. Jun 2018 um 12:00
+-- Server-Version: 10.1.33-MariaDB
+-- PHP-Version: 7.2.6
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
+SET AUTOCOMMIT = 0;
+START TRANSACTION;
 SET time_zone = "+00:00";
 
 
@@ -45,7 +47,7 @@ CREATE TABLE `log` (
   `id` int(11) NOT NULL,
   `product` int(11) DEFAULT NULL,
   `unix` int(11) NOT NULL,
-  `frontend_update` tinyint(1) DEFAULT NULL
+  `storage_id` int(13) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
@@ -1714,16 +1716,19 @@ ALTER TABLE `products`
 --
 ALTER TABLE `compartments`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
 --
 -- AUTO_INCREMENT für Tabelle `log`
 --
 ALTER TABLE `log`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=261;
+
 --
 -- AUTO_INCREMENT für Tabelle `products`
 --
 ALTER TABLE `products`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3434;
+
 --
 -- Constraints der exportierten Tabellen
 --
@@ -1739,6 +1744,7 @@ ALTER TABLE `compartments`
 --
 ALTER TABLE `log`
   ADD CONSTRAINT `2log-product-id2` FOREIGN KEY (`product`) REFERENCES `products` (`id`) ON DELETE SET NULL ON UPDATE CASCADE;
+COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
