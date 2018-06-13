@@ -58,6 +58,7 @@ function recreateStorageLayout(storage, layer) {
     }
     createShelves(storage, layer);
     createEntrances(storage, layer);
+    createStorageBorder(layer);
     stage.add(layer);
 }
 
@@ -164,6 +165,17 @@ function createEntrances(storage, layer) {
 	});
 	layer.add(arrow);
     });
+}
+
+// simply draw the edges of the storage, more visually pleasing
+function createStorageBorder(layer) {
+    let border = new Konva.Line({
+	points: [0, 0, 0, rows*tileSize, cols*tileSize,
+		 rows*tileSize, cols*tileSize, 0, 0, 0],
+	stroke: Color.BORDER,
+	strokeWidth: 2
+    });
+    layer.add(border);
 }
 
 // response from server that includes both the (red) access heatmap
