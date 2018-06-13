@@ -43,8 +43,8 @@ function setupAccessSlider() {
     accessSlider.noUiSlider.on('change', () => {
 	accessSlider.setAttribute('disabled', true);
 	const vals = accessSlider.noUiSlider.get();
-	const minTime = Date.parse(vals[0]) / 1000;
-	const maxTime = Date.parse(vals[1]) / 1000;
+	const minTime = new Date(vals[0]).valueOf() / 1000;
+	const maxTime = new Date(vals[1]).valueOf() / 1000;
 	requestOptimizedStorageSetupPreview(minTime, maxTime);
     });
 }
