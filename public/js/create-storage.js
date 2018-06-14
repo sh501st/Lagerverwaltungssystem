@@ -173,6 +173,9 @@ function changeStorageHeight(height) {
     scaleStageToContainer(document.querySelector('#mainContainer'));
 }
 
+// hide tiles which are not withing the size bounds specified by the
+// width and height sliders in the sidebar, also removing entrances
+// which are no longer edge tiles upon rescaling
 function updateTileVisibility() {
     layer.find('Rect').each((tile) => {
 	const tileX = Math.floor(tile.x() / tileSize);
@@ -272,6 +275,7 @@ function areAllShelvesReachable() {
     let unreachableEntrances = 0;
     let nodes = [];
     layer.find('Rect').each((r) => {
+	if (!r.visible()) { return; }
 	const col = Math.floor(r.x() / tileSize);
 	const row = Math.floor(r.y() / tileSize);
 	grid[col][row] = r;
