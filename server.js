@@ -153,10 +153,9 @@ function sendLayoutToClient(storageID, socket, observeStorage = true) {
 	storage = loadStorageFromJSONFile(storageID, observeStorage);
     }
     if (observeStorage) {
-	storageID = storage._id; // TODO: necessary? deep checking.
-	let observers = observingClients.get(storageID);
+	let observers = observingClients.get(storage._id);
 	if (!observers) {
-	    observingClients.set(storageID, [socket]);
+	    observingClients.set(storage._id, [socket]);
 	} else {
 	    observers.push(socket);
 	}
@@ -321,8 +320,7 @@ function createNewStorage(storage) {
 function writeStorageToJSONFile(storage) {
     try {
 	let storageCopy;
-	let filename = 'data/storages/' +
-	    (storage._id === 0 ? 'template' : storage._id) + '.json';
+	let filename = 'data/storages/' + storage._id + '.json';
 	if (fs.existsSync(filename)) {
 	    storageCopy = JSON.parse(JSON.stringify(storage));
 	    storageCopy._id = generateSessionID();
@@ -344,10 +342,11 @@ function writeStorageToJSONFile(storage) {
 // write-back after generating the order cache.
 function bindOrderCacheToStorageFile(storage) {
     try {
-	let filename = 'data/storages/' +
-	    (storage._id === 0 ? 'template' : storage._id) + '.json';
+	let filename = 'data/storages/' + storage._id + '.json';
 	if (fs.existsSync(filename)) {
 	    fs.writeFileSync(filename, JSON.stringify(storage), 'utf8');
+	} else {
+	    console.log("Can't bind order cache since storageID is not valid");
 	}
     } catch (err) {
 	console.log("Couldn't update storage's order cache:", err);
@@ -361,7 +360,6 @@ function bindOrderCacheToStorageFile(storage) {
 // the index.html before building his/her own with
 // create-storage.html.
 function loadStorageFromJSONFile(sessionID, observeStorage = true) {
-    if (!sessionID) { sessionID = 0; }
     const dir = 'data/storages/';
     const templateFile = dir + 'template.json';
     const sessionFile = dir + sessionID + '.json';
