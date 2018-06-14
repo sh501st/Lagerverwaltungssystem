@@ -103,8 +103,8 @@ function recreateStorageLayout() {
 }
 
 // rescale whenever window dimensions and thus canvas container
-// change. Allow dragging and also zooming the canvas with mouse wheel
-// scroll.
+// change. Allow dragging via mouse for now, but could change in the
+// future when we have the order sidebar.
 function setupStageCanvas() {
     const canvasContainer = document.querySelector('#mainContainer');
     stage = new Konva.Stage({
@@ -112,10 +112,6 @@ function setupStageCanvas() {
 	width: canvasContainer.offsetWidth,
 	height: canvasContainer.offsetHeight,
 	draggable: true
-    });
-    window.addEventListener('wheel', (evt) => {
-	evt.preventDefault(); // disable browser handling the scroll
-	handleMouseScroll(canvasContainer, evt.deltaY);
     });
     window.addEventListener('resize', (evt) => {
 	scaleStageToContainer(canvasContainer);
@@ -154,27 +150,6 @@ function getMaxStageScale(container) {
 // restrict val to specified min and max bounds
 function clamp(val, min, max) {
     return val < min ? min : val > max ? max : val;
-}
-
-// zoom in at and out of mouse position instead of left upper corner
-// (default behaviour)
-function handleMouseScroll(container, scrollDelta) {
-    const fact = 1.1;
-    const maxScale = getMaxStageScale(container);
-    const minScale = getMinStageScale(container);
-    const prevScale = stage.scaleX();
-    const newScale = clamp(prevScale * (scrollDelta < 0 ? fact : 1/fact),
-			   minScale, maxScale);
-    const mx = stage.getPointerPosition().x;
-    const my = stage.getPointerPosition().y;
-    const nx = (mx - stage.x()) / prevScale;
-    const ny = (my - stage.y()) / prevScale;
-    stage.scale({ x: newScale, y: newScale });
-    stage.position({
-	x: mx - nx * newScale,
-	y: my - ny * newScale
-    });
-    stage.batchDraw();
 }
 
 // simply draw the edges of the storage, more visually pleasing
@@ -233,7 +208,6 @@ function showShelfInventory(shelf) {
     }
     layer.listening(false);
     stage.draggable(false);
-    window.removeEventListener('wheel', handleMouseScroll);
 
     let invLabel = popupLayer.find('#invLabel');
     let txt = 'Shelf:\n\n';
@@ -247,7 +221,6 @@ function showShelfInventory(shelf) {
     stage.draw();
 
     stage.on('click', () => {
-	window.addEventListener('wheel', handleMouseScroll);
 	stage.draggable(true);
 	layer.listening(true);
 	popupLayer.hide();
