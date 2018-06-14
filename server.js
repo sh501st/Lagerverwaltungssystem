@@ -196,6 +196,7 @@ function applyOptimizedStoragePreview(storageID, fromTime, toTime, socket) {
     }
     const storage = loadStorageFromJSONFile(storageID, false);
     optimize.rearrangeSubShelves(storage, fromTime, toTime, (optimizedStorage) => {
+	optimize.updateOrderCache(optimizedStorage);
 	const updatedID = writeStorageToJSONFile(optimizedStorage);
 	if (updatedID > 0) {
 	    sendMessage(socket, 'applied', { _id: updatedID });

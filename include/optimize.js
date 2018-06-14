@@ -86,3 +86,24 @@ function reassignNewSubShelfPosition(optimizedStorage, subShelf) {
     subShelf.article.shelfY = targetShelf.y;
     targetShelf.sub.push(subShelf);
 }
+
+// since we want the old cache in the newly optimized storage to keep
+// the same emerging heatmap pattern we have to assign the new shelf
+// coords to the pre-generated orders
+exports.updateOrderCache = (optimizedStorage) => {
+    if (!optimizedStorage || optimizedStorage.orderCache.length === 0) {
+	return;
+    }
+    optimizedStorage.orderCache.forEach((order) => {
+	order.articles.forEach((article) => {
+	    optimizedStorage.shelves.forEach((shelf) => {
+		shelf.sub.forEach((sub) => {
+		    if (sub.article.id === article.id) {
+			article.shelfX = shelf.x;
+			article.shelfY = shelf.y;
+		    }
+		});
+	    });
+	});
+    });
+}
