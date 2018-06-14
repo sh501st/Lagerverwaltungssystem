@@ -31,15 +31,26 @@
             </form>
         </div>
 
-
-        <div class="inside_menu" style="height: 5vw">Storege name:
+        <div class="inside_menu" style="height: 5vw">Storage name:
             <form action=""><input type="text" name="name" class="input"></form>
         </div><br>
 
-
         <div class="inside_menu" style="height: 8vw">
-            Width:<br><br> Height:
-            <br><br> Worker count:<br><br>
+	  <div>
+	    <label id="widthlabel">Width:</label><br>
+	    <input type="range" id="widthslider" min="5" max="20" value="15"
+		   onchange="changeStorageWidth(this.value);" />
+	  </div>
+	  <div>
+	    <label id="heightlabel">Height:</label><br>
+	    <input type="range" id="heightslider" min="5" max="20" value="10"
+		   onchange="changeStorageHeight(this.value);" />
+	  </div>
+          <div>
+	    <label id="workerlabel">Workers:</label><br>
+	    <input type="range" id="workerslider" min="1" max="20" value="8"
+		   onchange="changeStorageWorkers(this.value);" />
+	  </div>
         </div>
 
         <div class="inside_menu" style="height: 5vw; border-bottom-style: none"><button class="button" style="width: 18vw; background-color: forestgreen;" onclick="sendJSONToServer();">

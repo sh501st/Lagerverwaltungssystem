@@ -18,18 +18,31 @@ const Color = Object.freeze({
 // keep at integer values, otherwise we have to audit the code for
 // possible floating rounding errors
 const tileSize = 32;
-const cols = 15;
-const rows = 10;
 const numSubShelves = 4;
 
 let mode = Mode.NONE;
 let stage, layer;
 let socket, sessionID;
 
+// values can be changed via html sliders
+let cols;
+let rows;
+let workerCount;
+
 function main() {
+    initUiElements();
     setupStageCanvas();
     clearSessionStorage();
     connectToServer();
+}
+
+function initUiElements() {
+    cols = document.getElementById('widthslider').value;
+    rows = document.getElementById('heightslider').value;
+    workerCount = document.getElementById('workerslider').value;
+    document.getElementById('widthlabel').innerHTML = 'Width: ' + cols;
+    document.getElementById('heightlabel').innerHTML = 'Height: ' + rows;
+    document.getElementById('workerlabel').innerHTML = 'Workers: ' + workerCount;
 }
 
 // initial the canvas and mouse interactable tiles. Canvas scales to
@@ -45,9 +58,16 @@ function setupStageCanvas() {
     scaleStageToContainer(canvasContainer);
 
     layer = new Konva.Layer();
-    for (let row = 0; row < rows; row++) {
-	for (let col = 0; col < cols; col++) {
-	    createTile(col, row);
+    // visibility workaround since konva has a problem creating and
+    // destroying a whole amout of nodes without buggying out. Now we
+    // simply hide the nodes and reshowing them later on without
+    // changing the actual tile setup
+    const maxVisCol = document.getElementById('widthslider').max;
+    const maxVisRow = document.getElementById('heightslider').max;
+    for (let row = 0; row < maxVisRow; row++) {
+	for (let col = 0; col < maxVisCol; col++) {
+	    const visible = col < cols && row < rows;
+	    createTile(col, row, visible);
 	}
     }
     stage.add(layer);
@@ -137,9 +157,42 @@ function handleServerMessage(msg) {
     }
 }
 
+// called on input slider change, grow or shrink stage width
+function changeStorageWidth(width) {
+    cols = width;
+    document.getElementById('widthlabel').innerHTML = 'Width: ' + width;
+    updateTileVisibility();
+    scaleStageToContainer(document.querySelector('#mainContainer'));
+}
+
+// called on input slider change, grow or shrink stage height
+function changeStorageHeight(height) {
+    rows = height;
+    document.getElementById('heightlabel').innerHTML = 'Height: ' + height;
+    updateTileVisibility();
+    scaleStageToContainer(document.querySelector('#mainContainer'));
+}
+
+function updateTileVisibility() {
+    // TODO: check for entrance and remove and later append shifted
+
+    layer.find('Rect').each((tile) => {
+	const tileX = Math.floor(tile.x() / tileSize);
+	const tileY = Math.floor(tile.y() / tileSize);
+	tile.visible(tileX < cols && tileY < rows);
+    });
+    layer.batchDraw();
+}
+
+// called on input slider change, no functionality as of now
+function changeStorageWorkers(workerCount) {
+    this.workerCount = workerCount;
+    document.getElementById('workerlabel').innerHTML = 'Workers: ' + workerCount;
+}
+
 // create the visible and clickable rectangles on the html canvas and
 // hook up the necessary mouse actions.
-function createTile(col, row) {
+function createTile(col, row, visible) {
     let quad = new Konva.Rect({
 	x: col * tileSize,
 	y: row * tileSize,
@@ -147,6 +200,7 @@ function createTile(col, row) {
 	height: tileSize,
 	fill: Color.DEFAULT,
 	stroke: Color.BORDER,
+	visible: visible,
 	strokeWidth: 1,
     });
     // workaround since konva has no mouseDownMove (w/o drag) event
