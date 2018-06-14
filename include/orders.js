@@ -40,16 +40,17 @@ function addOrderToQueue(storage, order, notifyObservingClientsCB) {
 	return;
     }
     storage.orders.push(order);
-    notifyObservingClientsCB(storage);
+    notifyObservingClientsCB(storage, order);
 }
 
 // endless generation of fake orders from imaginary customers. Some
 // will not be generated anew but reused from the cache to fight
 // pseudo-random access distribution.
 exports.generateOrders = (activeStorages, notifyObservingClientsCB) => {
+    const maxOrderBacklog = 4;
     let f = () => {
 	activeStorages.forEach((storage) => {
-	    if (storage.orders.length < 8) {
+	    if (storage.orders.length < maxOrderBacklog) {
 		if (util.randBool(35)) { // 35% chance to recycle cached order
 		    let order = Object.assign(
 			{}, storage.orderCache[util.randInt(0, storage.orderCache.length - 1)]

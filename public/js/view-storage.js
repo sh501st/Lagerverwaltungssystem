@@ -8,7 +8,7 @@ const Color = Object.freeze({
 });
 
 let storage, cols, rows;
-let stage, layer, greyOverlayLayer, popupLayer, statusLayer;
+let stage, layer, greyOverlayLayer, popupLayer;
 let socket, sessionID;
 let heatmapMaxAccessCounter;
 
@@ -88,18 +88,6 @@ function recreateStorageLayout() {
     popupLayer.hide();
     stage.add(popupLayer);
 
-    // TODO: should really be html+css instead of this ugly overlay.
-    statusLayer = new Konva.Layer();
-    let orderText = new Konva.Text({
-	id: 'ordLabel',
-	x: cols * tileSize + 30,
-	y: 0,
-	fontSize: 16,
-	fill: Color.BORDER,
-	text: 'No orders yet.'
-    });
-    statusLayer.add(orderText);
-    stage.add(statusLayer);
 }
 
 // rescale whenever window dimensions and thus canvas container
@@ -259,21 +247,23 @@ function createEntrances() {
     });
 }
 
-// update the list beside the storage area whenever new updates from
-// the server come in. TODO: should really be html+css instead of this
-// inelegant horror show.
-function updateOrderQueueLabel(orders) {
-    let label = statusLayer.find('#ordLabel');
-    let txt = 'Order queue:\n\n';
-    orders.forEach((ord) => {
-	txt += 'Order ' + ord.id + ':\n';
-	ord.articles.forEach((art) => {
-	    txt += '    - ' + art.name + '\n';
-	});
-	txt += '\n';
+// append received order to the sidebar, creating new text entries for
+// each contained article
+function addOrderToSidebar(order) {
+    let elem = document.createElement('div');
+    elem.id = 'order_' + order.id;
+    elem.appendChild(document.createElement('hr'));
+    elem.appendChild(document.createTextNode('Order #' + order.id + ':'));
+    order.articles.forEach((article) => {
+	elem.appendChild(document.createElement('br'));
+	elem.appendChild(document.createTextNode(article.name));
     });
-    label.text(txt);
-    statusLayer.batchDraw();
+    document.getElementById('orderlist').appendChild(elem);
+}
+
+function removeOrderFromSidebar(order) {
+    let elem = document.getElementById('order_' + order.id);
+    document.getElementById('orderlist').removeChild(elem);
 }
 
 // TODO: close connection of tab refresh or close events socket events
@@ -339,9 +329,11 @@ function handleServerMessage(msg) {
 	showShelfInventory(content);
 	break;
     case 'orderupdate':
-	updateOrderQueueLabel(content.orders);
-	if (content.currentOrder) {
-	    spawnWorker(content.currentOrder);
+	if (content.removed) {
+	    removeOrderFromSidebar(content.order);
+	    spawnWorker(content.order);
+	} else {
+	    addOrderToSidebar(content.order);
 	}
 	break;
     default:

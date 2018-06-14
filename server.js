@@ -241,7 +241,7 @@ function dispatchWorkers() {
 	    if (order) {
 		order.path = pathfinding.generateWorkerPath(storage, order);
 		order.speed = moveSpeedInTilesPerSec;
-		notifyObservingClients(storage, order);
+		notifyObservingClients(storage, order, true);
 		db.updateLog(storage, order);
 	    }
 	});
@@ -250,13 +250,13 @@ function dispatchWorkers() {
     f();
 }
 
-function notifyObservingClients(storage, currentOrder = null) {
+function notifyObservingClients(storage, order, removed = false) {
     let clients = observingClients.get(storage._id);
     if (clients) {
 	clients.forEach((client) => {
 	    sendMessage(client, 'orderupdate', {
-		orders: storage.orders,
-		currentOrder: currentOrder
+		order: order,
+		removed: removed
 	    });
 	});
     }
