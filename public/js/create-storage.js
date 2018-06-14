@@ -174,12 +174,18 @@ function changeStorageHeight(height) {
 }
 
 function updateTileVisibility() {
-    // TODO: check for entrance and remove and later append shifted
-
     layer.find('Rect').each((tile) => {
 	const tileX = Math.floor(tile.x() / tileSize);
 	const tileY = Math.floor(tile.y() / tileSize);
-	tile.visible(tileX < cols && tileY < rows);
+	const visible = tileX < cols && tileY < rows;
+	const isEntrance = tile.fill() === Color.ENTRANCE ||
+	      tile.fill() === Color.INVALIDENTRANCE;
+	const isEdgeTile = tileX === 0 || tileX === cols-1 ||
+	      tileY === 0 || tileY === rows-1;
+	if (!visible || (isEntrance && !isEdgeTile)) {
+	    tile.fill(Color.DEFAULT);
+	}
+	tile.visible(visible);
     });
     layer.batchDraw();
 }
