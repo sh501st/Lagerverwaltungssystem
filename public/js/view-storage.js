@@ -111,7 +111,6 @@ function setupStageCanvas() {
 	container: 'mainContainer',
 	width: canvasContainer.offsetWidth,
 	height: canvasContainer.offsetHeight,
-	draggable: true
     });
     window.addEventListener('resize', (evt) => {
 	scaleStageToContainer(canvasContainer);
