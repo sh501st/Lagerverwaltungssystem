@@ -118,14 +118,8 @@ function scaleStageToContainer(container) {
 function getMinStageScale(container) {
     const tilemapWidth = tileSize * cols;
     const tilemapHeight = tileSize * rows;
-    const widthDiff = container.offsetWidth - tilemapWidth;
-    const heightDiff = container.offsetHeight - tilemapHeight;
-
-    if (widthDiff < heightDiff) {
-	return container.offsetWidth / tilemapWidth;
-    } else {
-	return container.offsetHeight / tilemapHeight;
-    }
+    return Math.min(container.offsetWidth / tilemapWidth,
+		    container.offsetHeight / tilemapHeight);
 }
 
 // limit zooming in to a reasonable default
