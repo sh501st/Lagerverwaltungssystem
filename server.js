@@ -46,11 +46,14 @@ function main() {
     server.listen(port, () => { console.log('Listening on port %s', port); });
 
     db.readInMockArticles((err, articles_db) => {
-        if (err) { return console.log(err.message); }
-        articles = articles_db;
+        if (err) {
+	    console.log('Error while reading in mock articles:', err.message);
+	    quitServer();
+	} else {
+            articles = articles_db;
+	    dispatchWorkers();
+	}
     });
-
-    dispatchWorkers();
 }
 
 // TODO: impl, find out how to do this the right way

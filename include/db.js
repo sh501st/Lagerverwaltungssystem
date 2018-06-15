@@ -116,21 +116,19 @@ exports.getTimeRange = (storage_id, callback) => {
 }
 
 
-// TODO: article volume/capacity not yet specified in the csv, also
+// TODO: article volume/capacity not yet specified in the db, also
 // needs to be handled here later on.
-// Needs to be transitioned to MySQL
 exports.readInMockArticles = (callback) => {
-        db_conn.query("SELECT id, name, description, producer from products", function(err, rows, fields) {
-        if (err)  throw err;
+    db_conn.query("SELECT id, name, description, producer from products", function(err, rows, fields) {
         let articles_db = [];
         rows.forEach(function(row) {
-            //console.log("row.length: "+row.id);
-
-            let obj = { id: row.id, name: row.name, desc: row.description, prod: row.producer };
-            articles_db.push(obj);
-
-            callback(null, articles_db);
+	    articles_db.push({
+		id: row.id,
+		name: row.name,
+		desc: row.description,
+		prod: row.producer
+	    });
         });
-
+        callback(err, articles_db);
     });
 }
