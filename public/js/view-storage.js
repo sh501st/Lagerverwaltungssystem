@@ -188,27 +188,36 @@ function showShelfInventory(shelf) {
 	return;
     }
     layer.listening(false);
-    stage.draggable(false);
-
-    let invLabel = popupLayer.find('#invLabel');
-    let txt = 'Shelf:\n\n';
-    shelf.sub.forEach((obj) => {
-	txt += '  ' + obj.article.name + ': ' + obj.count + '\n';
+    let modal = document.getElementById('invModal');
+    let tableBody = document.getElementById('inventory');
+    shelf.sub.forEach((sub) => {
+	let row = document.createElement('tr');
+	const items = [sub.article.name, sub.count, sub.article.accessCounter];
+	items.forEach((item) => {
+	    let cell = document.createElement('td');
+	    const text = document.createTextNode(item);
+	    cell.appendChild(text);
+	    row.appendChild(cell);
+	});
+	tableBody.appendChild(row);
     });
-    invLabel.text(txt);
+    modal.style.display = 'block';
+    window.onclick = (event) => {
+	if (event.target == modal) {
+	    closeModalDialog();
+	}
+    };
+}
 
-    greyOverlayLayer.show();
-    popupLayer.show();
-    stage.draw();
-
-    stage.on('click', () => {
-	stage.draggable(true);
-	layer.listening(true);
-	popupLayer.hide();
-	greyOverlayLayer.hide();
-	stage.draw();
-	stage.off('click');
-    });
+function closeModalDialog() {
+    let modal = document.getElementById('invModal');
+    modal.style.display = 'none';
+    window.onclick = null;
+    let tableBody = document.getElementById('inventory');
+    while (tableBody.firstChild) {
+	tableBody.removeChild(tableBody.firstChild);
+    }
+    layer.listening(true);
 }
 
 // fancy looking arrows instead of simple rectangles for entrance

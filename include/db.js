@@ -43,20 +43,39 @@ exports.accessByArticle = (article_name,start,end,storage_id,callback) => {
     });
 }
 
-//returns number of accesses to given article_id in given timeframe via callback. 'article_id' must be the article id, 'start' and 'end' unix time in seconds.
-/*example use:
-db.accessById('42',1528336516,util.unix(),2147483647, (err, number) => {
-    if (err) {
-        return console.log(err.message);
-    }
-    console.log(number);
-});
-*/
-exports.accessById = (article_id,start,end,storage_id,callback) => {
-    //determine occurences in log
-    db_conn.query("SELECT id from log WHERE product = '"+article_id+"' AND unix > '"+start+"' AND unix <= '"+end+"' AND storage_id = '"+storage_id+"'", function(err, rows, fields) {
-        if (err)  throw err;
-        callback(null, rows.length)
+// returns number of accesses to given article_id in given timeframe.
+// 'article_id' must be the article id, 'start' and 'end' unix time in seconds
+// and 'storage_id' the id of the storage file in question.
+//
+// Since this is called repeatedly to lookup access for the shelf
+// inventory, it's cumbersome and ugly to chain up to five callbacks,
+// because we need to wait for all of them to finish before sending
+// out the msg. Async+await makes the call to accessById seem like a
+// regular old function call. One note, the function from within await
+// db.accessById(...) was called needs to be declared async (see
+// sendShelfToClient in server.js)
+//
+// example usages:
+//
+// let accesses = await db.accessById('42', 1528336516, util.unix(), 2147483647);
+//
+// for (let i = 0; i < shelf.sub.length; i++) {
+//     let article = shelf.sub[i].article;
+//     article.accessCounter = await db.accessById(article.id, 0, util.unix(), storageID);
+// }
+exports.accessById = (article_id, start, end, storage_id) => {
+    const sqlStr =
+	  `SELECT COUNT(*) AS accesses FROM log
+           WHERE product = '${article_id}' AND unix > '${start}' AND
+                 unix <= '${end}' AND storage_id = '${storage_id}'`;
+    return new Promise((resolve, reject) => {
+	db_conn.query(sqlStr, (err, rows, fields) => {
+            if (err) {
+		console.log("Can't get number of accesses for given IDs:", err.message);
+		reject(err);
+	    }
+            resolve(rows[0].accesses);
+	});
     });
 }
 

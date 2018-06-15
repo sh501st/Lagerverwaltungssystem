@@ -47,7 +47,28 @@
 	</div>
     </div>
 
-    <div id="mainContainer" oncontextmenu="return false;"></div>
+    <div>
+      <div id="invModal" class="modal">
+	<div class="modal-content">
+	  <span class="modal-close-button" onclick="closeModalDialog();">&times;</span>
+	  <p><b>Shelf inventory:</b></p>
+	  <p><br><hr></p>
+	  <div>
+	    <table style="width:100%">
+	      <thead>
+		<tr>
+		  <th align="left">article</th>
+		  <th align="left">stored</th>
+		  <th align="left">accessed</th>
+		</tr>
+	      </thead>
+	      <tbody id="inventory"></tbody>
+	    </table>
+	  </div>
+	</div>
+      </div>
+      <div id="mainContainer" oncontextmenu="return false;"></div>
+    </div>
     <script>
       window.addEventListener('DOMContentLoaded', () => main());
     </script>

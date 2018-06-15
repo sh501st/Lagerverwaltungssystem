@@ -204,8 +204,8 @@ function applyOptimizedStoragePreview(storageID, fromTime, toTime, socket) {
 }
 
 // client sends storage ID and click coordiantes and expects the
-// contents of that very shelf
-function sendShelfToClient(storageID, shelfX, shelfY, socket) {
+// contents of that very shelf in a tabular layout.
+async function sendShelfToClient(storageID, shelfX, shelfY, socket) {
     let storage = activeStorages.get(storageID);
     if (storage && (shelfX >= 0 || shelfX <= storage.width) &&
 	(shelfY >= 0 || shelfY <= storage.height))
@@ -213,6 +213,10 @@ function sendShelfToClient(storageID, shelfX, shelfY, socket) {
 	let shelf = storage.shelves.find((elem) => {
 	    return elem.x === shelfX && elem.y == shelfY;
 	});
+	for (let i = 0; i < shelf.sub.length; i++) {
+	    let article = shelf.sub[i].article;
+	    article.accessCounter = await db.accessById(article.id, 0, util.unix(), storageID);
+	}
 	sendMessage(socket, 'shelfinventory', shelf);
     }
 }
