@@ -13,8 +13,6 @@ const orders = require('./include/orders');
 const pathfinding = require('./include/pathfinding');
 const util = require('./include/util');
 
-// TODO: close/delete inactive storage upon client disconnect and no
-// other client uses it
 let activeStorages = new Map();
 let observingClients = new Map();
 let articles = []; // holds the csv articles
@@ -56,10 +54,9 @@ function main() {
     });
 }
 
-// TODO: impl, find out how to do this the right way
 function quitServer() {
-    // wss.server.close/terminate();
-    // server.close();
+    console.log('Closing down server');
+    wss.close(() => process.exit());
 }
 
 // Send unique ID to the session upon connecting, it will be used to
@@ -86,13 +83,14 @@ function sendMessage(socket, type, data) {
 // clients that we no longer reachable will be excluded from future
 // status updates.
 function removeClient(socket) {
-    // TODO: close storages no one is observing anymore
     observingClients.forEach((clients, id) => {
 	let remaining = clients.filter(client => client !== socket);
 	if (remaining.length > 0) {
 	    observingClients.set(id, remaining);
 	} else {
 	    observingClients.delete(id);
+	    activeStorages.delete(id);
+	    console.log('Deactivating storage ' + id + ', last observer disconnected.');
 	}
     });
 }
