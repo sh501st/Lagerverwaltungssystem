@@ -8,7 +8,7 @@ const Color = Object.freeze({
 });
 
 let storage, cols, rows;
-let stage, layer, greyOverlayLayer, popupLayer;
+let stage, layer;
 let socket, sessionID;
 let heatmapMaxAccessCounter;
 
@@ -37,57 +37,14 @@ function storageReceivedFromServer() {
 }
 
 // initialize the canvas and setup all the graphical fluff (tiles,
-// borders, layers, popup, etc)
+// borders, layers, etc)
 function recreateStorageLayout() {
     setupStageCanvas();
-
     layer = new Konva.Layer();
     createStorageBorder();
     createShelves();
     createEntrances();
     stage.add(layer);
-
-    greyOverlayLayer = new Konva.Layer();
-    let block = new Konva.Rect({
-	x: 0,
-	y: 0,
-	width: cols * tileSize,
-	height: rows * tileSize,
-	fill: Color.OVERLAY,
-	opacity: 0.7
-    });
-    greyOverlayLayer.add(block);
-    greyOverlayLayer.hide();
-    stage.add(greyOverlayLayer);
-
-    // TODO: should really be html+css instead of this ugly overlay
-    popupLayer = new Konva.Layer();
-    let popup = new Konva.Rect({
-	id: 'popup',
-	x: cols * tileSize / 4,
-	y: rows * tileSize / 8,
-	width: cols * tileSize / 2,
-	height: rows * tileSize * 0.75,
-	fill: Color.DEFAULT,
-	stroke: Color.BORDER,
-	strokeWidth: 3
-    });
-    const textPadding = 20;
-    let inventoryText = new Konva.Text({
-	id: 'invLabel',
-	x: popup.x() + textPadding,
-	y: popup.y() + textPadding,
-	width: popup.width() - textPadding * 2,
-	height: popup.height() - textPadding * 2,
-	fontSize: 24,
-	fill: Color.BORDER,
-	text: 'EMPTY'
-    });
-    popupLayer.add(popup);
-    popupLayer.add(inventoryText);
-    popupLayer.hide();
-    stage.add(popupLayer);
-
 }
 
 // rescale whenever window dimensions and thus canvas container
@@ -120,17 +77,6 @@ function getMinStageScale(container) {
     const tilemapHeight = tileSize * rows;
     return Math.min(container.offsetWidth / tilemapWidth,
 		    container.offsetHeight / tilemapHeight);
-}
-
-// limit zooming in to a reasonable default
-function getMaxStageScale(container) {
-    const maxFactor = 3;
-    return getMinStageScale(container) * maxFactor;
-}
-
-// restrict val to specified min and max bounds
-function clamp(val, min, max) {
-    return val < min ? min : val > max ? max : val;
 }
 
 // simply draw the edges of the storage, more visually pleasing
@@ -192,7 +138,7 @@ function showShelfInventory(shelf) {
     let tableBody = document.getElementById('inventory');
     shelf.sub.forEach((sub) => {
 	let row = document.createElement('tr');
-	const items = [sub.article.name, sub.count, sub.article.accessCounter];
+	const items = [sub.article.name, sub.count, sub.accessCounter];
 	items.forEach((item) => {
 	    let cell = document.createElement('td');
 	    const text = document.createTextNode(item);

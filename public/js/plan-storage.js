@@ -4,6 +4,7 @@ const Color = Object.freeze({
     BORDER: '#606060',
     ACCESS: '#ee3060',
     OPTIMIZED: '#3b8c1d',
+    HIGHLIGHT: '#30aaee',
 });
 
 let defaultStorage, optimizedStorage, cols, rows;
@@ -104,17 +105,32 @@ function scaleStageToContainer(container) {
 // setup tiles, absolute access color for the time being till db access
 // log is up and running
 function createShelves(storage, layer) {
-    const fillColor = storage === optimizedStorage ? Color.OPTIMIZED : Color.ACCESS;
     storage.shelves.forEach(shelf => {
+	const fillColor = storage === optimizedStorage ? Color.OPTIMIZED : Color.ACCESS;
+	const heatmapColor = calculateHeatmapColor(storage.heatmapMaxAccessCounter, shelf, fillColor);
 	let rect = new Konva.Rect({
 	    x: shelf.x * tileSize,
 	    y: shelf.y * tileSize,
 	    width: tileSize,
 	    height: tileSize,
-	    fill: calculateHeatmapColor(
-		storage.heatmapMaxAccessCounter, shelf, fillColor),
+	    fill: heatmapColor,
 	    stroke: Color.BORDER,
 	    strokeWidth: 2
+	});
+	rect.on('mouseenter', (e) => {
+	    e.target.prevColor = e.target.fill();
+	    e.target.fill(Color.HIGHLIGHT);
+	    layer.batchDraw();
+	});
+	rect.on('mouseleave', (e) => {
+	    const col = e.target.prevColor;
+	    e.target.fill(col ? col : Color.DEFAULT);
+	    layer.batchDraw();
+	});
+	rect.on('click', (e) => {
+	    const x = Math.floor(e.target.x() / tileSize);
+	    const y = Math.floor(e.target.y() / tileSize);
+	    showShelfInventory(shelf, layer);
 	});
 	layer.add(rect);
     });
@@ -137,6 +153,47 @@ function calculateHeatmapColor(maxAccess, shelf, fillColor) {
     const fillGreen = defCol.g + (defCol.g > accCol.g ? -greenDiff : greenDiff) * colShiftFactor;
     const fillBlue = defCol.b + (defCol.b > accCol.b ? -blueDiff : blueDiff) * colShiftFactor;
     return `rgb(${fillRed},${fillGreen},${fillBlue})`;
+}
+
+// gets called when user clicked on a shelf tile, which fires off a
+// request to the server which sends back the articles the shelf
+// holds. Show an popup overlay while deactivating all other event
+// handling while it is being displayed and closed with a mouse click
+// within the canvas dimensions.
+function showShelfInventory(shelf) {
+    if (!shelf || !shelf.sub) {
+	console.log("Can't show shelf inventory, not valid.", shelf);
+	return;
+    }
+    let modal = document.getElementById('invModal');
+    let tableBody = document.getElementById('inventory');
+    shelf.sub.forEach((sub) => {
+	let row = document.createElement('tr');
+	const items = [sub.article.name, sub.count, sub.accessCounter];
+	items.forEach((item) => {
+	    let cell = document.createElement('td');
+	    const text = document.createTextNode(item);
+	    cell.appendChild(text);
+	    row.appendChild(cell);
+	});
+	tableBody.appendChild(row);
+    });
+    modal.style.display = 'block';
+    window.onclick = (event) => {
+	if (event.target == modal) {
+	    closeModalDialog();
+	}
+    };
+}
+
+function closeModalDialog() {
+    let modal = document.getElementById('invModal');
+    modal.style.display = 'none';
+    window.onclick = null;
+    let tableBody = document.getElementById('inventory');
+    while (tableBody.firstChild) {
+	tableBody.removeChild(tableBody.firstChild);
+    }
 }
 
 // fancy looking arrows instead of simple rectangles for entrance
@@ -207,7 +264,7 @@ function optimizationPreviewReceived(defStorage, optStorage) {
     recreateStorageLayout(defaultStorage, defaultLayer);
 
     optimizedStorage = optStorage;
-    optimizedLayer = new Konva.Layer({ opacity: 0 });
+    optimizedLayer = new Konva.Layer({ opacity: 0, visible: false });
     recreateStorageLayout(optimizedStorage, optimizedLayer);
 
     // keep slider disabled in case the db access log has no entries
@@ -261,17 +318,23 @@ function writeToSessionStorage(key, value) {
 // preliminary color flipping; once db access log supports storages
 // this show actual color shifts based on access counter
 function animatePreviewTransition() {
-    const animDelay = 3000;
+    const animDelayInMs = 3000;
+    const shiftDurationInMs = 250;
     let showPreview = true;
     let f = () => {
 	optimizedLayer.to({
 	    opacity: (showPreview ? 1 : 0),
-	    duration: 0.5
+	    duration: shiftDurationInMs / 1000
 	});
+	if (showPreview) {
+	    optimizedLayer.visible(true);
+	} else {
+	    setTimeout(() => optimizedLayer.visible(false), shiftDurationInMs);
+	}
 	showPreview = !showPreview;
-	setTimeout(f, animDelay);
+	setTimeout(f, animDelayInMs);
     };
-    setTimeout(f, animDelay);
+    setTimeout(f, animDelayInMs);
 }
 
 // TODO: close connection of tab refresh or close events socket events

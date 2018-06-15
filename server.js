@@ -214,6 +214,9 @@ function applyOptimizedStoragePreview(storageID, fromTime, toTime, socket) {
 // client sends storage ID and click coordiantes and expects the
 // contents of that very shelf in a tabular layout.
 async function sendShelfToClient(storageID, shelfX, shelfY, socket) {
+    if (!storageID) {
+	storageID = getTemplateStorageID();
+    }
     let storage = activeStorages.get(storageID);
     if (storage && (shelfX >= 0 || shelfX <= storage.width) &&
 	(shelfY >= 0 || shelfY <= storage.height))
@@ -222,8 +225,8 @@ async function sendShelfToClient(storageID, shelfX, shelfY, socket) {
 	    return elem.x === shelfX && elem.y == shelfY;
 	});
 	for (let i = 0; i < shelf.sub.length; i++) {
-	    let article = shelf.sub[i].article;
-	    article.accessCounter = await db.accessById(article.id, 0, util.unix(), storageID);
+	    let sub = shelf.sub[i];
+	    sub.accessCounter = await db.accessById(sub.article.id, 0, util.unix(), storageID);
 	}
 	sendMessage(socket, 'shelfinventory', shelf);
     }
@@ -398,7 +401,11 @@ function loadStorageFromJSONFile(sessionID, observeStorage = true) {
     }
 }
 
+let templateStorageID;
 function getTemplateStorageID() {
+    if (templateStorageID) {
+	return templateStorageID;
+    }
     const templateFile = 'data/storages/template.json';
     if (!fs.existsSync(templateFile)) {
 	console.log("Couldn't find the template storage");
