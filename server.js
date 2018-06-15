@@ -401,10 +401,9 @@ function loadStorageFromJSONFile(sessionID, observeStorage = true) {
     }
 }
 
-let templateStorageID;
 function getTemplateStorageID() {
-    if (templateStorageID) {
-	return templateStorageID;
+    if (this.templateStorageID) {
+	return this.templateStorageID;
     }
     const templateFile = 'data/storages/template.json';
     if (!fs.existsSync(templateFile)) {
@@ -413,6 +412,7 @@ function getTemplateStorageID() {
     }
     try {
 	const storage = JSON.parse(fs.readFileSync(templateFile, 'utf8'));
+	this.templateStorageID = storage._id;
 	return storage._id;
     } catch (err) {
 	console.log("Couldn't read-in template storage file:", err);
