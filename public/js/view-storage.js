@@ -215,20 +215,20 @@ function removeOrderFromSidebar(order) {
     document.getElementById('orderlist').removeChild(elem);
 }
 
-// TODO: close connection of tab refresh or close events socket events
-// slightly different from the server's socket handling since this is
-// provided by the web browser instead of the node wrapper for
-// websockets. Promise for semi-blocking and waiting while connection
-// is established in the background.
 function connectToServer() {
     socket = new WebSocket('ws://localhost:8080');
-    socket.onopen = () => {
-	console.log('Connected to server');
-    };
     socket.onmessage = (msg) => {
 	handleServerMessage(msg);
     };
-    return new Promise((resolve) => setTimeout(resolve, 1000));
+    socket.onerror = (error) => {
+	console.log('Socket error:', error);
+    };
+    return new Promise((resolve) => {
+	socket.onopen = () => {
+	    console.log('Connected to server');
+	    resolve();
+	};
+    });
 }
 
 // if we can find a sessionID within the browser's html5 session
