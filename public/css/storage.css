@@ -9,7 +9,7 @@
 
         #menu {
             width: 20vw;
-            height: 47vw;
+            height: 90vh;
             position: absolute;
             margin-left: 0.5vw;
             margin-top: 0vw;
@@ -20,16 +20,16 @@
 
         .inside_menu {
             padding-left: 0.5vw;
-            padding-bottom: 0.5vw;
+            padding-bottom: 0.5vh;
             border-bottom-style: solid;
             border-bottom-color: black;
-            margin-bottom: 0.5vw;
+            margin-bottom: 0.5vh;
         }
 
         #mainContainer {
             position: absolute;
             width: 77vw;
-            height: 47vw;
+            height: 90vh;
             margin-left: 21.5vw;
             border-style: none;
         }
@@ -46,7 +46,7 @@
             width: 9vw;
             transition: all 0.5s;
             cursor: pointer;
-            margin-top: 0.5vw;
+            margin-top: 0.5vh;
             margin-right: 0.4vw;
         }
 
@@ -82,7 +82,7 @@
             border-width: 0.15vw;
             font-size: 1.5vw;
             width: 18vw;
-            height: 2.5vw;
+            height: 4.5vh;
             background-color: azure;
         }
 
@@ -134,41 +134,198 @@
             background-position: right 2vw center, right bottom, right bottom, right bottom;
         }
 
-	#accessSlider {
-	    width: 90%;
-	    margin: 0.5vw;
-	}
+        #accessSlider {
+            width: 16vw;
+            margin: 0.5vw;
+            margin-left: 1vw;
+            margin-top: 5vh;
+        }
 
-	.modal {
-	    display: none;
-	    position: fixed;
-	    z-index: 1;
-	    left: 0;
-	    top: 0;
-	    width: 100%;
-	    height: 100%;
-	    overflow: auto;
-	    background-color: rgba(0, 0, 0, 0.4);
-	}
+        #size {
+            padding-left: 0.5vw;
+            padding-bottom: 0.5vh;
+            border-bottom-style: none;
+            border-bottom-color: black;
+            margin-bottom: 0.5vh;
+        }
 
-	.modal-content {
-	    background: #fefefe;
-	    margin: 15% auto;
-	    padding: 20px;
-	    border: 1px solid #888;
-	    width: 50%;
-	}
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.4);
+        }
 
-	.modal-close-button {
-	    color: #aaa;
-	    float: right;
-	    font-size: 28px;
-	    font-weight: bold;
-	}
+        .modal-content {
+            background: #fefefe;
+            margin: 15% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 50%;
+        }
 
-	.modal-close-button:hover,
-	.modal-close-button:focus {
-	    color: black;
-	    text-decoration: none;
-	    cursor: pointer;
-	}
+        .modal-close-button {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        .modal-close-button:hover,
+        .modal-close-button:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        input[type=range] {
+            display: block;
+            position: relative;
+            width: 17.5vw;
+            height: 5vh;
+            margin: 1vh 0;
+            padding: 0 0.5vw;
+            background: none;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+            cursor: pointer;
+        }
+
+        input[type=range]:hover:before,
+        input[type=range]:hover:after {
+            color: #608000;
+        }
+
+        input[type=range]:hover::-webkit-slider-runnable-track {
+            background-color: #85b200;
+        }
+
+        input[type=range]:hover::-moz-range-track {
+            background-color: #85b200;
+        }
+
+        input[type=range]:focus::-webkit-slider-runnable-track {
+            background-color: #85b200;
+        }
+
+        input[type=range]:before {
+            left: 2vw;
+        }
+
+        input[type=range]:after {
+            right: 2vw;
+        }
+
+        input[type=range]#sort_tra:before {
+            content: "\e000";
+        }
+
+        input[type=range]#sort_tra:after {
+            content: "\e001";
+        }
+
+        /*range circle*/
+
+        input[type=range]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            height: 2.5vh;
+            width: 1.5vw;
+            border-radius: 100%;
+            background-color: #fff;
+            cursor: pointer;
+            margin-top: -0.75vh;
+            -webkit-box-shadow: 0.2vw 0.2vw 0.6vw rgba(0, 0, 0, 0.4);
+            box-shadow: 0.2vw 0.2vw 0.6vw rgba(0, 0, 0, 0.4);
+        }
+
+        input[type=range]::-moz-range-thumb {
+            -moz-appearance: none;
+            appearance: none;
+            height: 2.5vh;
+            width: 1.5vw;
+            border-radius: 100%;
+            background-color: #fff;
+            cursor: pointer;
+            -moz-box-shadow: 0.2vw 0.2vw 0.6vwx rgba(0, 0, 0, 0.4);
+            box-shadow: 0.2vw 0.2vw 0.6vw rgba(0, 0, 0, 0.4);
+        }
+
+        input[type=range]::-ms-thumb {
+            -ms-appearance: none;
+            appearance: none;
+            height: 2.5vh;
+            width: 1.5vw;
+            border-radius: 100%;
+            background-color: #fff;
+            cursor: pointer;
+            -ms-box-shadow: 0.2vw 0.2vw 0.6vw rgba(0, 0, 0, 0.4);
+            box-shadow: 0.2vw 0.2vw 0.6vw rgba(0, 0, 0, 0.4);
+        }
+
+        input[type=range]::slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            height: 2.5vh;
+            width: 1.5vw;
+            border-radius: 100%;
+            background-color: #fff;
+            cursor: pointer;
+            margin-top: -0.75vh;
+            -webkit-box-shadow: 0.2vw 0.2vw 0.6vw rgba(0, 0, 0, 0.4);
+            box-shadow: 0.2vw 0.2vw 0.6vw rgba(0, 0, 0, 0.4);
+        }
+
+        /*range pathway*/
+
+        input[type=range]::-webkit-slider-runnable-track {
+            width: 100%;
+            height: 0.3vh;
+            background-color: #aaa;
+            border-radius: 0.3vw;
+            cursor: pointer;
+        }
+
+        input[type=range]::-moz-range-track {
+            width: 100%;
+            height: 0.3vh;
+            background-color: #aaa;
+            border-radius: 0.3vw;
+            cursor: pointer;
+        }
+
+        input[type=range]::-ms-track {
+            width: 100%;
+            height: 0.3vh;
+            border-color: transparent;
+            color: transparent;
+            border-radius: 0.3vw;
+            background: transparent;
+            cursor: pointer;
+        }
+
+        /*arrived progress*/
+
+        input[type=range]::-ms-fill-lower {
+            background-color: #85b200;
+        }
+
+        /*not arrived progress*/
+
+        input[type=range]::-ms-fill-upper {
+            background-color: #aaa;
+        }
+
+        input[type=range]::-ms-ticks-before {
+            display: none;
+        }
+
+        input[type=range]::-ms-ticks-after {
+            display: none;
+        }
