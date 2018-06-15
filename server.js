@@ -36,9 +36,14 @@ function main() {
 	socket.on('message', (msg) => {
 	    handleClientMessage(socket, msg)
 	});
-	console.log('client connected');
+	socket.on('close', (code, reason) => {
+	    console.log('Client disconnected');
+	    removeClient(socket)
+	});
+	console.log('Client connected');
 	sendMessage(socket, 'id', { _id: generateSessionID() });
     });
+
 
     app.use(express.static(__dirname + '/public'));
     server.listen(port, () => { console.log('Listening on port %s', port); });
