@@ -123,22 +123,21 @@ function handleClientMessage(socket, msg) {
 	createNewStorage(content);
 	break;
     case 'reqlayout':
-	sendLayoutToClient(content._id ? content._id : 0, socket,
-			   content.observeStorage);
+	sendLayoutToClient(content._id, socket, content.observeStorage);
 	break;
     case 'reqpreview':
 	sendOptimizedStoragePreviewToClient(
-	    content._id ? content._id : 0, socket, content.from, content.to);
+	    content._id, socket, content.from, content.to);
 	break;
     case 'applypreview':
 	applyOptimizedStoragePreview(
-	    content._id ? content._id : 0, content.from, content.to, socket);
+	    content._id, content.from, content.to, socket);
 	break;
     case 'shelfinventory':
 	sendShelfToClient(content._id, content.x, content.y, socket);
 	break;
     case 'reqrange':
-	sendAccessTimeRangeToClient(content._id ? content._id : 0, socket);
+	sendAccessTimeRangeToClient(content._id, socket);
 	break;
     default:
 	console.log('Unknown type provided in client message:', type);
@@ -148,6 +147,9 @@ function handleClientMessage(socket, msg) {
 // client sends storage ID and expects storage layout which is either
 // loaded from mem cache or json file on disk when not active
 function sendLayoutToClient(storageID, socket, observeStorage = true) {
+    if (!storageID) {
+	storageID = getTemplateStorageID();
+    }
     let storage = activeStorages.get(storageID);
     if (!storage) {
 	storage = loadStorageFromJSONFile(storageID, observeStorage);
@@ -172,6 +174,9 @@ function sendLayoutToClient(storageID, socket, observeStorage = true) {
 // between the current state and what it could look once subshelves
 // were to be rearranged.
 function sendOptimizedStoragePreviewToClient(storageID, socket, fromTime, toTime) {
+    if (!storageID) {
+	storageID = getTemplateStorageID();
+    }
     const observeStorage = false;
     const storage = loadStorageFromJSONFile(storageID, observeStorage);
     if (storage) {
@@ -189,7 +194,10 @@ function sendOptimizedStoragePreviewToClient(storageID, socket, fromTime, toTime
 // after the subshelf transformation. Optimized storage is written to
 // a new file, preserving the original storage setup.
 function applyOptimizedStoragePreview(storageID, fromTime, toTime, socket) {
-    if ((!storageID && storageID !== 0) || fromTime === 0 || toTime === 10) {
+    if (!storageID) {
+	storageID = getTemplateStorageID();
+    }
+    if (!(storageID > 0) || fromTime === 0 || toTime === 10) {
 	console.log('Provided optimization parameters are not valid.');
 	return;
     }
@@ -225,6 +233,9 @@ async function sendShelfToClient(storageID, shelfX, shelfY, socket) {
 // values straight from the db access log that are associated with the
 // given id.
 function sendAccessTimeRangeToClient(storageID, socket) {
+    if (!storageID) {
+	storageID = getTemplateStorageID();
+    }
     db.getTimeRange(storageID, (minTime, maxTime) => {
 	if (minTime >= 0 && maxTime <= util.unix()) {
 	    sendMessage(socket, 'range', { min: minTime, max: maxTime });
@@ -384,5 +395,20 @@ function loadStorageFromJSONFile(sessionID, observeStorage = true) {
     } catch (err) {
 	console.log("Couldn't read-in storage file with given sessionID:", err);
 	return;
+    }
+}
+
+function getTemplateStorageID() {
+    const templateFile = 'data/storages/template.json';
+    if (!fs.existsSync(templateFile)) {
+	console.log("Couldn't find the template storage");
+	return -1;
+    }
+    try {
+	const storage = JSON.parse(fs.readFileSync(templateFile, 'utf8'));
+	return storage._id;
+    } catch (err) {
+	console.log("Couldn't read-in template storage file:", err);
+	return -1;
     }
 }

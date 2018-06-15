@@ -102,7 +102,7 @@ function clearSessionStorage() {
 	console.log('Session storage not available in your browser. Are your cookies disabled?');
 	return;
     }
-    writeToSessionStorage('sessionID', "0");
+    storage.clear();
 }
 
 // we're using html5 storage to keep the sessionID between 'create'
