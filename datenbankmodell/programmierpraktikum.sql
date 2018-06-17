@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Erstellungszeit: 13. Jun 2018 um 12:00
+-- Erstellungszeit: 17. Jun 2018 um 22:46
 -- Server-Version: 10.1.33-MariaDB
 -- PHP-Version: 7.2.6
 
@@ -44,7 +44,8 @@ CREATE TABLE `compartments` (
 --
 
 CREATE TABLE `log` (
-  `id` int(11) NOT NULL,
+  `order_id` int(11) NOT NULL,
+  `no_in_order` int(11) NOT NULL,
   `product` int(11) DEFAULT NULL,
   `unix` int(11) NOT NULL,
   `storage_id` int(13) DEFAULT NULL
@@ -1464,8 +1465,7 @@ INSERT INTO `products` (`id`, `name`, `producer`, `description`, `max-amount`) V
 (3266, 'A8-7650K-O', '', '', 0),
 (3267, 'A8-7650K-P', '', '', 0),
 (3268, 'A8-7650K-Q', '', '', 0),
-(3269, 'A8-7650K-R', '', '', 0);
-INSERT INTO `products` (`id`, `name`, `producer`, `description`, `max-amount`) VALUES
+(3269, 'A8-7650K-R', '', '', 0),
 (3270, 'A8-7650K-S', '', '', 0),
 (3271, 'A8-7650K-T', '', '', 0),
 (3272, 'A8-7650K-U', '', '', 0),
@@ -1519,7 +1519,8 @@ INSERT INTO `products` (`id`, `name`, `producer`, `description`, `max-amount`) V
 (3320, 'Athlon X4 870K-Q', '', '', 0),
 (3321, 'Athlon X4 870K-R', '', '', 0),
 (3322, 'Athlon X4 870K-S', '', '', 0),
-(3323, 'Athlon X4 870K-T', '', '', 0),
+(3323, 'Athlon X4 870K-T', '', '', 0);
+INSERT INTO `products` (`id`, `name`, `producer`, `description`, `max-amount`) VALUES
 (3324, 'Athlon X4 870K-U', '', '', 0),
 (3325, 'Athlon X4 870K-V', '', '', 0),
 (3326, 'Athlon X4 870K-W', '', '', 0),
@@ -1646,7 +1647,7 @@ ALTER TABLE `compartments`
 -- Indizes für die Tabelle `log`
 --
 ALTER TABLE `log`
-  ADD PRIMARY KEY (`id`),
+  ADD PRIMARY KEY (`order_id`,`no_in_order`),
   ADD KEY `2log-product-id2` (`product`);
 
 --
@@ -1664,12 +1665,6 @@ ALTER TABLE `products`
 --
 ALTER TABLE `compartments`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
-
---
--- AUTO_INCREMENT für Tabelle `log`
---
-ALTER TABLE `log`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=261;
 
 --
 -- AUTO_INCREMENT für Tabelle `products`

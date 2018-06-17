@@ -11,9 +11,10 @@ const db_conn = mysql.createConnection({
 //add log entry for each article that's part of given order
 exports.updateLog = (storage, order) => {
     const timestamp = util.unix();
-    order.articles.forEach((article) => {
-	const sqlStr = `INSERT INTO log (product, unix, storage_id) VALUES
-                        ('${article.id}', '${timestamp}', '${storage._id}')`;
+    order.articles.forEach((article, index) => {
+	const sqlStr = `INSERT INTO log (order_id, no_in_order, product, unix, storage_id) VALUES
+                        ('${order.id}', '${index}', '${article.id}', '${timestamp}', '${storage._id}')`;
+    //console.log(sqlStr);
 	db_conn.query(sqlStr, (err, res) => {
 	    if (err) { console.log('Inserting access updates failed:', err); }
 	});
