@@ -45,6 +45,11 @@ function recreateStorageLayout() {
     createShelves();
     createEntrances();
     stage.add(layer);
+    window.addEventListener('keyup', (event) => {
+	if (event.key === 'f' || event.key === 'p') {
+	    togglePresentationMode();
+	}
+    });
 }
 
 // rescale whenever window dimensions and thus canvas container
@@ -288,6 +293,9 @@ function handleServerMessage(msg) {
 	    addOrderToSidebar(content.order);
 	}
 	break;
+    case 'presentation':
+	this.presentationMode = content.enabled;
+	break;
     default:
 	console.log('Unknown type provided in server message:', type);
     }
@@ -308,7 +316,7 @@ function visualizeArticleRetrieval(fromX, fromY, toX, toY) {
     });
     layer.add(itemBox);
 
-    const timeStepInMs = 500;
+    const timeStepInMs = this.presentationMode ? 50 : 500;
     itemBox.to({ // fade in
 	duration: timeStepInMs / 1000,
 	opacity: 1
@@ -398,7 +406,7 @@ function spawnWorker(order) {
 			visualizeArticleRetrieval(article.shelfX, article.shelfY, wx, wy);
 			updateHeatmap(article.shelfX, article.shelfY);
 		    }
-		    setTimeout(() => moveAnimations.shift().start(), 1000);
+		    setTimeout(() => moveAnimations.shift().start(), this.presentationMode ? 100 : 1000);
 		}
 		moving.stop();
 		// TODO: is konva.animation being cleaned up here or still lingering around?
@@ -435,6 +443,10 @@ function spawnWorker(order) {
 
 function requestStorageLayoutFromServer(sessionID) {
     sendMessage('reqlayout', { _id: sessionID, observeStorage: true });
+}
+
+function togglePresentationMode() {
+    sendMessage('presentation', {});
 }
 
 // stringify because that's what the websockets expect, other options

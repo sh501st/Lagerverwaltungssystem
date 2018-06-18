@@ -42,6 +42,7 @@ function main() {
 	});
 	console.log('Client connected');
 	sendMessage(socket, 'id', { _id: generateSessionID() });
+	sendPresentationModeStatus(socket);
     });
 
 
@@ -144,6 +145,9 @@ function handleClientMessage(socket, msg) {
 	break;
     case 'reqrange':
 	sendAccessTimeRangeToClient(content._id, socket);
+	break;
+    case 'presentation':
+	togglePresentationMode(socket);
 	break;
     default:
 	console.log('Unknown type provided in client message:', type);
@@ -252,11 +256,29 @@ function sendAccessTimeRangeToClient(storageID, socket) {
     });
 }
 
+// if presenting project result, allows speeding up spawn and
+// generation rate of workers and orders respectively.
+function togglePresentationMode(socket) {
+    if (!this.presentationMode) {
+	this.presentationMode = true;
+    } else {
+	this.presentationMode = !this.presentationMode;
+    }
+    sendPresentationModeStatus(socket);
+}
+
+function sendPresentationModeStatus(socket) {
+    sendMessage(socket, 'presentation', {
+	enabled: this.presentationMode ? this.presentationMode : false
+    });
+}
+
 // simulate and endless stream of workers that are handling all the
 // queued up orders. Again, all watching clients will be notifed so
 // that they can update their order list next to the canvas.
 function dispatchWorkers() {
-    orders.generateOrders(activeStorages, notifyObservingClients);
+    const generationDelayInMs = 200;
+    orders.generateOrders(activeStorages, notifyObservingClients, generationDelayInMs);
 
     const moveSpeedInTilesPerSec = 4;
     let f = () => {
@@ -264,12 +286,12 @@ function dispatchWorkers() {
 	    let order = orders.takeOrderFromQueue(storage);
 	    if (order) {
 		order.path = pathfinding.generateWorkerPath(storage, order);
-		order.speed = moveSpeedInTilesPerSec;
+		order.speed = this.presentationMode ? moveSpeedInTilesPerSec * 10 : moveSpeedInTilesPerSec;
 		notifyObservingClients(storage, order, true);
 		db.updateLog(storage, order);
 	    }
 	});
-	setTimeout(f, 2000);
+	setTimeout(f, this.presentationMode ? generationDelayInMs : generationDelayInMs * 10);
     };
     f();
 }
