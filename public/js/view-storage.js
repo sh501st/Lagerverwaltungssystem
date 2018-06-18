@@ -201,12 +201,15 @@ function createEntrances() {
 function addOrderToSidebar(order) {
     let elem = document.createElement('div');
     elem.id = 'order_' + order.id;
-    elem.appendChild(document.createElement('hr'));
     elem.appendChild(document.createTextNode('Order #' + order.id + ':'));
-    order.articles.forEach((article) => {
-	elem.appendChild(document.createElement('br'));
-	elem.appendChild(document.createTextNode(article.name));
+    let list = document.createElement('ul');
+    order.articles.forEach((article, idx) => {
+	let listItem = document.createElement('li');
+	listItem.innerHTML = article.name;
+	list.appendChild(listItem);
     });
+    elem.appendChild(list);
+    elem.appendChild(document.createElement('hr'));
     document.getElementById('orderlist').appendChild(elem);
 }
 

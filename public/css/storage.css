@@ -346,3 +346,8 @@
 	tr:hover {
 	    background-color: #b4e1fb;
 	}
+
+	ul {
+	    padding-left: 3vw;
+	    list-style-type: circle;
+	}
