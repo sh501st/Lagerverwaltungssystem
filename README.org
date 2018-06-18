@@ -36,5 +36,6 @@ TODO: specify procedure.
 - Make sure the database is running in the background, if not, start it from your favourite GUI or the command line: =systemctl start mysql.service=
 - Start the server on the command line: =node server.js= (or =./server.sh= when it's a dev session to restart the server automatically whenever any relevant files within the working dir change)
 - Open your favorite browser and type =localhost:8080= into the address bar to connect a new client to the server
+- in "View Storage" mode press "f" or "p" to enter presentation mode to generate data more quickly 
 
 Server handles multiple clients (browser tabs) and storages in parallel. Clients that request the same storage layout will both the same orders and shelf accesses.
