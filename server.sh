@@ -5,4 +5,8 @@ else
     echo "Starting MariaDB service:"
     systemctl start mariadb.service
 fi
+
+./reset_db.sh
+
+echo "Starting node server..."
 ./node_modules/.bin/nodemon --ignore data/ server.js
