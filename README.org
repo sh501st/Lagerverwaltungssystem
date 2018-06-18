@@ -38,4 +38,8 @@ TODO: specify procedure.
 - Open your favorite browser and type =localhost:8080= into the address bar to connect a new client to the server
 - in "View Storage" mode press "f" or "p" to enter presentation mode to generate data more quickly 
 
+- To create a storage, click on "Create Storage". Left klick to create shelves, middleclick to create entrance, rightclick to remove shelve/entrance
+- Click on "View Storage" to get a live view of a prior created storage.
+- During a live session click on "Optimize" to get an optimized version of viewed storage.
+
 Server handles multiple clients (browser tabs) and storages in parallel. Clients that request the same storage layout will both the same orders and shelf accesses.
