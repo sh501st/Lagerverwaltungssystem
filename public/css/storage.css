@@ -329,3 +329,20 @@
         input[type=range]::-ms-ticks-after {
             display: none;
         }
+
+	td {
+	    padding: 0.5vw;
+	    text-align: left;
+
+	}
+
+	th {
+	    background-color: #30aaee;
+	    color: white;
+	    text-align: left;
+	    padding: 0.5vw;
+	}
+
+	tr:hover {
+	    background-color: #b4e1fb;
+	}
