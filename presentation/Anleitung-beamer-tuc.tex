@@ -1,0 +1,267 @@
+
+\documentclass[ngerman]{beamer}
+\usepackage{babel}
+\usepackage[latin1]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+
+    \usetheme{TUC2}
+%    \usefonttheme{structureitalicserif}
+    \setbeamercovered{transparent}
+
+\mode<presentation>
+    \title{Folien im Corporate Design der TU~Clausthal}
+    \subtitle{Die \LaTeX-Klasse beamer mit dem TUC-Theme}
+    \author{D. Wäsch}
+    \institute{Institut für Mathematik}
+    \date{19. Oktober 2005}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{document}
+\begin{frame}
+\titlepage
+\end{frame}
+
+\begin{frame}
+\frametitle{Gliederung}
+\tableofcontents
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Einführung}
+
+\begin{frame}
+  \frametitle{Grundsätzliches}
+  \begin{itemize}
+    \item Klasse: beamer
+    \item Theme: TUC
+    \item Syntax:
+      \begin{semiverbatim}
+\footnotesize
+  \\documentclass[ngerman]\{beamer\}
+
+  \\usepackage\{babel\}
+
+  \\usepackage[latin1]\{inputenc\}
+
+  \\usepackage[T1]\{fontenc\}
+
+  \\usepackage\{lmodern\}
+
+  \\usetheme\{TUC\}
+
+  \\mode<presentation>
+
+  \\begin\{document\}
+
+  ...
+
+  \\end\{document\}
+      \end{semiverbatim}
+      \item Zudem interessant im Vorspann:
+      \begin{semiverbatim}
+        \\setbeamercovered\{transparent\}
+      \end{semiverbatim}
+      Bewirkt, dass versteckte Punkte `dünn' sichtbar sind
+    \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Aufbau einer Folie}
+  \begin{itemize}
+    \item Umgebung für Folie:
+    \begin{semiverbatim}
+      \\begin\{frame\}\dots\\end\{frame\}
+    \end{semiverbatim}
+    \item Außerhalb kann mit section-Befehlen eine Struktur angegeben werden, die als Inhaltsverzeichnis oder Vortragsstruktur ausgegeben werden kann
+    \item Der Folientitel wird mit dem Befehl
+    \begin{semiverbatim}
+      \\frametitle\{\textrm{Überschrift}\}
+    \end{semiverbatim}
+    festgelegt.
+  \end{itemize}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Nummerierungen und Aufzählungen}
+\begin{frame}
+  \frametitle{Gliederungs-Befehle}
+  \begin{itemize}
+    \item die üblichen Umgebungen wie \texttt{enumerate} und
+        \texttt{itemize} funktionieren wie gewohnt und sind dem Corporate
+        Design angepasst
+    \begin{itemize}
+      \item Auch die Unter-
+      \begin{itemize}
+        \item und die Unterunteraufzählungszeichen
+      \end{itemize}
+      \item sind angepasst.
+    \end{itemize}
+  \end{itemize}
+  \begin{enumerate}
+    \item Hier
+    \item ist
+    \begin{enumerate}
+      \item eine
+      \item nummerierte
+      \begin{enumerate}
+        \item Aufzählung.
+      \end{enumerate}
+    \end{enumerate}
+  \end{enumerate}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Beschreibungen}
+  \begin{description}
+    \item[Beschreibungen] funktionieren auch wie üblich mit der \texttt{description}-Umgebung.
+    \item[Stichwörter] sind hierbei im CD-grün gehalten. Ist die Beschreibung länger, so wird diese umgebrochen und links eingerückt.
+  \end{description}
+
+  \begin{itemize}
+    \item Um \alert{einzelne Wörter} im Text hervorzuheben, dient der Befehl
+    \begin{semiverbatim}
+      \\alert\{\textrm{Text}\}
+    \end{semiverbatim}
+    \item Für diese Hervorhebung wird die zweite Zierfarbe des Corporate Design benutzt.
+  \end{itemize}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Overlays}
+\begin{frame}
+  \frametitle{Von oben nach unten}
+  \pause
+  \begin{itemize}
+    \item Mit dem Befehl
+    \begin{semiverbatim}
+      \\pause
+    \end{semiverbatim}
+    können Folien von oben nach unten aufgebaut werden.
+    \pause
+    \item Dabei wird für jedes ``pause'' eine neue Folie angelegt.
+    \pause
+    \item Die Nummerierung rechts unten erfolgt aber nach der Frame-Anzahl, d.\,h. diese ist innerhalb eines Frames konstant und entspricht nicht der tatsächlichen Seitenzahl des Dokumentes.
+    \pause
+    \item Einen Überblick über die gesamten Möglichkeiten (z.\,B. auch Befehle wie \texttt{visible}, \texttt{uncover}, \texttt{only}, \dots) gibt die Datei \texttt{beameruserguide.pdf}.
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Beliebige Reihenfolgen}
+    Über
+    \begin{semiverbatim}
+      \\item<\textrm{$n$--$m$}> \textrm{bla}
+    \end{semiverbatim}
+    kann eine beliebige Reihenfolge vorgegeben werden.
+
+    \begin{Beispiel}
+    Der folgende Frame hat in der \texttt{itemize}-Umgebung folgenden Code:
+    \begin{semiverbatim}
+    \\item<2-> ab zweitens
+
+    \\item<1-2> erstens und zweitens
+
+    \\item<2> nur zweitens
+
+    \\item<-3> bis drittens
+
+    \\item<4> viertens
+    \end{semiverbatim}
+    \end{Beispiel}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Overlay-Beispiel}
+  \begin{itemize}
+    \item<2-> ab zweitens
+    \item<1-2> erstens und zweitens
+    \item<2> nur zweitens
+    \item<-3> bis drittens
+    \item<4> viertens
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Farben}
+\sloppy
+\begin{itemize}
+\item Die CD-Farben der Universität heißen:
+\begin{description}\itemsep0pt
+  \item[\textcolor{TUCgreen}{TUCgreen}]     das TUC-Grün (im S/W: schwarz)
+
+
+  \item[\textcolor{TUCgrey1}{TUCgrey1}]     50 \% grau (Dunkelgrau, im S/W: schwarz)
+
+
+  \item[\textcolor{TUCgrey2}{TUCgrey2}]     10 \% grau (Hellgrau, im S/W: weiß)
+
+
+  \item[\textcolor{TUCred}{TUCred}]       die rote Zierfarbe (im S/W: schwarz)
+
+
+\end{description}
+\item \begin{semiverbatim}
+\rm
+Die Farben können mit \texttt{\\color\{farbname\}} bzw.  \texttt{\\textcolor\{farbname\}\{text\}} verwendet werden.
+\end{semiverbatim}
+\end{itemize}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Mathematisches}
+\begin{frame}
+  \frametitle{Mathematische Umgebungen}
+  \begin{Fakt}
+    Es existieren die Umgebungen
+    \texttt{theorem},
+    \texttt{proof},
+    \texttt{corollary},
+    \texttt{fact},
+    \texttt{lemma},
+    \texttt{problem},
+    \texttt{solution},
+    \texttt{definition},
+    \texttt{example},
+    \texttt{definitions} und
+    \texttt{examples}, sowie
+    \texttt{Satz},
+    \texttt{Beweis},
+    \texttt{Folgerung},
+    \texttt{Fakt},
+    \texttt{Lemma},
+    \texttt{Problem},
+    \texttt{Loesung} und
+    \texttt{Definition}.
+  \end{Fakt}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Formeln auf Folien}
+  \begin{Satz}
+    Umgebungen wie \$\$ \dots \$\$, \texttt{align} usw. funktionieren wie gewohnt.
+  \end{Satz}
+  \begin{Beweis}
+    Hier ist eine Formel: $e^{i\pi{}} + 1 = 0$.
+    Jetzt kommen mehrere:
+    \begin{align*}
+      \int \sin ax\ dx &= - \frac1a \cos ax \\
+      \int \sin^2 ax\ dx &= \frac12x - \frac1{4a} \sin 2ax
+    \end{align*}
+  \end{Beweis}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Fazit}
+\begin{frame}
+  \frametitle{Fazit}
+  \begin{itemize}
+    \item Über die \texttt{beamer}-Klasse stehen mächtige Folien-Befehle zur Verfügung
+    \item Mit dem Theme \texttt{TUC} ist das Corporate Design der TU Clausthal umgesetzt
+    \item Insgesamt lassen sich damit Folien gestalten, die allerdings keine Navigationselemente enthalten, da das Design diese nicht vorsieht
+    \item Durch das eingebundene \texttt{hyperref}-Paket lassen sich aber dennoch Links innerhalb des Dokumentes problemlos realisieren
+  \end{itemize}
+\end{frame}
+
+\end{document}
