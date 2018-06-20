@@ -3,3 +3,4 @@ data/storages
 presentation/sample.aux
 presentation/dev-docs.log
 presentation/dev-docs.tex
+presentation/_minted-dev-docs

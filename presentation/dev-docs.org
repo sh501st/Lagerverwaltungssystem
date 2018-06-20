@@ -1,33 +1,33 @@
 #+STARTUP: beamer showall
 #+TITLE: Lagerverwaltungssystem
-#+BEAMER_HEADER: \subtitle{Programmierpraktikum SS18}
 #+AUTHOR: Robert Werner, Jialun Jiang, Daniel Wolff
-#+LaTeX_HEADER: \institute[short name]{Institut für Informatik}
 #+LANGUAGE: de
 #+OPTIONS: H:2 toc:t num:t
+#+LATEX_CLASS: beamer
+#+BEAMER_HEADER: \subtitle{Programmierpraktikum SS18}
+#+LATEX_HEADER: \institute[short name]{Institut für Informatik}
 #+LATEX_HEADER: \usetheme{TUC2}
-#+LaTeX_HEADER: \usepackage[ttscale=.875]{libertine}
-#+LaTeX_HEADER: \usepackage{listings}
+#+LATEX_HEADER: \usepackage[T1]{fontenc}
+#+LaTeX_HEADER: \usepackage[scale=.875]{FiraSans}
+#+LATEX_HEADER: \usepackage[scale=.875]{FiraMono}
+#+LaTeX_HEADER: \usepackage{minted}
+#+LaTeX_HEADER: \setminted{fontsize=\scriptsize,baselinestretch=1}
 #+LaTeX_HEADER: \usepackage{color}
 
-* Prelude [0/2]                                                    :noexport:
+* Prelude [1/2]                                                    :noexport:
 
 This will not be exported to the PDF. Useful for task and todo listings.
 Furthermore, I'll slightly modify the clausthal template in the days to come.
 
-** TODO colorize code and shell listings
-** TODO slightly modify provided clausthal latex style template
-- Outline too big for all headlines
-- unify footer into a single line
-- maybe even merge headline into header, right-aligned
-** TODO include content [5/9]:
+** DONE colorize code and shell listings
+** TODO include content [6/9]:
 DEADLINE: <2018-07-23 Mon>
 
 - [X] Motivation / Welches Problem soll gelöst werden? / Idee / Ansatz (1-3 Folien)
 - [X] User Stories (ggf. Epics oder Use Cases) (2-4 Folien)
 - [ ] Domänenmodell (1-2 Folien)
 - [ ] Architekturbeschreibung (3-8 Folien)
-- [ ] Optional: Implementierungsdetails: Algorithmen, etc.
+- [X] Optional: Implementierungsdetails: Algorithmen, etc.
 - [X] Verwendete Technologien (1-2 Folien)
 - [X] Üersicht über verwendetete Entwicklungstools (1-2 Folien)
 - [X] Installationsbeschreibung (1-2 Folien)
@@ -56,7 +56,7 @@ DEADLINE: <2018-07-23 Mon>
 
 Im Detail registrieren und einsehen, welche Waren wann wo ein- und ausgehen:
 
-\small
+\footnotesize
 
 *** Regalzugriffe: Entnahmeübersicht
 Als Lagerlogistiker will ich einsehen können, welche Lagerwaren
@@ -68,11 +68,9 @@ Als Lagerlogistiker will ich wissen, welche Lagerwaren innerhalb eines
 bestimmten Zeitrahmens zumeist gemeinsam entnommen wurden, um
 Abhängigkeiten zwischen diesen zu erkennen.
 
-\normalsize
-
 ** User-Stories: Regalzugriffe (2/2)
 
-\small
+\footnotesize
 
 *** Regalzugriffe: Heatmap
 Als Lagerlogistiker will ich auf einen Blick sehen, wie die
@@ -84,13 +82,11 @@ Als Lagerfachkraft will ich, dass das System mit minimalem Aufwand
 meinerseits meine Entnahmen registriert, sodass ich diese nicht
 zeitaufwendig händisch festhalten muss.
 
-\normalsize
-
 ** User-Stories: Lagerübersicht
 
 Was wird im Lager wo und in Gesamtheit gelagert?
 
-\small
+\footnotesize
 
 *** Lagerübersicht: Artikel einsehen
 Als Lagerlogistiker will ich stets einsehen, welche Artikel in meinem
@@ -108,13 +104,11 @@ welchen Regalen sich die zur aktuellen Bestellung zugehörigen Artikel
 befinden, um diese effizient abzuarbeiten und nicht unnnötig durchs
 Lager zu irren.
 
-\normalsize
-
 ** User-Stories: Umräumung
 
 Welche Optimierung sind denkbar und wie gilt es, diese umzusetzen?
 
-\small
+\footnotesize
 
 *** Umräumung: Planungsvorschläge zur Wegminimierung
 Als Lagerlogistiker will ich Vorschläge zu etwaigen
@@ -122,21 +116,66 @@ effizienzsteigernden Umräumungen einsehen, die dabei Mitarbeiterweg,
 Regalzugriffe und Warenabhängigkeiten berücksichtigen, um abschätzen
 zu können, welche Ablaufoptimierungen sinning sind.
 
-\normalsize
-
 * Domänenmodell
 
+** XYZ Modell
+
+TODO
+
 * Architekturbeschreibung
+
+** XYZ Architektur
+
+TODO
 
 * Implementationsdetails
 
 ** Wegfindung
 
-TODO: code or picture?
+#+begin_src js
+// try to find a rather efficient path for the worker to take, but not
+// necessarily the shortest path possible since we're only checking
+// shortest manhatten distance for the next shelf to go to and are not
+// taking into account which duplication could be avoided due to one
+// being along the way of another shelf. (Module: include/pathfinding.js)
+exports.generateWorkerPath = (storage, order) => {
+    // first step: rough super path without collision avoidance
+    const closestEntrace = findClosestEntrance(storage, order);
+    let path = [closestEntrace.x, closestEntrace.y];
+    appendNearestShelves(path, storage, order);
+    const closestExit = findClosestExit(path, storage);
+    path.push(closestExit.x, closestExit.y);
+
+    // second step: find optimal tile based sub paths between closest
+    // shelves, respecting non-walkable areas.
+    return getInterpolatedPath(path, storage, closestExit);
+};
+#+end_src
 
 ** Fächeroptimierung
 
-TODO: code or picture?
+#+begin_src js
+  // querys the db for a set of article ids and associated accesses over
+  // a given time range. We transform the original default storage into
+  // an optimized one by first recursively cloning it and removing all
+  // the subshelves within each and every regular shelf. Then we refill
+  // it based on the received log data by picking the closest unfilled
+  // shelf from each entrance until all articles are in place again.
+  // Access counter data will be stored within the storage to later
+  // visualize it in plan.js (Module: include/optimize.js)
+  exports.rearrangeSubShelves = (storage, fromTime, toTime, callback) => {
+      db.sortedAccessesInRange(fromTime, toTime, storage._id, (results) => {
+          let optimizedStorage = JSON.parse(JSON.stringify(storage));
+          initAccessValues(storage, results);
+          initAccessValues(optimizedStorage, results);
+          const subShelves = removeAllSubShelves(optimizedStorage);
+          fillSubShelvesByAccess(optimizedStorage, subShelves, results);
+          calcMaxAccessCounter(storage);
+          calcMaxAccessCounter(optimizedStorage);
+          callback(optimizedStorage);
+      });
+  };
+#+end_src
 
 * Verwendete Technologien
 
@@ -149,7 +188,7 @@ TODO: code or picture?
 | Konva         | HTML5-Canvas-Abstraktion               |
 | NoUiSlider    | Multifunktionsschieberegler            |
 
-Ansonsten HTML5, CSS, ECMAScript 2017 und die Dev-Konsolen der großen Browser.
+Ansonsten HTML5, CSS, ECMAScript 2017.
 
 ** npm-Module
 
@@ -162,13 +201,14 @@ Ansonsten HTML5, CSS, ECMAScript 2017 und die Dev-Konsolen der großen Browser.
 
 ** Entwicklungstools
 
-| Git+GitHub      | Quelltext-Versionskontrolle                   |
-| GitHub Projects | Kanban-lite zur Aufgabenaufteilung            |
-| GitHub Issues   | Bugtracking und Verbesserungsvorschläge       |
-| GitHub Wiki     | User-Stories, Mockups, Dokumentation, Notizen |
-| Telegram        | Gruppenchat, Absprachen                       |
-| Bash+Nodemon    | kleinere Skripte zu Automatisierungszwecken   |
-| Inkscape        | Mockups, Projektgrafiken                      |
+| Bash+Nodemon     | kleinere Skripte zu Automatisierungszwecken   |
+| Browser-Konsolen | Logging, Debugging, Profiling                 |
+| Git+GitHub       | Quelltext-Versionskontrolle                   |
+| GitHub Projects  | Kanban-lite zur Aufgabenaufteilung            |
+| GitHub Issues    | Bugtracking und Verbesserungsvorschläge       |
+| GitHub Wiki      | User-Stories, Mockups, Dokumentation, Notizen |
+| Telegram         | Gruppenchat, Absprachen                       |
+| Inkscape         | Vektorzeichenprogramm für Mockups, Grafiken   |
 
 * Installationsbeschreibung
 
@@ -177,35 +217,46 @@ Ansonsten HTML5, CSS, ECMAScript 2017 und die Dev-Konsolen der großen Browser.
 - =node=, =npm= und =mariadb= installieren
 - =npm install= ausführen, um Abhängigkeiten herunterzuladen
 
-Datenbank-Initialisierung via Commandline:
+*** Datenbank-Initialisierung via Commandline:
 
-\scriptsize
-
-\begin{lstlisting}[language=sh]
+#+begin_src sh
 systemctl start mysql.service
 mysql -u root
-\end{lstlisting}
+#+end_src
 
-\begin{lstlisting}[language=sql]
-CREATE DATABASE programmierpraktikum;
-USE programmierpraktikum;
-CREATE USER 'programmierpraktikum'@'localhost'
-      IDENTIFIED BY 'AaSfayZPU8Pvleff';
-GRANT ALL PRIVILEGES ON programmierpraktikum.* TO
-      'programmierpraktikum'@'localhost' WITH GRANT OPTION;
-SOURCE datenbankmodell/programmierpraktikum.sql;
-\end{lstlisting}
-
-\normalsize
+#+begin_src sql
+create database programmierpraktikum;
+use programmierpraktikum;
+create user 'programmierpraktikum'@'localhost'
+      identified by 'aasfayzpu8pvleff';
+grant all privileges on programmierpraktikum.* to
+      'programmierpraktikum'@'localhost' with grant option;
+source datenbankmodell/programmierpraktikum.sql;
+#+end_src
 
 ** Nutzung als Entwickler
 
 - =./server.sh= im Quellverzeichnis ausführen; startet DB und Server
-- Im Browser =localhost:8080= ansteuern
+- Im Browser =localhost:8080= aufrufen
 - *Create Storage* zum Anlegen eines Lagers und anschließender Befüllung
 - *View Storage* erlaubt Live-Ansicht eines bereits erstellten Lagers
 - *Plan Storage* führt zu Optimierungseinstellungen hinsichtlich Lageraufbau
 
 Server kann mit mehreren Clients und Lagern gleichzeitig umgehen, Client betrachtet hingegen immer nur eines.
 
-* Lessons learned
+* Abschließendes
+
+** Lessons learned
+
+TODO: necessary?
+
+* Endscreen                                                 :B_ignoreheading:
+:PROPERTIES:
+:BEAMER_env: ignoreheading
+:END:
+
+** Et voilà!
+
+Vielen Dank für die Aufmerksamkeit!
+
+Fragen, Anmerkungen?
