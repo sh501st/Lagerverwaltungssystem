@@ -1,95 +1,211 @@
+#+STARTUP: beamer showall
 #+TITLE: Lagerverwaltungssystem
 #+BEAMER_HEADER: \subtitle{Programmierpraktikum SS18}
 #+AUTHOR: Robert Werner, Jialun Jiang, Daniel Wolff
+#+LaTeX_HEADER: \institute[short name]{Institut für Informatik}
+#+LANGUAGE: de
 #+OPTIONS: H:2 toc:t num:t
-#+STARTUP: beamer showall
-#+LANGUAGE: en
 #+LATEX_HEADER: \usetheme{TUC2}
 #+LaTeX_HEADER: \usepackage[ttscale=.875]{libertine}
-#+LATEX_HEADER: \usepackage{listings}
+#+LaTeX-HEADER: \usepackage{listings}
+#+LaTeX-HEADER: \usepackage{color}
 
 * Prelude [0/2]                                                    :noexport:
 
 This will not be exported to the PDF. Useful for task and todo listings.
 Furthermore, I'll slightly modify the clausthal template in the days to come.
 
-** TODO modify provided clausthal latex style template
-** TODO include content [0/10]:
+** TODO colorize code and shell listings
+** TODO slightly modify provided clausthal latex style template
+- Outline too big for all headlines
+- unify footer into a single line
+- maybe even merge headline into header, right-aligned
+** TODO include content [5/9]:
 DEADLINE: <2018-07-23 Mon>
 
-- [ ] Motivation / Welches Problem soll gelöst werden? / Idee / Ansatz (1-3 Folien)
-- [ ] User Stories (ggf. Epics oder Use Cases) (2-4 Folien)
+- [X] Motivation / Welches Problem soll gelöst werden? / Idee / Ansatz (1-3 Folien)
+- [X] User Stories (ggf. Epics oder Use Cases) (2-4 Folien)
 - [ ] Domänenmodell (1-2 Folien)
 - [ ] Architekturbeschreibung (3-8 Folien)
 - [ ] Optional: Implementierungsdetails: Algorithmen, etc.
-- [ ] Verwendete Technologien (1-2 Folien)
-- [ ] Optional: Implementierungsdetails: Algorithmen, etc.
-- [ ] Üersicht über verwendetete Entwicklungstools (1-2 Folien)
-- [ ] Installationsbeschreibung (1-2 Folien)
+- [X] Verwendete Technologien (1-2 Folien)
+- [X] Üersicht über verwendetete Entwicklungstools (1-2 Folien)
+- [X] Installationsbeschreibung (1-2 Folien)
 - [ ] Optional: Lessons Learned (1 Folie)
 
-* Major section 1
+* Motivation
 
-No title, just regular text
+** Idee
 
-** subsection slide title
+#+ATTR_LATEX: :width 0.8\textwidth
+[[../graphics/heatmap-idea.png]]
 
-*** column subsubsection a                                            :BMCOL:
-:PROPERTIES:
-:BEAMER_col: 0.5
-:END:
+** Vorstellung
 
-Enumerations left
-
-1. aaaaaaaaaa
-   - xxxxxxxxxxxxxxxxx
-   - yyyyyyyyyyyyyyyyy
-   - zzzzzzzzzzzzzzzzz
-2. bbbbbbbbbb
-3. cccccccccc
-
-*** column subsubsection b                                          :BMCOL:
-:PROPERTIES:
-:BEAMER_col: 0.5
-:END:
-
-And text on the right
-
-*alert* /emph/ =monospace=
-
-* Major section 2
-
-*** code subsubsection
-
-#+BEGIN_SRC
-fibs :: Num a => [a]
-fibs = 0 : 1 : zipWith (+) fibs (tail fibs)
-take(5) $ filter (\x -> even x && x > 1000) $ fibs
-#+END_SRC
-
-Even syntax highlighting is supported with latex =lstlistings= or =minted= (fancier colors):
-
-\begin{lstlisting}[language=haskell]
-fibs :: Num a => [a]
-fibs = 0 : 1 : zipWith (+) fibs (tail fibs)
-take(5) $ filter (\x -> even x && x > 1000) $ fibs
-\end{lstlisting}
-
-** table and img subsection
-
-| id | name | value |
-|----+------+-------|
-|  0 | aaa  | 12    |
-|  1 | bbb  | 33    |
-|  2 | ccc  | 72    |
-
-#+ATTR_LATEX: :width 0.5\textwidth
+#+ATTR_LATEX: :width 0.9\textwidth
 [[../graphics/milestone_1_user_stories_storage.png]]
 
-** inline mathy
+** Mockup-Ansätze
 
-\begin{equation}
-\sum_{k=1}^{\infty}{\frac{1}{k^2}}
-\end{equation}
+#+ATTR_LATEX: :width 0.9\textwidth
+[[../graphics/mockup-view.png]]
 
-Or simply inline: $x=\sqrt[3]{cos^2(\frac{\pi}{3})}$
+* User-Storys
+
+** User-Stories: Regalzugriffe (1/2)
+
+Im Detail registrieren und einsehen, welche Waren wann wo ein- und ausgehen:
+
+\small
+
+*** Regalzugriffe: Entnahmeübersicht
+Als Lagerlogistiker will ich einsehen können, welche Lagerwaren
+innerhalb eines bestimmten Zeitrahmens entnommen wurden, um besser
+planen zu können.
+
+*** Regalzugriffe: Zugriffsabhängigkeiten
+Als Lagerlogistiker will ich wissen, welche Lagerwaren innerhalb eines
+bestimmten Zeitrahmens zumeist gemeinsam entnommen wurden, um
+Abhängigkeiten zwischen diesen zu erkennen.
+
+\normalsize
+
+** User-Stories: Regalzugriffe (2/2)
+
+\small
+
+*** Regalzugriffe: Heatmap
+Als Lagerlogistiker will ich auf einen Blick sehen, wie die
+Regalzugriffe im Lager räumlich verteilt sind, um ggf. Optimierungen
+in Auftrag geben zu können.
+
+*** Regalzugriffe: Entnahme durch Mitarbeiter
+Als Lagerfachkraft will ich, dass das System mit minimalem Aufwand
+meinerseits meine Entnahmen registriert, sodass ich diese nicht
+zeitaufwendig händisch festhalten muss.
+
+\normalsize
+
+** User-Stories: Lagerübersicht
+
+Was wird im Lager wo und in Gesamtheit gelagert?
+
+\small
+
+*** Lagerübersicht: Artikel einsehen
+Als Lagerlogistiker will ich stets einsehen, welche Artikel in meinem
+Lager geführt werden, um nicht den Überblick zu verlieren oder falsch
+zu kalkulieren.
+
+*** Lagerübersicht: Regal einsehen
+Als Lagerlogistiker will ich für jedes Lagerregal aufgelistet
+bekommen, was sich darin befindet, um einen besseren Überblick über
+den Bestand zu erhalten.
+
+*** Lagerübersicht: Lageplan für aktuelle Bestellung
+Als Lagerfachkraft will ich auf einen Blick entnehmen können, in
+welchen Regalen sich die zur aktuellen Bestellung zugehörigen Artikel
+befinden, um diese effizient abzuarbeiten und nicht unnnötig durchs
+Lager zu irren.
+
+\normalsize
+
+** User-Stories: Umräumung
+
+Welche Optimierung sind denkbar und wie gilt es, diese umzusetzen?
+
+\small
+
+*** Umräumung: Planungsvorschläge zur Wegminimierung
+Als Lagerlogistiker will ich Vorschläge zu etwaigen
+effizienzsteigernden Umräumungen einsehen, die dabei Mitarbeiterweg,
+Regalzugriffe und Warenabhängigkeiten berücksichtigen, um abschätzen
+zu können, welche Ablaufoptimierungen sinning sind.
+
+\normalsize
+
+* Domänenmodell
+
+* Architekturbeschreibung
+
+* Implementationsdetails
+
+** Wegfindung
+
+TODO: code or picture?
+
+** Fächeroptimierung
+
+TODO: code or picture?
+
+* Verwendete Technologien
+
+** Technologien
+
+| NodeJS        | Javascript-Runtime fürs Backend        |
+| npm           | NodeJS-Package-Manager                 |
+| MySQL/MariaDB | Datenbank für Artikel und Zugriffs-Log |
+| WebSocket+ws  | Client-Server-Kommunikation            |
+| Konva         | HTML5-Canvas-Abstraktion               |
+| NoUiSlider    | Multifunktionsschieberegler            |
+
+Ansonsten HTML5, CSS, ECMAScript 2017 und die Dev-Konsolen der großen Browser.
+
+** npm-Module
+
+| http+ws | Client-Server-Kommunikation via Websocket     |
+| express | HTML-Seiten an Clients ausliefern             |
+| fs      | plattformübergreifende Filesystem-Abstraktion |
+| mysql   | MySQL/MariaDB-JS-Wrapper                      |
+
+* Verwendete Entwicklungstools
+
+** Entwicklungstools
+
+| Git+GitHub      | Quelltext-Versionskontrolle                   |
+| GitHub Projects | Kanban-lite zur Aufgabenaufteilung            |
+| GitHub Issues   | Bugtracking und Verbesserungsvorschläge       |
+| GitHub Wiki     | User-Stories, Mockups, Dokumentation, Notizen |
+| Telegram        | Gruppenchat, Absprachen                       |
+| Bash+Nodemon    | kleinere Skripte zu Automatisierungszwecken   |
+| Inkscape        | Mockups, Projektgrafiken                      |
+
+* Installationsbeschreibung
+
+** Installation (ausführlicher auf GitHub)
+- Projekt von GitHub clonen
+- =node=, =npm= und =mariadb= installieren
+- =npm install= ausführen, um Abhängigkeiten herunterzuladen
+
+Datenbank-Initialisierung via Commandline:
+
+\scriptsize
+
+#+BEGIN_SRC sh
+systemctl start mysql.service
+mysql -u root
+#+END_SRC
+
+#+BEGIN_SRC sql
+CREATE DATABASE programmierpraktikum;
+USE programmierpraktikum;
+CREATE USER 'programmierpraktikum'@'localhost'
+      IDENTIFIED BY 'AaSfayZPU8Pvleff';
+GRANT ALL PRIVILEGES ON programmierpraktikum.* TO
+      'programmierpraktikum'@'localhost' WITH GRANT OPTION;
+SOURCE datenbankmodell/programmierpraktikum.sql;
+#+END_SRC
+
+\normalsize
+
+** Nutzung als Entwickler
+
+- =./server.sh= im Quellverzeichnis ausführen; startet DB und Server
+- Im Browser =localhost:8080= ansteuern
+- *Create Storage* zum Anlegen eines Lagers und anschließender Befüllung
+- *View Storage* erlaubt Live-Ansicht eines bereits erstellten Lagers
+- *Plan Storage* führt zu Optimierungseinstellungen hinsichtlich Lageraufbau
+
+Server kann mit mehreren Clients und Lagern gleichzeitig umgehen, Client betrachtet hingegen immer nur eines.
+
+* Lessons learned
