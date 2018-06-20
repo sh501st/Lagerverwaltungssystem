@@ -7,8 +7,8 @@
 #+OPTIONS: H:2 toc:t num:t
 #+LATEX_HEADER: \usetheme{TUC2}
 #+LaTeX_HEADER: \usepackage[ttscale=.875]{libertine}
-#+LaTeX-HEADER: \usepackage{listings}
-#+LaTeX-HEADER: \usepackage{color}
+#+LaTeX_HEADER: \usepackage{listings}
+#+LaTeX_HEADER: \usepackage{color}
 
 * Prelude [0/2]                                                    :noexport:
 
@@ -181,12 +181,12 @@ Datenbank-Initialisierung via Commandline:
 
 \scriptsize
 
-#+BEGIN_SRC sh
+\begin{lstlisting}[language=sh]
 systemctl start mysql.service
 mysql -u root
-#+END_SRC
+\end{lstlisting}
 
-#+BEGIN_SRC sql
+\begin{lstlisting}[language=sql]
 CREATE DATABASE programmierpraktikum;
 USE programmierpraktikum;
 CREATE USER 'programmierpraktikum'@'localhost'
@@ -194,7 +194,7 @@ CREATE USER 'programmierpraktikum'@'localhost'
 GRANT ALL PRIVILEGES ON programmierpraktikum.* TO
       'programmierpraktikum'@'localhost' WITH GRANT OPTION;
 SOURCE datenbankmodell/programmierpraktikum.sql;
-#+END_SRC
+\end{lstlisting}
 
 \normalsize
 
