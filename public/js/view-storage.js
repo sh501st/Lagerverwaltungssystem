@@ -369,6 +369,16 @@ function updateHeatmap(shelfX, shelfY) {
 // [...]] speed is the rate at which the worker moves per second, e.g.
 // 4 tiles per sec.
 function spawnWorker(order) {
+    // to workaround tab unloading and not updating the worker on
+    // canvas, we simply update the heatmap instead and quit out of it
+    if (document.hidden) {
+	order.articles.forEach((article) => {
+	    updateHeatmap(article.shelfX, article.shelfY);
+	});
+	console.log("not spawning worker since hidden");
+	return;
+    }
+
     let path = order.path;
     let speed = order.speed;
     let worker = new Konva.Circle({
