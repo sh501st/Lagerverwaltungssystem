@@ -375,7 +375,6 @@ function spawnWorker(order) {
 	order.articles.forEach((article) => {
 	    updateHeatmap(article.shelfX, article.shelfY);
 	});
-	console.log("not spawning worker since hidden");
 	return;
     }
 
