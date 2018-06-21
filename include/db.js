@@ -133,3 +133,12 @@ exports.readInMockArticles = (callback) => {
         callback(err, articles_db);
     });
 }
+
+//delete log entries of given storage
+exports.deleteFromLog = (storage) => {
+	const sqlStr = `DELETE FROM log WHERE storage_id='${storage._id}'`;
+    //console.log(sqlStr);
+	db_conn.query(sqlStr, (err, res) => {
+	    if (err) { console.log('Inserting access updates failed:', err); }
+    });
+}
