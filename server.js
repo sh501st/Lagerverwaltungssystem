@@ -414,7 +414,9 @@ function loadStorageFromJSONFile(sessionID, observeStorage = true) {
     try {
 	let storage = JSON.parse(fs.readFileSync(toLoad, 'utf8'));
 	if (observeStorage) {
-	    storage.orderCounter = 0;
+        db.getLatestOrderCounter(storage, (err, orderCounter) => {
+            storage.orderCounter = orderCounter;
+        });
 	    storage.orders = [];
 	    if (!storage.orderCache) {
 		orders.generateOrderCache(storage);

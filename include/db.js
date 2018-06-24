@@ -134,11 +134,16 @@ exports.readInMockArticles = (callback) => {
     });
 }
 
-//delete log entries of given storage
-exports.deleteFromLog = (storage) => {
-	const sqlStr = `DELETE FROM log WHERE storage_id='${storage._id}'`;
-    //console.log(sqlStr);
-	db_conn.query(sqlStr, (err, res) => {
-	    if (err) { console.log('Inserting access updates failed:', err); }
-    });
+//get latest order counter of given storage via callback
+exports.getLatestOrderCounter = (storage, callback) => {
+    const sqlStr = `SELECT order_id FROM log WHERE storage_id='${storage._id}' ORDER BY order_id DESC LIMIT 1`;
+        db_conn.query(sqlStr, (err, rows, fields) => {
+            if (err) {
+                console.log("Can't get order counter for given storage:", err.message);
+                reject(err);
+            }
+            let orderCounter = 0;
+            if (typeof rows[0] !== 'undefined') {orderCounter = rows[0].order_id;}            
+            callback(err, orderCounter);
+        });
 }
