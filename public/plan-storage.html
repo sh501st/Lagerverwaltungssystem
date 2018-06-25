@@ -8,10 +8,10 @@
     <link rel="stylesheet" type="text/css" href="/css/nouislider.min.css" />
 </head>
 
-<body>
+<body class="grid-container">
 
     <div id="menu">
-        <div class="inside_menu" style="height: 8.5vh">
+        <div class="inside_menu" style="height: 8.7vh">
             <button class="button" style="background-color: darkred" onclick="location.href='index.html';">
             <span> Cancel </span></button>
 
@@ -22,59 +22,59 @@
 
 
 
-        <div class="inside_menu" style="height: 28vh">
+        <div class="inside_menu" style="height: 28vh; padding-top: 2.2vh;">
             Unoptim.storage:
             <form action="">
-                <select style="margin-bottom: 0.5vh">
+                <select style="margin-bottom: 2.2vh">
                 <option>s1</option>
                 <option>s2</option>
                 <option>s3</option>
                 </select>
             </form>
-            <div >Access range:<br></div>
+            <div>Access range:<br></div>
             <div id="accessSlider" style="margin-top:6vh;"></div>
         </div>
 
 
-        <div class="inside_menu" style="height: 15vh">
+        <div class="inside_menu" style="height: 15vh; padding-top: 2.2vh;">
             Live sort:<br> Assign. wrks: 3/7<br>
         </div><br>
 
 
-        <div class="inside_menu" style="height: 15vh">
+        <div class="inside_menu" style="height: 15vh; padding-top: 2.2vh;">
             Closed storage
         </div>
 
-        <div class="inside_menu" style="height: 8.5vh; border-bottom-style: none">
+        <div class="inside_menu" style="height: 8.5vh; border-bottom-style: none; padding-top: 2.2vh;">
             <button class="button" style="width: 18vw; background-color: forestgreen;" onclick="requestSavingOptimization();">
             <span> Optimize </span>
 	  </button>
         </div>
     </div>
 
-     <div>
-      <div id="invModal" class="modal" style="font-size: 1.5vw">
-	<div class="modal-content">
-	  <span class="modal-close-button" onclick="closeModalDialog();">&times;</span>
-	  <p><h3>Shelf inventory:</h3></p>
-	  <div>
-	    <table style="width:100%">
-	      <thead>
-		<tr>
-		  <th align="left">article</th>
-		  <th align="left">stored</th>
-		  <th align="left">accessed</th>
-		</tr>
-	      </thead>
-	      <tbody id="inventory"></tbody>
-	    </table>
-	  </div>
-	</div>
-      </div>
-      <div id="mainContainer" oncontextmenu="return false;"></div>
+    <div id="mainContainer" oncontextmenu="return false;"></div>
+    <div id="invModal" class="modal" style="font-size: 1.5vw">
+        <div class="modal-content">
+            <span class="modal-close-button" onclick="closeModalDialog();">&times;</span>
+            <h3>Shelf inventory:</h3>
+            <div>
+                <table style="width:100%">
+                    <thead>
+                        <tr>
+                            <th align="left">article</th>
+                            <th align="left">stored</th>
+                            <th align="left">accessed</th>
+                        </tr>
+                    </thead>
+                    <tbody id="inventory"></tbody>
+                </table>
+            </div>
+        </div>
     </div>
+
     <script>
         window.addEventListener('DOMContentLoaded', () => main());
+
     </script>
     <script src="/js/nouislider.min.js"></script>
     <script src="/js/konva.min.js"></script>
