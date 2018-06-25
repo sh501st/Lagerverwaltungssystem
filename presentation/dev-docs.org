@@ -124,9 +124,18 @@ TODO
 
 * Architekturbeschreibung
 
-** XYZ Architektur
+** Context View
+#+ATTR_LATEX: :width 0.9\textwidth
+[[../architecture/Context View.png]]
 
-TODO
+** Structual View
+#+ATTR_LATEX: :width 0.9\textwidth
+[[../architecture/Structual View.png]]
+
+
+** Deployment View
+#+ATTR_LATEX: :width 0.9\textwidth
+[[../architecture/Deployment View.png]]
 
 * Implementationsdetails
 

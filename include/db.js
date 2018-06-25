@@ -135,15 +135,15 @@ exports.readInMockArticles = (callback) => {
 }
 
 //get latest order counter of given storage via callback
-exports.getLatestOrderCounter = (storage, callback) => {
-    const sqlStr = `SELECT order_id FROM log WHERE storage_id='${storage._id}' ORDER BY order_id DESC LIMIT 1`;
+exports.getLatestOrderCounter = (storage) => {
+    const sqlStr = `SELECT MAX(order_id) AS max FROM log WHERE storage_id='${storage._id}'`;
+    return new Promise((resolve, reject) => {
         db_conn.query(sqlStr, (err, rows, fields) => {
             if (err) {
                 console.log("Can't get order counter for given storage:", err.message);
                 reject(err);
             }
-            let orderCounter = 0;
-            if (typeof rows[0] !== 'undefined') {orderCounter = rows[0].order_id;}            
-            callback(err, orderCounter);
+	    resolve(rows.length > 0 ? rows[0].max : 0);
         });
+    });
 }

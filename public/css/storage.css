@@ -27,8 +27,11 @@
         }
 
         #mainContainer {
-            border-style: none;
+	    border: 1.5px gray;
+            border-style: solid;
             border-left-style: none;
+	    display: inline-block;
+	    overflow: hidden;
         }
 
         .button {

@@ -39,11 +39,12 @@ function storageReceivedFromServer() {
 // initialize the canvas and setup all the graphical fluff (tiles,
 // borders, layers, etc)
 function recreateStorageLayout() {
-    setupStageCanvas();
     layer = new Konva.Layer();
+    setupStageCanvas(layer);
     createStorageBorder();
     createShelves();
     createEntrances();
+    scaleBorders(layer);
     stage.add(layer);
     window.addEventListener('keyup', (event) => {
 	if (event.key === 'f' || event.key === 'p') {
@@ -55,15 +56,17 @@ function recreateStorageLayout() {
 // rescale whenever window dimensions and thus canvas container
 // change. Allow dragging via mouse for now, but could change in the
 // future when we have the order sidebar.
-function setupStageCanvas() {
+function setupStageCanvas(layer) {
     const canvasContainer = document.querySelector('#mainContainer');
     stage = new Konva.Stage({
 	container: 'mainContainer',
 	width: canvasContainer.offsetWidth,
 	height: canvasContainer.offsetHeight,
+	x: -1, y: -1 // to counter border overlap
     });
     window.addEventListener('resize', (evt) => {
 	scaleStageToContainer(canvasContainer);
+	scaleBorders(layer);
     });
     scaleStageToContainer(canvasContainer);
 }
@@ -74,6 +77,15 @@ function scaleStageToContainer(container) {
     stage.width(container.offsetWidth);
     stage.height(container.offsetHeight);
     stage.batchDraw();
+}
+
+// keep a consistent border width that should be similar to the canvas
+// container border specified in the css
+function scaleBorders(layer) {
+    const scale = stage.scaleX();
+    layer.find('Rect').each((rect) => rect.strokeWidth(1/scale));
+    layer.find('Line').each((line) => line.strokeWidth(1/scale));
+    layer.find('Arrow').each((arrow) => arrow.strokeWidth(1/scale));
 }
 
 // disallow zooming out beyond storage bounds
@@ -90,7 +102,7 @@ function createStorageBorder() {
 	points: [0, 0, 0, rows*tileSize, cols*tileSize,
 		 rows*tileSize, cols*tileSize, 0, 0, 0],
 	stroke: Color.BORDER,
-	strokeWidth: 2
+	strokeWidth: 1
     });
     layer.add(border);
 }
@@ -195,7 +207,7 @@ function createEntrances() {
 	    pointerAtBeginning: true,
 	    fill: Color.BORDER,
 	    stroke: Color.BORDER,
-	    strokeWidth: 2
+	    strokeWidth: 1
 	});
 	layer.add(arrow);
     });
