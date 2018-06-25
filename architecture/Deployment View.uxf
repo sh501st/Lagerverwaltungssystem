@@ -4,8 +4,8 @@
   <element>
     <id>UMLDeployment</id>
     <coordinates>
-      <x>140</x>
-      <y>170</y>
+      <x>530</x>
+      <y>160</y>
       <w>410</w>
       <h>300</h>
     </coordinates>
@@ -15,8 +15,8 @@
   <element>
     <id>UMLDeployment</id>
     <coordinates>
-      <x>160</x>
-      <y>230</y>
+      <x>550</x>
+      <y>220</y>
       <w>370</w>
       <h>230</h>
     </coordinates>
@@ -26,8 +26,8 @@
   <element>
     <id>UMLDeployment</id>
     <coordinates>
-      <x>180</x>
-      <y>270</y>
+      <x>570</x>
+      <y>260</y>
       <w>320</w>
       <h>180</h>
     </coordinates>
@@ -37,27 +37,25 @@
   <element>
     <id>UMLGeneric</id>
     <coordinates>
-      <x>200</x>
-      <y>340</y>
+      <x>590</x>
+      <y>320</y>
       <w>270</w>
-      <h>100</h>
+      <h>90</h>
     </coordinates>
-    <panel_attributes>Websocket
---
--create-storage.js
--konva.min.js
--plan.storage.js
--view-storage.js
+    <panel_attributes>create-storage.js
+konva.min.js
+plan.storage.js
+view-storage.js
 </panel_attributes>
     <additional_attributes/>
   </element>
   <element>
     <id>UMLDeployment</id>
     <coordinates>
-      <x>140</x>
-      <y>520</y>
+      <x>530</x>
+      <y>510</y>
       <w>410</w>
-      <h>290</h>
+      <h>310</h>
     </coordinates>
     <panel_attributes>Server</panel_attributes>
     <additional_attributes/>
@@ -65,8 +63,8 @@
   <element>
     <id>UMLDeployment</id>
     <coordinates>
-      <x>160</x>
-      <y>560</y>
+      <x>550</x>
+      <y>550</y>
       <w>370</w>
       <h>180</h>
     </coordinates>
@@ -76,53 +74,64 @@
   <element>
     <id>UMLGeneric</id>
     <coordinates>
-      <x>170</x>
-      <y>600</y>
+      <x>560</x>
+      <y>590</y>
       <w>340</w>
       <h>130</h>
     </coordinates>
-    <panel_attributes>Websocket
---
--server.js
--db.js
--optimize.js
--orders.js
--pathfinding.js
--utils.js
+    <panel_attributes>server.js
+db.js
+optimize.js
+orders.js
+pathfinding.js
+utils.js
 </panel_attributes>
     <additional_attributes/>
   </element>
   <element>
     <id>UMLGeneric</id>
     <coordinates>
-      <x>160</x>
-      <y>760</y>
+      <x>550</x>
+      <y>770</y>
       <w>360</w>
       <h>40</h>
     </coordinates>
-    <panel_attributes>MySQL</panel_attributes>
+    <panel_attributes>MySQL Database</panel_attributes>
     <additional_attributes/>
   </element>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>60</x>
-      <y>350</y>
-      <w>160</w>
-      <h>290</h>
+      <x>720</x>
+      <y>450</y>
+      <w>140</w>
+      <h>80</h>
     </coordinates>
-    <panel_attributes>lt=-</panel_attributes>
-    <additional_attributes>110.0;270.0;10.0;270.0;10.0;10.0;140.0;10.0</additional_attributes>
+    <panel_attributes>lt=-
+WebSocket/TCP</panel_attributes>
+    <additional_attributes>10.0;60.0;10.0;10.0</additional_attributes>
   </element>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>330</x>
-      <y>730</y>
-      <w>30</w>
-      <h>50</h>
+      <x>720</x>
+      <y>720</y>
+      <w>50</w>
+      <h>70</h>
     </coordinates>
-    <panel_attributes>lt=-</panel_attributes>
-    <additional_attributes>10.0;30.0;10.0;10.0</additional_attributes>
+    <panel_attributes>lt=-
+TCP</panel_attributes>
+    <additional_attributes>10.0;50.0;10.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLGeneric</id>
+    <coordinates>
+      <x>440</x>
+      <y>110</y>
+      <w>580</w>
+      <h>740</h>
+    </coordinates>
+    <panel_attributes>Lagerverwaltungssystem</panel_attributes>
+    <additional_attributes/>
   </element>
 </diagram>
