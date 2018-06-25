@@ -156,13 +156,13 @@ function handleClientMessage(socket, msg) {
 
 // client sends storage ID and expects storage layout which is either
 // loaded from mem cache or json file on disk when not active
-function sendLayoutToClient(storageID, socket, observeStorage = true) {
+async function sendLayoutToClient(storageID, socket, observeStorage = true) {
     if (!storageID) {
 	storageID = getTemplateStorageID();
     }
     let storage = activeStorages.get(storageID);
     if (!storage) {
-	storage = loadStorageFromJSONFile(storageID, observeStorage);
+	storage = await loadStorageFromJSONFile(storageID, observeStorage);
     }
     if (observeStorage) {
 	let observers = observingClients.get(storage._id);
@@ -183,12 +183,12 @@ function sendLayoutToClient(storageID, socket, observeStorage = true) {
 // optimized storage setup preview to later animate the transition
 // between the current state and what it could look once subshelves
 // were to be rearranged.
-function sendOptimizedStoragePreviewToClient(storageID, socket, fromTime, toTime) {
+async function sendOptimizedStoragePreviewToClient(storageID, socket, fromTime, toTime) {
     if (!storageID) {
 	storageID = getTemplateStorageID();
     }
     const observeStorage = false;
-    const storage = loadStorageFromJSONFile(storageID, observeStorage);
+    const storage = await loadStorageFromJSONFile(storageID, observeStorage);
     if (storage) {
 	optimize.rearrangeSubShelves(storage, fromTime, toTime, (optimizedStorage) => {
 	    console.log('Storage "' + storage._id + '" optimized');
@@ -203,7 +203,7 @@ function sendOptimizedStoragePreviewToClient(storageID, socket, fromTime, toTime
 // client sends storage ID and gets back the optimized storage ID
 // after the subshelf transformation. Optimized storage is written to
 // a new file, preserving the original storage setup.
-function applyOptimizedStoragePreview(storageID, fromTime, toTime, socket) {
+async function applyOptimizedStoragePreview(storageID, fromTime, toTime, socket) {
     if (!storageID) {
 	storageID = getTemplateStorageID();
     }
@@ -211,7 +211,7 @@ function applyOptimizedStoragePreview(storageID, fromTime, toTime, socket) {
 	console.log('Provided optimization parameters are not valid.');
 	return;
     }
-    const storage = loadStorageFromJSONFile(storageID, false);
+    const storage = await loadStorageFromJSONFile(storageID, false);
     optimize.rearrangeSubShelves(storage, fromTime, toTime, (optimizedStorage) => {
 	optimize.updateOrderCache(optimizedStorage);
 	const updatedID = writeStorageToJSONFile(optimizedStorage);
@@ -405,7 +405,7 @@ function bindOrderCacheToStorageFile(storage) {
 // will also happen when the client chooses the view-storage.html from
 // the index.html before building his/her own with
 // create-storage.html.
-function loadStorageFromJSONFile(sessionID, observeStorage = true) {
+async function loadStorageFromJSONFile(sessionID, observeStorage = true) {
     const dir = 'data/storages/';
     const templateFile = dir + 'template.json';
     const sessionFile = dir + sessionID + '.json';
@@ -414,9 +414,7 @@ function loadStorageFromJSONFile(sessionID, observeStorage = true) {
     try {
 	let storage = JSON.parse(fs.readFileSync(toLoad, 'utf8'));
 	if (observeStorage) {
-        db.getLatestOrderCounter(storage, (err, orderCounter) => {
-            storage.orderCounter = orderCounter;
-        });
+            storage.orderCounter = await db.getLatestOrderCounter(storage);
 	    storage.orders = [];
 	    if (!storage.orderCache) {
 		orders.generateOrderCache(storage);
