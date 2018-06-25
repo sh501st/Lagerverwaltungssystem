@@ -256,7 +256,9 @@ Server kann mit mehreren Clients und Lagern gleichzeitig umgehen, Client betrach
 
 ** Lessons learned
 
-TODO: necessary?
+Teamkollaboration mit Git
+
+TODO:...
 
 * Endscreen                                                 :B_ignoreheading:
 :PROPERTIES:
