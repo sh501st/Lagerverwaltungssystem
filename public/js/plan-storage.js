@@ -402,6 +402,8 @@ function handleServerMessage(msg) {
     case 'applied':
 	optimizedStorageIDReceived(content._id);
 	break;
+    case 'presentation':
+	break;
     default:
 	console.log('Unknown type provided in server message:', type);
     }
