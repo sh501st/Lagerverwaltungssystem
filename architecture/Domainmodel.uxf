@@ -28,12 +28,12 @@
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>20</x>
-      <y>240</y>
+      <x>430</x>
+      <y>300</y>
       <w>100</w>
       <h>60</h>
     </coordinates>
-    <panel_attributes>Lager
+    <panel_attributes>storage
 --
 </panel_attributes>
     <additional_attributes/>
@@ -41,36 +41,36 @@
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>190</x>
-      <y>240</y>
+      <x>600</x>
+      <y>300</y>
       <w>180</w>
       <h>60</h>
     </coordinates>
-    <panel_attributes>Regal
+    <panel_attributes>shelf
 --
-Entfernung Ein/Ausgang</panel_attributes>
+Koordinaten
+</panel_attributes>
     <additional_attributes/>
   </element>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>480</x>
-      <y>240</y>
-      <w>100</w>
+      <x>890</x>
+      <y>300</y>
+      <w>120</w>
       <h>80</h>
     </coordinates>
-    <panel_attributes>Fach
+    <panel_attributes>product
 --
-Nr
-Artikelart
+compartmentID
 Bestand</panel_attributes>
     <additional_attributes/>
   </element>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>110</x>
-      <y>250</y>
+      <x>520</x>
+      <y>310</y>
       <w>100</w>
       <h>50</h>
     </coordinates>
@@ -83,26 +83,26 @@ hat</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>360</x>
-      <y>250</y>
+      <x>770</x>
+      <y>310</y>
       <w>140</w>
       <h>50</h>
     </coordinates>
     <panel_attributes>lt=-
 m1=1
-m2=1...n
+m2=4
 besteht aus</panel_attributes>
     <additional_attributes>10.0;20.0;120.0;20.0</additional_attributes>
   </element>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>480</x>
-      <y>390</y>
+      <x>900</x>
+      <y>450</y>
       <w>100</w>
       <h>60</h>
     </coordinates>
-    <panel_attributes>Zugriffslog
+    <panel_attributes>order
 --
 </panel_attributes>
     <additional_attributes/>
@@ -110,13 +110,42 @@ besteht aus</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>520</x>
-      <y>310</y>
-      <w>60</w>
+      <x>940</x>
+      <y>370</y>
+      <w>50</w>
       <h>100</h>
     </coordinates>
     <panel_attributes>lt=-
-m1=1...n
+m1=1..5
+m2=1
+</panel_attributes>
+    <additional_attributes>10.0;10.0;10.0;80.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>900</x>
+      <y>580</y>
+      <w>100</w>
+      <h>90</h>
+    </coordinates>
+    <panel_attributes>log
+--
+order
+timestamp
+storage</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>940</x>
+      <y>500</y>
+      <w>30</w>
+      <h>100</h>
+    </coordinates>
+    <panel_attributes>lt=-
+m1=*
 m2=1
 </panel_attributes>
     <additional_attributes>10.0;10.0;10.0;80.0</additional_attributes>
