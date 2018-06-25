@@ -8,11 +8,12 @@
 #+LATEX_HEADER: \institute[short name]{Institut für Informatik}
 #+LATEX_HEADER: \usetheme{TUC2}
 #+LATEX_HEADER: \usepackage[T1]{fontenc}
-#+LaTeX_HEADER: \usepackage[scale=.875]{FiraSans}
+#+LATEX_HEADER: \usepackage[scale=.875]{FiraSans}
 #+LATEX_HEADER: \usepackage[scale=.875]{FiraMono}
-#+LaTeX_HEADER: \usepackage{minted}
-#+LaTeX_HEADER: \setminted{fontsize=\scriptsize,baselinestretch=1}
-#+LaTeX_HEADER: \usepackage{color}
+#+LATEX_HEADER: \usepackage{minted}
+#+LATEX_HEADER: \setminted{fontsize=\scriptsize,baselinestretch=1}
+#+LATEX_HEADER: \usepackage{color}
+#+LATEX_HEADER: \usepackage[space]{grffile}
 
 * Prelude [1/2]                                                    :noexport:
 
@@ -37,18 +38,24 @@ DEADLINE: <2018-07-23 Mon>
 
 ** Idee
 
-#+ATTR_LATEX: :width 0.8\textwidth
+#+begin_center
+#+ATTR_LATEX: :height 0.8\textheight
 [[../graphics/heatmap-idea.png]]
+#+end_center
 
 ** Vorstellung
 
+#+begin_center
 #+ATTR_LATEX: :width 0.9\textwidth
 [[../graphics/milestone_1_user_stories_storage.png]]
+#+end_center
 
 ** Mockup-Ansätze
 
+#+begin_center
 #+ATTR_LATEX: :width 0.9\textwidth
 [[../graphics/mockup-view.png]]
+#+end_center
 
 * User-Storys
 
@@ -106,7 +113,7 @@ Lager zu irren.
 
 ** User-Stories: Umräumung
 
-Welche Optimierung sind denkbar und wie gilt es, diese umzusetzen?
+Welche Optimierungen sind denkbar und wie gilt es, diese umzusetzen?
 
 \footnotesize
 
@@ -118,23 +125,33 @@ zu können, welche Ablaufoptimierungen sinning sind.
 
 * Domänenmodell
 
+** Domänenmodell
+
 #+ATTR_LATEX: :width 0.9\textwidth
 [[../architecture/Domainmodel.png]]
 
 * Architekturbeschreibung
 
 ** Context View
-#+ATTR_LATEX: :width 0.9\textwidth
+
+#+begin_center
+#+ATTR_LATEX: :height 0.75\textheight
 [[../architecture/Context View.png]]
+#+end_center
 
 ** Structual View
-#+ATTR_LATEX: :width 0.9\textwidth
-[[../architecture/Structual View.png]]
 
+#+begin_center
+#+ATTR_LATEX: :width 0.95\textwidth
+[[../architecture/Structual View.png]]
+#+end_center
 
 ** Deployment View
-#+ATTR_LATEX: :width 0.9\textwidth
+
+#+begin_center
+#+ATTR_LATEX: :height 0.85\textheight
 [[../architecture/Deployment View.png]]
+#+end_center
 
 * Implementationsdetails
 
@@ -192,7 +209,7 @@ exports.generateWorkerPath = (storage, order) => {
 | NodeJS        | Javascript-Runtime fürs Backend        |
 | npm           | NodeJS-Package-Manager                 |
 | MySQL/MariaDB | Datenbank für Artikel und Zugriffs-Log |
-| WebSocket+ws  | Client-Server-Kommunikation            |
+| WebSocket     | Client-Server-Kommunikation            |
 | Konva         | HTML5-Canvas-Abstraktion               |
 | NoUiSlider    | Multifunktionsschieberegler            |
 
