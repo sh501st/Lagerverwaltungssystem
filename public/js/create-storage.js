@@ -53,9 +53,12 @@ function setupStageCanvas() {
 	container: 'mainContainer',
 	width: canvasContainer.offsetWidth,
 	height: canvasContainer.offsetHeight,
+	x: -1, y: -1 // to counter border overlap
     });
-    window.addEventListener('resize', () => scaleStageToContainer(canvasContainer));
-    scaleStageToContainer(canvasContainer);
+    window.addEventListener('resize', () => {
+	scaleStageToContainer(canvasContainer);
+	scaleBorders(canvasContainer, layer);
+    });
 
     layer = new Konva.Layer();
     // visibility workaround since konva has a problem creating and
@@ -70,6 +73,9 @@ function setupStageCanvas() {
 	    createTile(col, row, visible);
 	}
     }
+
+    scaleStageToContainer(canvasContainer);
+    scaleBorders(canvasContainer, layer);
     stage.add(layer);
 }
 
@@ -89,6 +95,13 @@ function scaleStageToContainer(container) {
     stage.width(container.offsetWidth);
     stage.height(container.offsetHeight);
     stage.batchDraw();
+}
+
+// keep a consistent border width that should be similar to the canvas
+// container border specified in the css
+function scaleBorders(container, layer) {
+    const minScale = getMinStageScale(container);
+    layer.find('Rect').each((rect) => rect.strokeWidth(1/minScale));
 }
 
 // currently we are only clearing the session storage, which holds the

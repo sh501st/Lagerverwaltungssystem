@@ -62,24 +62,29 @@ function getSliderMinMaxValues() {
 // server to display it on top of the default storage.
 function recreateStorageLayout(storage, layer) {
     if (!stage) {
-	setupStageCanvas();
+	setupStageCanvas(layer);
     }
     createShelves(storage, layer);
     createEntrances(storage, layer);
     createStorageBorder(layer);
+    scaleBorders(layer);
     stage.add(layer);
 }
 
 // rescale whenever window dimensions and thus canvas container
 // change.
-function setupStageCanvas() {
+function setupStageCanvas(layer) {
     const canvasContainer = document.querySelector('#mainContainer');
     stage = new Konva.Stage({
 	container: 'mainContainer',
 	width: canvasContainer.offsetWidth,
 	height: canvasContainer.offsetHeight,
+	x: -1, y: -1 // to counter border overlap
     });
-    window.addEventListener('resize', () => scaleStageToContainer(canvasContainer));
+    window.addEventListener('resize', () => {
+	scaleStageToContainer(canvasContainer);
+	scaleBorders(layer);
+    });
     scaleStageToContainer(canvasContainer);
 }
 
@@ -101,6 +106,15 @@ function scaleStageToContainer(container) {
     stage.batchDraw();
 }
 
+// keep a consistent border width that should be similar to the canvas
+// container border specified in the css
+function scaleBorders(layer) {
+    const scale = stage.scaleX();
+    layer.find('Rect').each((rect) => rect.strokeWidth(1/scale));
+    layer.find('Line').each((line) => line.strokeWidth(1/scale));
+    layer.find('Arrow').each((arrow) => arrow.strokeWidth(1/scale));
+}
+
 // setup tiles, absolute access color for the time being till db access
 // log is up and running
 function createShelves(storage, layer) {
@@ -114,7 +128,7 @@ function createShelves(storage, layer) {
 	    height: tileSize,
 	    fill: heatmapColor,
 	    stroke: Color.BORDER,
-	    strokeWidth: 2
+	    strokeWidth: 1
 	});
 	rect.on('mouseenter', (e) => {
 	    e.target.prevColor = e.target.fill();
@@ -219,7 +233,7 @@ function createEntrances(storage, layer) {
 	    pointerAtBeginning: true,
 	    fill: Color.BORDER,
 	    stroke: Color.BORDER,
-	    strokeWidth: 2
+	    strokeWidth: 1
 	});
 	layer.add(arrow);
     });
@@ -231,7 +245,7 @@ function createStorageBorder(layer) {
 	points: [0, 0, 0, rows*tileSize, cols*tileSize,
 		 rows*tileSize, cols*tileSize, 0, 0, 0],
 	stroke: Color.BORDER,
-	strokeWidth: 2
+	strokeWidth: 1
     });
     layer.add(border);
 }
