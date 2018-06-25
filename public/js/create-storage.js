@@ -152,6 +152,8 @@ function handleServerMessage(msg) {
     case 'id':
 	sessionID = content._id;
 	break;
+    case 'presentation':
+	break;
     default:
 	console.log('Unknown type provided in server message:', type);
     }
