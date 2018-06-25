@@ -4,49 +4,45 @@
             font-family: serif;
             float: left;
             font-size: 1vw;
-            border-width: medium;
+            margin: 5px;
+            padding: 0px;
+        }
+
+        .grid-container {
+            display: grid;
+            grid-template-columns: 20.5vw 78.5vw;
+            grid-template-rows: 98vh;
         }
 
         #menu {
-            width: 20vw;
-            height: 90vh;
-            position: absolute;
-            margin-left: 0.5vw;
-            margin-top: 0vw;
-            padding-left: 0;
-            border-color: black;
-            border-style: solid;
+            border: solid 1.5px gray;
         }
 
         .inside_menu {
             padding-left: 0.5vw;
-            padding-bottom: 0.5vh;
+            border: 1.5px gray;
+            border-style: none;
             border-bottom-style: solid;
-            border-bottom-color: black;
-            margin-bottom: 0.5vh;
         }
 
         #mainContainer {
-            position: absolute;
-            width: 77vw;
-            height: 90vh;
-            margin-left: 21.5vw;
             border-style: none;
+            border-left-style: none;
         }
 
         .button {
             display: inline-block;
             border-radius: 0.5vw;
-            border-color: black;
-            border-style: solid;
-            border-width: 2px;
+            border: solid 1.5px gray;
             text-align: center;
             font-size: 1vw;
+            font-weight: 900;
+            color: azure;
             padding: 1vw;
-            width: 9vw;
+            width: 9.3vw;
             transition: all 0.5s;
             cursor: pointer;
-            margin-top: 0.5vh;
+            margin-top: 1vh;
             margin-right: 0.4vw;
         }
 
@@ -77,11 +73,9 @@
 
         .input {
             border-radius: 0.5vw;
-            border-color: black;
-            border-style: solid;
-            border-width: 2px;
+            border: solid 1.5px gray;
             font-size: 1.5vw;
-            width: 18vw;
+            width: 18.8vw;
             height: 4.5vh;
             background-color: azure;
         }
@@ -118,19 +112,17 @@
             -moz-appearance: none;
             appearance: none;
             border-radius: 0.5vw;
-            border-color: black;
-            border-style: solid;
-            border-width: 2px;
+            border: solid 1.5px gray;
             line-height: 1;
             outline: 0;
             color: black;
             background-color: azure;
-            padding: 0.5vw 15.2vw 0.5vw 1vw;
-            background: linear-gradient(black, black) no-repeat,
+            padding: 0.5vw 16.3vw 0.5vw 1vw;
+            background: linear-gradient(gray, gray) no-repeat,
             linear-gradient(-135deg, rgba(255, 255, 255, 0) 50%, azure 50%) no-repeat,
             linear-gradient(-225deg, rgba(255, 255, 255, 0) 50%, azure 50%) no-repeat,
             linear-gradient(black, black) no-repeat;
-            background-size: 0.15vw 100%, 2vw 2vw, 2vw 2vw, 2vw 60%;
+            background-size: 2px 100%, 2vw 2vw, 2vw 2vw, 2vw 60%;
             background-position: right 2vw center, right bottom, right bottom, right bottom;
         }
 
@@ -197,157 +189,56 @@
             cursor: pointer;
         }
 
-        input[type=range]:hover:before,
-        input[type=range]:hover:after {
-            color: #608000;
+        input[type=range] {
+            -webkit-appearance: none;
+            /*清除系统默认样式*/
+            width: 17.5vw;
+            background: -webkit-linear-gradient(#61bd12, #61bd12) no-repeat, #ddd;
+            /*设置左边颜色为#61bd12，右边颜色为#ddd*/
+            background-size: 0% 100%;
+            /*设置左右宽度比例*/
+            height: 1vh;
+            /*横条的高度*/
+            margin: 1vh 0;
+            margin-bottom: 8vh;
+            padding: 0 0.5vw;
         }
 
-        input[type=range]:hover::-webkit-slider-runnable-track {
-            background-color: #85b200;
-        }
-
-        input[type=range]:hover::-moz-range-track {
-            background-color: #85b200;
-        }
-
-        input[type=range]:focus::-webkit-slider-runnable-track {
-            background-color: #85b200;
-        }
-
-        input[type=range]:before {
-            left: 2vw;
-        }
-
-        input[type=range]:after {
-            right: 2vw;
-        }
-
-        input[type=range]#sort_tra:before {
-            content: "\e000";
-        }
-
-        input[type=range]#sort_tra:after {
-            content: "\e001";
-        }
-
-        /*range circle*/
+        /*拖动块的样式*/
 
         input[type=range]::-webkit-slider-thumb {
             -webkit-appearance: none;
-            appearance: none;
-            height: 2.5vh;
-            width: 1.5vw;
-            border-radius: 100%;
-            background-color: #fff;
-            cursor: pointer;
-            margin-top: -0.75vh;
-            -webkit-box-shadow: 0.2vw 0.2vw 0.6vw rgba(0, 0, 0, 0.4);
-            box-shadow: 0.2vw 0.2vw 0.6vw rgba(0, 0, 0, 0.4);
+            /*清除系统默认样式*/
+            height: 4vh;
+            /*拖动块高度*/
+            width: 4vh;
+            /*拖动块宽度*/
+            background: #fff;
+            /*拖动块背景*/
+            border-radius: 50%;
+            /*外观设置为圆形*/
+            border: solid 1.5px gray;
+            /*设置边框*/
         }
 
-        input[type=range]::-moz-range-thumb {
-            -moz-appearance: none;
-            appearance: none;
-            height: 2.5vh;
-            width: 1.5vw;
-            border-radius: 100%;
-            background-color: #fff;
-            cursor: pointer;
-            -moz-box-shadow: 0.2vw 0.2vw 0.6vwx rgba(0, 0, 0, 0.4);
-            box-shadow: 0.2vw 0.2vw 0.6vw rgba(0, 0, 0, 0.4);
+        td {
+            padding: 0.5vw;
+            text-align: left;
+
         }
 
-        input[type=range]::-ms-thumb {
-            -ms-appearance: none;
-            appearance: none;
-            height: 2.5vh;
-            width: 1.5vw;
-            border-radius: 100%;
-            background-color: #fff;
-            cursor: pointer;
-            -ms-box-shadow: 0.2vw 0.2vw 0.6vw rgba(0, 0, 0, 0.4);
-            box-shadow: 0.2vw 0.2vw 0.6vw rgba(0, 0, 0, 0.4);
+        th {
+            background-color: #30aaee;
+            color: white;
+            text-align: left;
+            padding: 0.5vw;
         }
 
-        input[type=range]::slider-thumb {
-            -webkit-appearance: none;
-            appearance: none;
-            height: 2.5vh;
-            width: 1.5vw;
-            border-radius: 100%;
-            background-color: #fff;
-            cursor: pointer;
-            margin-top: -0.75vh;
-            -webkit-box-shadow: 0.2vw 0.2vw 0.6vw rgba(0, 0, 0, 0.4);
-            box-shadow: 0.2vw 0.2vw 0.6vw rgba(0, 0, 0, 0.4);
+        tr:hover {
+            background-color: #b4e1fb;
         }
 
-        /*range pathway*/
-
-        input[type=range]::-webkit-slider-runnable-track {
-            width: 100%;
-            height: 0.3vh;
-            background-color: #aaa;
-            border-radius: 0.3vw;
-            cursor: pointer;
+        ul {
+            padding-left: 3vw;
+            list-style-type: circle;
         }
-
-        input[type=range]::-moz-range-track {
-            width: 100%;
-            height: 0.3vh;
-            background-color: #aaa;
-            border-radius: 0.3vw;
-            cursor: pointer;
-        }
-
-        input[type=range]::-ms-track {
-            width: 100%;
-            height: 0.3vh;
-            border-color: transparent;
-            color: transparent;
-            border-radius: 0.3vw;
-            background: transparent;
-            cursor: pointer;
-        }
-
-        /*arrived progress*/
-
-        input[type=range]::-ms-fill-lower {
-            background-color: #85b200;
-        }
-
-        /*not arrived progress*/
-
-        input[type=range]::-ms-fill-upper {
-            background-color: #aaa;
-        }
-
-        input[type=range]::-ms-ticks-before {
-            display: none;
-        }
-
-        input[type=range]::-ms-ticks-after {
-            display: none;
-        }
-
-	td {
-	    padding: 0.5vw;
-	    text-align: left;
-
-	}
-
-	th {
-	    background-color: #30aaee;
-	    color: white;
-	    text-align: left;
-	    padding: 0.5vw;
-	}
-
-	tr:hover {
-	    background-color: #b4e1fb;
-	}
-
-	ul {
-	    padding-left: 3vw;
-	    list-style-type: circle;
-	}
