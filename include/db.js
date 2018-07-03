@@ -147,3 +147,26 @@ exports.getLatestOrderCounter = (storage) => {
         });
     });
 }
+
+
+//get frequently accessed products within one order of given 'product id'
+//rows contains a table with the columns product and cnt sorted by cnt desc.
+//product is the article id of a product that is being ordered frequently with given 'product_id'.
+//cnt is the number of orders in which both products are present.
+exports.getFrequentlyOrderedTogether = (product_id) => {
+    const sqlStr = `SELECT product, count(*) as cnt 
+                        FROM log 
+                            WHERE order_id IN 
+                                ( SELECT order_id FROM log WHERE product='${product_id}' GROUP BY order_id ) 
+                                    GROUP BY product 
+                                        ORDER BY cnt DESC `;
+    return new Promise((resolve, reject) => {
+        db_conn.query(sqlStr, (err, rows, fields) => {
+            if (err) {
+                console.log("Can't get \"frequently bought together\" of given product_id:", err.message);
+                reject(err);
+            }
+	    resolve(rows);
+        });
+    });
+}
