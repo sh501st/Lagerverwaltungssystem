@@ -166,6 +166,7 @@ exports.getFrequentlyOrderedTogether = (product_id) => {
                 console.log("Can't get \"frequently bought together\" of given product_id:", err.message);
                 reject(err);
             }
+        if(rows.length <= 0){rows = [{product:null, cnt:null}];}
 	    resolve(rows);
         });
     });

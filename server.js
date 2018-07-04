@@ -238,7 +238,7 @@ async function sendShelfToClient(storageID, shelfX, shelfY, socket) {
 	    let sub = shelf.sub[i];
 	    sub.accessCounter = await db.accessById(sub.article.id, 0, util.unix(), storageID);
         sub.frequentlyOrderedTogether = await db.getFrequentlyOrderedTogether(sub.article.id);
-        console.log(sub.article.id+" is most frequently ordered together along with "+sub.frequentlyOrderedTogether[0].product+": "+ sub.frequentlyOrderedTogether[0].cnt);
+        console.log(sub.article.id+" has been ordered along with "+sub.frequentlyOrderedTogether[0].product+" "+ sub.frequentlyOrderedTogether[0].cnt+" time(s)");
 	}
 	sendMessage(socket, 'shelfinventory', shelf);
     }
