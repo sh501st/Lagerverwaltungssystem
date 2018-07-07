@@ -44,6 +44,10 @@ function setupAccessSlider() {
 	accessSlider.setAttribute('disabled', true);
 	const [minTime, maxTime] = getSliderMinMaxValues();
 	requestOptimizedStorageSetupPreview(minTime, maxTime);
+	document.getElementById('accessSliderlabel_from').innerHTML = 'From: ' 
+        + new Date(minTime * 1000).toISOString();
+        document.getElementById('accessSliderlabel_to').innerHTML = 'To: ' 
+        + new Date(maxTime * 1000).toISOString();
     });
 }
 
