@@ -30,7 +30,7 @@ function setupAccessSlider() {
 	start: [0, 10],
 	connect: true,
 	orientation: 'horizontal',
-	tooltips: [true, true],
+	tooltips: [false, false],
 	step: 1,
 	padding: 1,
 	range: { 'min': 0, 'max': 10 },
