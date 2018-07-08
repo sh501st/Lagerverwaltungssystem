@@ -27,11 +27,11 @@
         }
 
         #mainContainer {
-	    border: 1.5px gray;
+            border: 1.5px gray;
             border-style: solid;
             border-left-style: none;
-	    display: inline-block;
-	    overflow: hidden;
+            display: inline-block;
+            overflow: hidden;
         }
 
         .button {
@@ -42,8 +42,11 @@
             font-size: 1vw;
             font-weight: 900;
             color: azure;
-            padding: 1vw;
+            padding-left: 1vw;
+            padding-right: 1vw;
+            padding-top: 0.5vh;
             width: 9.3vw;
+            height: 7vh;
             cursor: pointer;
             margin-top: 1vh;
             margin-bottom: 0.5vh;
@@ -79,7 +82,7 @@
             border: solid 1.5px gray;
             font-size: 1.5vw;
             width: 18.6vw;
-            height: 2.4vw;
+            height: 5vh;
             background-color: azure;
             margin-bottom: 0.5vh;
             margin-right: 0.5vw;
@@ -113,25 +116,14 @@
 
 
         select {
-            font-size: 1.5vw;
-            -webkit-appearance: none;
-            -moz-appearance: none;
-            appearance: none;
             border-radius: 0.5vw;
             border: solid 1.5px gray;
-            line-height: 1;
-            outline: 0;
-            color: black;
+            font-size: 1.5vw;
+            width: 18.6vw;
+            height: 5vh;
             background-color: azure;
-            padding: 0.5vw 16.3vw 0.5vw 1vw;
             margin-bottom: 0.5vh;
-            background: linear-gradient(gray, gray) no-repeat,
-            linear-gradient(-135deg, rgba(255, 255, 255, 0) 50%, azure 50%) no-repeat,
-            linear-gradient(-225deg, rgba(255, 255, 255, 0) 50%, azure 50%) no-repeat,
-            linear-gradient(black, black) no-repeat;
-            background-size: 2px 100%, 2vw 2vw, 2vw 2vw, 2vw 60%;
-            background-position: right 2vw center, right bottom, right bottom, right bottom;
-            width: 19vw;
+            margin-right: 0.5vw;
         }
 
         #accessSlider {
