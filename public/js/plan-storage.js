@@ -30,7 +30,7 @@ function setupAccessSlider() {
 	start: [0, 10],
 	connect: true,
 	orientation: 'horizontal',
-	tooltips: [true, true],
+	tooltips: [false, false],
 	step: 1,
 	padding: 1,
 	range: { 'min': 0, 'max': 10 },
@@ -44,6 +44,10 @@ function setupAccessSlider() {
 	accessSlider.setAttribute('disabled', true);
 	const [minTime, maxTime] = getSliderMinMaxValues();
 	requestOptimizedStorageSetupPreview(minTime, maxTime);
+	document.getElementById('accessSliderlabel_from').innerHTML = 'From: ' 
+        + new Date(minTime * 1000).toISOString();
+        document.getElementById('accessSliderlabel_to').innerHTML = 'To: ' 
+        + new Date(maxTime * 1000).toISOString();
     });
 }
 

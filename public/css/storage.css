@@ -78,10 +78,11 @@
             border-radius: 0.5vw;
             border: solid 1.5px gray;
             font-size: 1.5vw;
-            width: 18.8vw;
-            height: 4.5vh;
+            width: 18.6vw;
+            height: 2.4vw;
             background-color: azure;
             margin-bottom: 0.5vh;
+            margin-right: 0.5vw;
         }
 
         .tooltip {
@@ -130,13 +131,14 @@
             linear-gradient(black, black) no-repeat;
             background-size: 2px 100%, 2vw 2vw, 2vw 2vw, 2vw 60%;
             background-position: right 2vw center, right bottom, right bottom, right bottom;
+            width: 19vw;
         }
 
         #accessSlider {
-            width: 16vw;
+            width: 17vw;
             margin: 0.5vw;
             margin-left: 1vw;
-            margin-top: 5vh;
+            margin-top: 2vh;
         }
 
         #size {
