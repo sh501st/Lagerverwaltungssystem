@@ -24,6 +24,7 @@
             border: 1.5px gray;
             border-style: none;
             border-bottom-style: solid;
+            font-size: 2vh;
         }
 
         #mainContainer {
@@ -130,7 +131,6 @@
             width: 17vw;
             margin: 0.5vw;
             margin-left: 1vw;
-            margin-top: 2vh;
         }
 
         #size {
