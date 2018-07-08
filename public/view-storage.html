@@ -47,7 +47,7 @@
     <div id="mainContainer" oncontextmenu="return false;"></div>
     <div id="invModal" class="modal" style="font-size: 1.5vw">
         <div class="modal-content">
-            <span class="modal-close-button" onclick="closeModalDialog();">&times;</span>
+            <span id="inv-modal-close-button" class="modal-close-button">&times;</span>
             <h3>Shelf inventory:</h3>
             <div>
                 <table style="width:100%">
@@ -59,6 +59,23 @@
                         </tr>
                     </thead>
                     <tbody id="inventory"></tbody>
+                </table>
+            </div>
+        </div>
+        <div id="fotModal" class="modal" style="font-size: 1.5vw">
+        <div class="modal-content">
+            <span id="fot-modal-close-button" class="modal-close-button">&times;</span>
+            <h3>Frequently bought together:</h3>
+            <div>
+                <table style="width:100%">
+                    <thead>
+                        <tr>
+                            <th align="left">article</th>
+                            <th align="left">quantity (absolute)</th>
+                            <th align="left">quantity (relative)</th>
+                        </tr>
+                    </thead>
+                    <tbody id="fot"></tbody>
                 </table>
             </div>
         </div>

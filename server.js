@@ -143,6 +143,9 @@ function handleClientMessage(socket, msg) {
     case 'shelfinventory':
 	sendShelfToClient(content._id, content.x, content.y, socket);
 	break;
+    case 'frequentlyOrderedTogether':
+	sendFrequentlyOrderedTogether(content.storageID, content.productID, socket);
+	break;
     case 'reqrange':
 	sendAccessTimeRangeToClient(content._id, socket);
 	break;
@@ -237,11 +240,19 @@ async function sendShelfToClient(storageID, shelfX, shelfY, socket) {
 	for (let i = 0; i < shelf.sub.length; i++) {
 	    let sub = shelf.sub[i];
 	    sub.accessCounter = await db.accessById(sub.article.id, 0, util.unix(), storageID);
-        sub.frequentlyOrderedTogether = await db.getFrequentlyOrderedTogether(sub.article.id);
-        console.log(sub.article.id+" has been ordered along with "+sub.frequentlyOrderedTogether[0].product+" "+ sub.frequentlyOrderedTogether[0].cnt+" time(s)");
+        sub.frequentlyOrderedTogether = await db.getFrequentlyOrderedTogether(sub.article.id,storageID);
 	}
 	sendMessage(socket, 'shelfinventory', shelf);
     }
+}
+
+async function sendFrequentlyOrderedTogether(storageID, productID, socket) {
+    if (!storageID) {
+	storageID = getTemplateStorageID();
+    }
+    let content;
+    content = await db.getFrequentlyOrderedTogether(productID,storageID);
+	sendMessage(socket, 'frequentlyOrderedTogether', content);
 }
 
 // client sends storage id and expects the min and max timestamp

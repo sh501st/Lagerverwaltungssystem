@@ -149,17 +149,19 @@ exports.getLatestOrderCounter = (storage) => {
 }
 
 
-//get frequently accessed products within one order of given 'product id'
+//get the top 4 of frequently accessed products within one order of given 'product id'
 //rows contains a table with the columns product and cnt sorted by cnt desc.
 //product is the article id of a product that is being ordered frequently with given 'product_id'.
 //cnt is the number of orders in which both products are present.
-exports.getFrequentlyOrderedTogether = (product_id) => {
+exports.getFrequentlyOrderedTogether = (product_id, storage_id) => {
     const sqlStr = `SELECT product, count(*) as cnt 
                         FROM log 
                             WHERE order_id IN 
-                                ( SELECT order_id FROM log WHERE product='${product_id}' GROUP BY order_id ) 
+                                ( SELECT order_id FROM log WHERE product='${product_id}' 
+                                AND storage_id='${storage_id}' GROUP BY order_id ) 
                                     GROUP BY product 
-                                        ORDER BY cnt DESC `;
+                                    ORDER BY cnt DESC 
+                                    LIMIT 4`;
     return new Promise((resolve, reject) => {
         db_conn.query(sqlStr, (err, rows, fields) => {
             if (err) {

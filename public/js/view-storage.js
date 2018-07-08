@@ -161,24 +161,78 @@ function showShelfInventory(shelf) {
 	    const text = document.createTextNode(item);
 	    cell.appendChild(text);
 	    row.appendChild(cell);
+        //request list of frequentlyOrderedTogether
+        row.onclick = function () {
+            sendMessage('frequentlyOrderedTogether', { storageID: storage._id, productID: sub.article.id });
+        }
+        row.style.cursor = "pointer";
 	});
 	tableBody.appendChild(row);
     });
     modal.style.display = 'block';
     window.onclick = (event) => {
 	if (event.target == modal) {
-	    closeModalDialog();
+	    closeAllModalDialogs();
 	}
+    };
+    document.getElementById('inv-modal-close-button').onclick = (event) => {
+	    closeModalDialog(modal, tableBody);
     };
 }
 
-function closeModalDialog() {
-    let modal = document.getElementById('invModal');
+function showFrequentlyOrderedTogether(content) {
+    layer.listening(false);
+    let modal = document.getElementById('fotModal');
+    let tableBody = document.getElementById('fot');
+    
+    
+    for (let i=0; i<content.length; i++){
+	let row = document.createElement('tr');
+	const items = [content[i].product, content[i].cnt, "TODO"];
+	items.forEach((item) => {
+	    let cell = document.createElement('td');
+	    const text = document.createTextNode(item);
+	    cell.appendChild(text);
+	    row.appendChild(cell);
+	});
+	tableBody.appendChild(row);
+    }
+    
+    
+    modal.style.display = 'block';
+    window.onclick = (event) => {
+	if (event.target == modal) {
+	    closeAllModalDialogs();
+	}
+    };
+    document.getElementById('fot-modal-close-button').onclick = (event) => {
+	    closeModalDialog(modal, tableBody);
+    };
+    
+}
+
+function closeModalDialog(modal, tableBody) {
     modal.style.display = 'none';
     window.onclick = null;
-    let tableBody = document.getElementById('inventory');
     while (tableBody.firstChild) {
 	tableBody.removeChild(tableBody.firstChild);
+    }
+    layer.listening(true);
+}
+
+function closeAllModalDialogs() {
+    let modal1 = document.getElementById('invModal');
+    let modal2 = document.getElementById('fotModal');
+    modal1.style.display = 'none';
+    modal2.style.display = 'none';
+    window.onclick = null;
+    let tableBody1 = document.getElementById('inventory');
+    let tableBody2 = document.getElementById('fot');
+    while (tableBody1.firstChild) {
+	tableBody1.removeChild(tableBody1.firstChild);
+    }
+    while (tableBody2.firstChild) {
+	tableBody2.removeChild(tableBody2.firstChild);
     }
     layer.listening(true);
 }
@@ -296,6 +350,9 @@ function handleServerMessage(msg) {
 	break;
     case 'shelfinventory':
 	showShelfInventory(content);
+	break;
+    case 'frequentlyOrderedTogether':
+	showFrequentlyOrderedTogether(content);
 	break;
     case 'orderupdate':
 	if (content.removed) {
