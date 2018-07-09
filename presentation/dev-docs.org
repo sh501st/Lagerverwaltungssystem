@@ -136,8 +136,10 @@ zu können, welche Ablaufoptimierungen sinning sind.
 
 ** Domänenmodell
 
+#+begin_center
 #+ATTR_LATEX: :width 0.9\textwidth
 [[../architecture/Domainmodel.png]]
+#+end_center
 
 * Architekturbeschreibung
 
@@ -291,7 +293,7 @@ Server kann mit mehreren Clients und Lagern gleichzeitig umgehen, Client betrach
 - Zum Entfernen eines gesetzten Regals, klicke mit der rechten Maustaste auf entsprechendes Feld bzw. ziehe mit gehaltener rechter Maustaste über mehre Felder hinweg.
 - Per Mittelklick auf ein Randfeld, wird ein Ein-/Ausgang dort erstellt. Das Feld färbt sich grün. Dies kann ebenfalls per Rechtsklick zurückgenommen werden.
 - Wenn die Planung fertiggestellt wurde, bitte auf "Save and view" klicken.
-Sollten Regale nicht erreichbar sein, werden diese rot gefärbt. Diese müssen entfernt werden, bzw. mit Hilfe eines neuen Eingangs erreichbar gemacht werden.
+- Sollten Regale nicht erreichbar sein, werden diese rot gefärbt. Diese müssen entfernt werden, bzw. mit Hilfe eines neuen Eingangs erreichbar gemacht werden.
 - Falls alle Regale erreichbar sind, wird nun zum Live View gewechselt, welches ebenfalls über das Hauptmenü zu erreichen ist.
 - Um die Planung abzubrechen und zum Hauptmenü zurückzukehren auf "Cancel" klicken.
 
