@@ -45,7 +45,7 @@ Person: Lagerlogistiker
 
 Situation: Der Lagerlogistiker möchte das Lager so umräumen, dass Wege minimiert werden.
 
-Problem: Es ist nicht bekannt, auf welche Proodukte am häufigsten zugegriffen wird.
+Problem: Es ist nicht bekannt, auf welche Produkte am häufigsten zugegriffen wird.
 
 #+begin_center
 #+ATTR_LATEX: :height 0.8\textheight
