@@ -272,12 +272,32 @@ source datenbankmodell/programmierpraktikum.sql;
 ** Nutzung als Entwickler
 
 - =./server.sh= im Quellverzeichnis ausführen; startet DB und Server
-- Im Browser =localhost:8080= aufrufen
+- Im Browser =localhost:8080= aufrufen.
 - *Create Storage* zum Anlegen eines Lagers und anschließender Befüllung
 - *View Storage* erlaubt Live-Ansicht eines bereits erstellten Lagers
 - *Plan Storage* führt zu Optimierungseinstellungen hinsichtlich Lageraufbau
 
 Server kann mit mehreren Clients und Lagern gleichzeitig umgehen, Client betrachtet hingegen immer nur eines.
+
+** Nutzung als Anwender
+
+- Im Browser <server-domain|server-ip>:8080 aufrufen. Falls der Server auf dem lokalen Gerät läuft navigiere zu localhost:8080
+
+*** Lager erstellen
+- Um ein neues Lager zu erstellen, navigiere zu "create storage".
+- Wähle auf der linken Seite über die Schieberegler die Größe des Lager in Feldern. Ein Feld kann als Weg, als auch als Regalstellplatz dienen.
+- Mit dem "Workers" Schieberegler bestimmt man die max. Anzahl an gleichzeitig arbeitenden Mitarbeitern.
+- Zum Platzieren eines Regals, klicke mit der linken Maustaste auf ein Feld. Zum Platzieren mehrer Regale ziehe mit gehaltener linker Maustaste über mehrere Felder hinweg. Felder mit platziertem Regal sind blau gefärbt.
+- Zum Entfernen eines gesetzten Regals, klicke mit der rechten Maustaste auf entsprechendes Feld bzw. ziehe mit gehaltener rechter Maustaste über mehre Felder hinweg.
+- Per Mittelklick auf ein Randfeld, wird ein Ein-/Ausgang dort erstellt. Das Feld färbt sich grün. Dies kann ebenfalls per Rechtsklick zurückgenommen werden.
+- Wenn die Planung fertiggestellt wurde, bitte auf "Save and view" klicken.
+Sollten Regale nicht erreichbar sein, werden diese rot gefärbt. Diese müssen entfernt werden, bzw. mit Hilfe eines neuen Eingangs erreichbar gemacht werden.
+- Falls alle Regale erreichbar sind, wird nun zum Live View gewechselt, welches ebenfalls über das Hauptmenü zu erreichen ist.
+- Um die Planung abzubrechen und zum Hauptmenü zurückzukehren auf "Cancel" klicken.
+
+*** Lager beobachten / Live View
+
+*** Lager optimieren
 
 * Abschließendes
 
