@@ -36,11 +36,20 @@ DEADLINE: <2018-07-23 Mon>
 
 * Motivation
 
-** Idee
+** Ursprüngliche Idee
+*Titel: Lager Heatmap*
+
+Bereich: Logistik
+
+Person: Lagerlogistiker
+
+Situation: Der Lagerlogistiker möchte das Lager so umräumen, dass Wege minimiert werden.
+
+Problem: Es ist nicht bekannt, auf welche Proodukte am häufigsten zugegriffen wird.
 
 #+begin_center
 #+ATTR_LATEX: :height 0.8\textheight
-[[../graphics/heatmap-idea.png]]
+# [[../graphics/heatmap-idea.png]]
 #+end_center
 
 ** Vorstellung
