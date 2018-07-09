@@ -36,21 +36,13 @@ DEADLINE: <2018-07-23 Mon>
 
 * Motivation
 
-** Ursprüngliche Idee
-*Titel: Lager Heatmap*
+** Ideenfindungsphase
 
-Bereich: Logistik
-
-Person: Lagerlogistiker
-
-Situation: Der Lagerlogistiker möchte das Lager so umräumen, dass Wege minimiert werden.
-
-Problem: Es ist nicht bekannt, auf welche Produkte am häufigsten zugegriffen wird.
-
-#+begin_center
-#+ATTR_LATEX: :height 0.8\textheight
-# [[../graphics/heatmap-idea.png]]
-#+end_center
+- Titel :: Lager-Heatmap
+- Bereich :: Logistik
+- Person :: Lagerlogistiker
+- Situation :: Der Lagerlogistiker möchte das Lager so umräumen, dass Wege minimiert werden.
+- Problem :: Es ist nicht bekannt, auf welche Produkte am häufigsten zugegriffen wird.
 
 ** Vorstellung
 
@@ -146,7 +138,7 @@ zu können, welche Ablaufoptimierungen sinning sind.
 ** Context View
 
 #+begin_center
-#+ATTR_LATEX: :width 0.75\textwidth
+#+ATTR_LATEX: :height 0.75\textheight
 [[../architecture/Context View.png]]
 #+end_center
 
@@ -283,23 +275,34 @@ Server kann mit mehreren Clients und Lagern gleichzeitig umgehen, Client betrach
 
 ** Nutzung als Anwender
 
-- Im Browser <server-domain|server-ip>:8080 aufrufen. Falls der Server auf dem lokalen Gerät läuft navigiere zu localhost:8080
+\footnotesize
 
-*** Lager erstellen
+Im Browser <server-domain|server-ip>:8080 aufrufen. Falls der Server
+auf dem lokalen Gerät läuft, navigiere zu localhost:8080
+
+*** Lager erstellen (1/2)
 - Um ein neues Lager zu erstellen, navigiere zu "create storage".
 - Wähle auf der linken Seite über die Schieberegler die Größe des Lager in Feldern. Ein Feld kann als Weg, als auch als Regalstellplatz dienen.
 - Mit dem "Workers" Schieberegler bestimmt man die max. Anzahl an gleichzeitig arbeitenden Mitarbeitern.
 - Zum Platzieren eines Regals, klicke mit der linken Maustaste auf ein Feld. Zum Platzieren mehrer Regale ziehe mit gehaltener linker Maustaste über mehrere Felder hinweg. Felder mit platziertem Regal sind blau gefärbt.
 - Zum Entfernen eines gesetzten Regals, klicke mit der rechten Maustaste auf entsprechendes Feld bzw. ziehe mit gehaltener rechter Maustaste über mehre Felder hinweg.
+
+** Nutzung als Anwender
+
+\footnotesize
+
+*** Lager erstellen (2/2)
 - Per Mittelklick auf ein Randfeld, wird ein Ein-/Ausgang dort erstellt. Das Feld färbt sich grün. Dies kann ebenfalls per Rechtsklick zurückgenommen werden.
 - Wenn die Planung fertiggestellt wurde, bitte auf "Save and view" klicken.
 - Sollten Regale nicht erreichbar sein, werden diese rot gefärbt. Diese müssen entfernt werden, bzw. mit Hilfe eines neuen Eingangs erreichbar gemacht werden.
 - Falls alle Regale erreichbar sind, wird nun zum Live View gewechselt, welches ebenfalls über das Hauptmenü zu erreichen ist.
 - Um die Planung abzubrechen und zum Hauptmenü zurückzukehren auf "Cancel" klicken.
 
-*** Lager beobachten / Live View
-
+** Nutzung als Anwender
+*** Lager beobachten/Live-View
+TODO
 *** Lager optimieren
+TODO
 
 * Abschließendes
 
@@ -319,7 +322,7 @@ Zuschnitt auf Mobilgeräte mitsamt striktem Styleguide.
 
 ** Lessons learned
 
-*** Test-Framwork
+*** Test-Framework
 
 Künftige Team-Web-Dev-Projekte nur noch mit entsprechender
 Testabdeckung. Da mühselig, jeden Commit auf Regressionen zu prüfen.
