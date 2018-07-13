@@ -173,6 +173,10 @@
             text-decoration: none;
             cursor: pointer;
         }
+        
+        .modal-content h3 {
+            font-weight: unset;
+        }
 
         input[type=range] {
             display: block;

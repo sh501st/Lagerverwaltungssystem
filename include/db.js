@@ -154,14 +154,15 @@ exports.getLatestOrderCounter = (storage) => {
 //product is the article id of a product that is being ordered frequently with given 'product_id'.
 //cnt is the number of orders in which both products are present.
 exports.getFrequentlyOrderedTogether = (product_id, storage_id) => {
-    const sqlStr = `SELECT product, count(*) as cnt 
-                        FROM log 
-                            WHERE order_id IN 
-                                ( SELECT order_id FROM log WHERE product='${product_id}' 
-                                AND storage_id='${storage_id}' GROUP BY order_id ) 
-                                    GROUP BY product 
-                                    ORDER BY cnt DESC 
-                                    LIMIT 6`;
+    const sqlStr = `SELECT products.name as product, count(*) AS cnt FROM log 
+					LEFT JOIN products ON log.product = products.id
+                    WHERE order_id IN 
+                        ( SELECT order_id FROM log WHERE product='${product_id}' 
+                        AND storage_id='${storage_id}' GROUP BY order_id ) 
+                    AND product != '${product_id}'
+                    GROUP BY product 
+                    ORDER BY cnt DESC
+                    LIMIT 6`;
     return new Promise((resolve, reject) => {
         db_conn.query(sqlStr, (err, rows, fields) => {
             if (err) {
@@ -169,6 +170,24 @@ exports.getFrequentlyOrderedTogether = (product_id, storage_id) => {
                 reject(err);
             }
         if(rows.length <= 0){rows = [{product:null, cnt:null}];}
+	    resolve(rows);
+        });
+    });
+}
+
+
+//get the total amount of orders that contain given 'product id'
+exports.getAmountOfOrders = (product_id, storage_id) => {
+    const sqlStr = `SELECT count(order_id) AS totalOrders from
+                       ( SELECT order_id FROM log WHERE product='${product_id}' 
+                        AND storage_id='${storage_id}' GROUP BY order_id ) AS orders`;
+    return new Promise((resolve, reject) => {
+        db_conn.query(sqlStr, (err, rows, fields) => {
+            if (err) {
+                console.log("Can't get \"frequently bought together\" of given product_id:", err.message);
+                reject(err);
+            }
+        if(rows.length <= 0){rows = {amountOfOrders:null};}
 	    resolve(rows);
         });
     });

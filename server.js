@@ -240,7 +240,6 @@ async function sendShelfToClient(storageID, shelfX, shelfY, socket) {
 	for (let i = 0; i < shelf.sub.length; i++) {
 	    let sub = shelf.sub[i];
 	    sub.accessCounter = await db.accessById(sub.article.id, 0, util.unix(), storageID);
-        sub.frequentlyOrderedTogether = await db.getFrequentlyOrderedTogether(sub.article.id,storageID);
 	}
 	sendMessage(socket, 'shelfinventory', shelf);
     }
@@ -250,8 +249,10 @@ async function sendFrequentlyOrderedTogether(storageID, productID, socket) {
     if (!storageID) {
 	storageID = getTemplateStorageID();
     }
-    let content;
-    content = await db.getFrequentlyOrderedTogether(productID,storageID);
+    let content = {};
+    content.top6 = await db.getFrequentlyOrderedTogether(productID,storageID);
+    let amountOfOrdersReturn = await db.getAmountOfOrders(productID,storageID);
+    content.amountOfOrders = amountOfOrdersReturn[0].totalOrders;
 	sendMessage(socket, 'frequentlyOrderedTogether', content);
 }
 

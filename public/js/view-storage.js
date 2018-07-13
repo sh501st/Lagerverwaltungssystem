@@ -182,13 +182,12 @@ function showShelfInventory(shelf) {
 
 function showFrequentlyOrderedTogether(content) {
     layer.listening(false);
+    console.log(JSON.stringify(content));
     let modal = document.getElementById('fotModal');
     let tableBody = document.getElementById('fot');
-    
-    
-    for (let i=0; i<content.length; i++){
+    for (let i=0; i<content.top6.length; i++){
 	let row = document.createElement('tr');
-	const items = [content[i].product, content[i].cnt, "TODO"];
+	const items = [content.top6[i].product, content.top6[i].cnt, Math.round((100/content.amountOfOrders*content.top6[i].cnt)*100)/100+"%"];
 	items.forEach((item) => {
 	    let cell = document.createElement('td');
 	    const text = document.createTextNode(item);
