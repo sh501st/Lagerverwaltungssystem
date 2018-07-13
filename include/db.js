@@ -12,12 +12,12 @@ const db_conn = mysql.createConnection({
 exports.updateLog = (storage, order) => {
     const timestamp = util.unix();
     order.articles.forEach((article, index) => {
-	const sqlStr = `INSERT INTO log (order_id, no_in_order, product, unix, storage_id) VALUES
+    const sqlStr = `INSERT INTO log (order_id, no_in_order, product, unix, storage_id) VALUES
                         ('${order.id}', '${index}', '${article.id}', '${timestamp}', '${storage._id}')`;
     //console.log(sqlStr);
-	db_conn.query(sqlStr, (err, res) => {
-	    if (err) { console.log('Inserting access updates failed:', err); }
-	});
+    db_conn.query(sqlStr, (err, res) => {
+        if (err) { console.log('Inserting access updates failed:', err); }
+    });
     });
 }
 
@@ -66,17 +66,17 @@ exports.accessByArticle = (article_name,start,end,storage_id,callback) => {
 // }
 exports.accessById = (article_id, start, end, storage_id) => {
     const sqlStr =
-	  `SELECT COUNT(*) AS accesses FROM log
+      `SELECT COUNT(*) AS accesses FROM log
            WHERE product = '${article_id}' AND unix > '${start}' AND
                  unix <= '${end}' AND storage_id = '${storage_id}'`;
     return new Promise((resolve, reject) => {
-	db_conn.query(sqlStr, (err, rows, fields) => {
+    db_conn.query(sqlStr, (err, rows, fields) => {
             if (err) {
-		console.log("Can't get number of accesses for given IDs:", err.message);
-		reject(err);
-	    }
+        console.log("Can't get number of accesses for given IDs:", err.message);
+        reject(err);
+        }
             resolve(rows[0].accesses);
-	});
+    });
     });
 }
 
@@ -87,15 +87,15 @@ exports.accessById = (article_id, start, end, storage_id) => {
 // accesses: 3,}, {...}, ...]
 exports.sortedAccessesInRange = (start, end, storage_id, callback) => {
     const sqlStr =
-	  `SELECT product, COUNT(*) AS accesses FROM log
+      `SELECT product, COUNT(*) AS accesses FROM log
            WHERE unix >= '${start}' AND unix <= '${end}' AND storage_id = '${storage_id}'
            GROUP BY product ORDER BY accesses DESC`;
     db_conn.query(sqlStr, (err, rows, fields) => {
-	if (err) {
-	    console.log("Can't get sorted articles in time range from database");
-	} else {
-	    callback(rows);
-	}
+    if (err) {
+        console.log("Can't get sorted articles in time range from database");
+    } else {
+        callback(rows);
+    }
     });
 }
 
@@ -104,15 +104,15 @@ exports.sortedAccessesInRange = (start, end, storage_id, callback) => {
 exports.getTimeRange = (storage_id, callback) => {
     const sqlStr = `SELECT MIN(unix), MAX(unix) FROM log WHERE storage_id='${storage_id}'`;
     db_conn.query(sqlStr, (err, res, fields) => {
-	if (err) {
-	    console.log("Can't get unix timestamp range for given storage ID:", storage_id);
-	} else if (res && res.length === 1) {
-	    const minTime = res[0]['MIN(unix)'];
-	    const maxTime = res[0]['MAX(unix)'];
-	    if (minTime && maxTime) {
-		callback(minTime, maxTime);
-	    }
-	}
+    if (err) {
+        console.log("Can't get unix timestamp range for given storage ID:", storage_id);
+    } else if (res && res.length === 1) {
+        const minTime = res[0]['MIN(unix)'];
+        const maxTime = res[0]['MAX(unix)'];
+        if (minTime && maxTime) {
+        callback(minTime, maxTime);
+        }
+    }
     });
 }
 
@@ -123,12 +123,12 @@ exports.readInMockArticles = (callback) => {
     db_conn.query("SELECT id, name, description, producer from products", function(err, rows, fields) {
         let articles_db = [];
         rows.forEach(function(row) {
-	    articles_db.push({
-		id: row.id,
-		name: row.name,
-		desc: row.description,
-		prod: row.producer
-	    });
+        articles_db.push({
+        id: row.id,
+        name: row.name,
+        desc: row.description,
+        prod: row.producer
+        });
         });
         callback(err, articles_db);
     });
@@ -143,7 +143,7 @@ exports.getLatestOrderCounter = (storage) => {
                 console.log("Can't get order counter for given storage:", err.message);
                 reject(err);
             }
-	    resolve(rows.length > 0 ? rows[0].max : 0);
+        resolve(rows.length > 0 ? rows[0].max : 0);
         });
     });
 }
@@ -155,7 +155,7 @@ exports.getLatestOrderCounter = (storage) => {
 //cnt is the number of orders in which both products are present.
 exports.getFrequentlyOrderedTogether = (product_id, storage_id) => {
     const sqlStr = `SELECT products.name as product, count(*) AS cnt FROM log 
-					LEFT JOIN products ON log.product = products.id
+                    LEFT JOIN products ON log.product = products.id
                     WHERE order_id IN 
                         ( SELECT order_id FROM log WHERE product='${product_id}' 
                         AND storage_id='${storage_id}' GROUP BY order_id ) 
@@ -170,7 +170,7 @@ exports.getFrequentlyOrderedTogether = (product_id, storage_id) => {
                 reject(err);
             }
         if(rows.length <= 0){rows = [{product:null, cnt:null}];}
-	    resolve(rows);
+        resolve(rows);
         });
     });
 }
@@ -188,7 +188,7 @@ exports.getAmountOfOrders = (product_id, storage_id) => {
                 reject(err);
             }
         if(rows.length <= 0){rows = {amountOfOrders:null};}
-	    resolve(rows);
+        resolve(rows);
         });
     });
 }

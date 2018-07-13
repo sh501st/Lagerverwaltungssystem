@@ -12,24 +12,24 @@ const util = require('./util');
 // visualize it in plan.js
 exports.rearrangeSubShelves = (storage, fromTime, toTime, callback) => {
     db.sortedAccessesInRange(fromTime, toTime, storage._id, (results) => {
-	let optimizedStorage = JSON.parse(JSON.stringify(storage)); // deep clone
-	initAccessValues(storage, results);
-	initAccessValues(optimizedStorage, results);
-	const subShelves = removeAllSubShelves(optimizedStorage);
-	fillSubShelvesByAccess(optimizedStorage, subShelves, results);
-	calcMaxAccessCounter(storage);
-	calcMaxAccessCounter(optimizedStorage);
-	callback(optimizedStorage);
+    let optimizedStorage = JSON.parse(JSON.stringify(storage)); // deep clone
+    initAccessValues(storage, results);
+    initAccessValues(optimizedStorage, results);
+    const subShelves = removeAllSubShelves(optimizedStorage);
+    fillSubShelvesByAccess(optimizedStorage, subShelves, results);
+    calcMaxAccessCounter(storage);
+    calcMaxAccessCounter(optimizedStorage);
+    callback(optimizedStorage);
     });
 }
 
 // write db log access values to associated subshelf
 function initAccessValues(storage, dbRows) {
     storage.shelves.forEach((shelf) => {
-	shelf.sub.forEach((sub) => {
-	    const rowMatch = dbRows.find((row) => row.product == sub.article.id);
-	    sub.accessCounter = rowMatch ? rowMatch.accesses : 0;
-	});
+    shelf.sub.forEach((sub) => {
+        const rowMatch = dbRows.find((row) => row.product == sub.article.id);
+        sub.accessCounter = rowMatch ? rowMatch.accesses : 0;
+    });
     });
 }
 
@@ -38,10 +38,10 @@ function initAccessValues(storage, dbRows) {
 function calcMaxAccessCounter(storage) {
     storage.heatmapMaxAccessCounter = 0;
     storage.shelves.forEach((shelf) => {
-	const shelfAccess = shelf.sub.reduce((res, sub) => res + sub.accessCounter, 0);
-	if (shelfAccess > storage.heatmapMaxAccessCounter) {
-	    storage.heatmapMaxAccessCounter = shelfAccess;
-	}
+    const shelfAccess = shelf.sub.reduce((res, sub) => res + sub.accessCounter, 0);
+    if (shelfAccess > storage.heatmapMaxAccessCounter) {
+        storage.heatmapMaxAccessCounter = shelfAccess;
+    }
     });
 }
 
@@ -50,11 +50,11 @@ function calcMaxAccessCounter(storage) {
 function removeAllSubShelves(optimizedStorage) {
     let subShelves = [];
     optimizedStorage.shelves.forEach((shelf) => {
-	shelf.sub.forEach((sub) => {
-	    sub.article.shelfX = sub.article.shelfY = -1;
-	    subShelves.push(sub);
-	});
-	shelf.sub = [];
+    shelf.sub.forEach((sub) => {
+        sub.article.shelfX = sub.article.shelfY = -1;
+        subShelves.push(sub);
+    });
+    shelf.sub = [];
     });
     return subShelves;
 }
@@ -65,13 +65,13 @@ function removeAllSubShelves(optimizedStorage) {
 // shelf
 function fillSubShelvesByAccess(optimizedStorage, subShelves, dbRows) {
     dbRows.forEach((row) => {
-	const idx = subShelves.findIndex((subShelf) => subShelf.article.id == row.product);
-	if (idx != -1) {
-	    const len = subShelves.length - 1;
-	    [subShelves[idx], subShelves[len]] = [subShelves[len], subShelves[idx]];
-	    let foundSubShelf = subShelves.pop();
-	    reassignNewSubShelfPosition(optimizedStorage, foundSubShelf);
-	}
+    const idx = subShelves.findIndex((subShelf) => subShelf.article.id == row.product);
+    if (idx != -1) {
+        const len = subShelves.length - 1;
+        [subShelves[idx], subShelves[len]] = [subShelves[len], subShelves[idx]];
+        let foundSubShelf = subShelves.pop();
+        reassignNewSubShelfPosition(optimizedStorage, foundSubShelf);
+    }
     });
     // distribute the ones that were not yet logged by the db because
     // they weren't part of any order yet
@@ -92,18 +92,18 @@ function reassignNewSubShelfPosition(optimizedStorage, subShelf) {
 // coords to the pre-generated orders
 exports.updateOrderCache = (optimizedStorage) => {
     if (!optimizedStorage || optimizedStorage.orderCache.length === 0) {
-	return;
+    return;
     }
     optimizedStorage.orderCache.forEach((order) => {
-	order.articles.forEach((article) => {
-	    optimizedStorage.shelves.forEach((shelf) => {
-		shelf.sub.forEach((sub) => {
-		    if (sub.article.id === article.id) {
-			article.shelfX = shelf.x;
-			article.shelfY = shelf.y;
-		    }
-		});
-	    });
-	});
+    order.articles.forEach((article) => {
+        optimizedStorage.shelves.forEach((shelf) => {
+        shelf.sub.forEach((sub) => {
+            if (sub.article.id === article.id) {
+            article.shelfX = shelf.x;
+            article.shelfY = shelf.y;
+            }
+        });
+        });
+    });
     });
 }

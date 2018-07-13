@@ -9,14 +9,14 @@ const util = require('./util');
 // a new storage will always begin with order number one.
 function generateOrder(storage, genValidID = true) {
     let order = {
-	id: (genValidID ? ++storage.orderCounter : -1),
-	articles: []
+    id: (genValidID ? ++storage.orderCounter : -1),
+    articles: []
     };
     let numItems = util.randInt(1,5);
     for (let i = 0; i < numItems; i++) {
-	let shelf = storage.shelves[util.randInt(0, storage.shelves.length - 1)];
-	let article = shelf.sub[util.randInt(0, shelf.sub.length - 1)].article;
-	order.articles.push(article);
+    let shelf = storage.shelves[util.randInt(0, storage.shelves.length - 1)];
+    let article = shelf.sub[util.randInt(0, shelf.sub.length - 1)].article;
+    order.articles.push(article);
     }
     return order;
 }
@@ -27,7 +27,7 @@ function generateOrder(storage, genValidID = true) {
 exports.generateOrderCache = (storage, cacheSize = 7) => {
     storage.orderCache = [];
     for (let i = 0; i < cacheSize; i++) {
-	storage.orderCache.push(generateOrder(storage, false));
+    storage.orderCache.push(generateOrder(storage, false));
     }
 }
 
@@ -36,8 +36,8 @@ exports.generateOrderCache = (storage, cacheSize = 7) => {
 // so they can update their order queue list besides the canvas.
 function addOrderToQueue(storage, order, notifyObservingClientsCB) {
     if (!order) {
-	console.log("No order specified, not adding.");
-	return;
+    console.log("No order specified, not adding.");
+    return;
     }
     storage.orders.push(order);
     notifyObservingClientsCB(storage, order);
@@ -49,20 +49,20 @@ function addOrderToQueue(storage, order, notifyObservingClientsCB) {
 exports.generateOrders = (activeStorages, notifyObservingClientsCB, genDelayInMs) => {
     const maxOrderBacklog = 6;
     let f = () => {
-	activeStorages.forEach((storage) => {
-	    if (storage.orders.length < maxOrderBacklog) {
-		if (util.randBool(35)) { // 35% chance to recycle cached order
-		    let order = Object.assign(
-			{}, storage.orderCache[util.randInt(0, storage.orderCache.length - 1)]
-		    );
-		    order.id = ++storage.orderCounter;
-		    addOrderToQueue(storage, order, notifyObservingClientsCB);
-		} else {
-		    addOrderToQueue(storage, generateOrder(storage), notifyObservingClientsCB);
-		}
-	    }
-	});
-	setTimeout(f, genDelayInMs);
+    activeStorages.forEach((storage) => {
+        if (storage.orders.length < maxOrderBacklog) {
+        if (util.randBool(35)) { // 35% chance to recycle cached order
+            let order = Object.assign(
+            {}, storage.orderCache[util.randInt(0, storage.orderCache.length - 1)]
+            );
+            order.id = ++storage.orderCounter;
+            addOrderToQueue(storage, order, notifyObservingClientsCB);
+        } else {
+            addOrderToQueue(storage, generateOrder(storage), notifyObservingClientsCB);
+        }
+        }
+    });
+    setTimeout(f, genDelayInMs);
     };
     f();
 }
