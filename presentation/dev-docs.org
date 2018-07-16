@@ -281,7 +281,7 @@ Im Browser <server-domain|server-ip>:8080 aufrufen. Falls der Server
 auf dem lokalen Gerät läuft, navigiere zu localhost:8080
 
 *** Lager erstellen (1/2)
-- Um ein neues Lager zu erstellen, navigiere zu "create storage".
+- Um ein neues Lager zu erstellen, navigiere zu "Create Storage".
 - Wähle auf der linken Seite über die Schieberegler die Größe des Lager in Feldern. Ein Feld kann als Weg, als auch als Regalstellplatz dienen.
 - Mit dem "Workers" Schieberegler bestimmt man die max. Anzahl an gleichzeitig arbeitenden Mitarbeitern.
 - Zum Platzieren eines Regals, klicke mit der linken Maustaste auf ein Feld. Zum Platzieren mehrer Regale ziehe mit gehaltener linker Maustaste über mehrere Felder hinweg. Felder mit platziertem Regal sind blau gefärbt.
@@ -299,10 +299,21 @@ auf dem lokalen Gerät läuft, navigiere zu localhost:8080
 - Um die Planung abzubrechen und zum Hauptmenü zurückzukehren auf "Cancel" klicken.
 
 ** Nutzung als Anwender
-*** Lager beobachten/Live-View
-TODO
+*** Lager beobachten/Live View
+- Um vom Hauptmenü aus zum Live View zu gelgangen, navigiere zu "View Storage". Dort wird das aktuelle Lager angezeigt und Arbeiter visuell dargestellt. Pro Regalzugriff verändert sich die Färbung des Regals, sodass sich eine Heatmap seit Laden der Seite entwickelt. Je kräftiger das Rot ist, desto öfter wurde auf das entsprechende Regal zugegriffen.
+- Zum Betrachten des Regalinhalts auf ein beliebieges Regal klicken.
+- Zum betrachten von abhängigen Käufen, auf einen Artikel in der Auflistung des Regalinhalts klicken.
+- Zur Lageroptimierung gelangt man über den grünen Knopf "Planning".
+- Um zum Hauptmemü zurückzukehrenn auf "Cancel" klicken.
+
+\footnotesize
+
 *** Lager optimieren
-TODO
+- Vom Hauptmenü aus gelangt man per Klick auf "Plan Storage" zur Lageroptimierung. Dort wird das aktuelle Lager angezeigt mit aktueller (rot) und optimierter (grün) Sortierung. Es wird automatisch zwischen beiden Zuständen gewechselt.
+- Um den Regalinhalt zu listen, bitte auf ein Regal klicken. Es kann sowohl der derzeitige Inhalt, als auch der geplante Inhalt angezeigt werden. Dies ist abhängig von der Einfärbung.
+- Zum Umsetzen des geplanten Lagers auf "Optimize" klicken. Es wird ein optimiertes Lager generiert, zu dessen Live View weitergeleitet wird.
+
+\footnotesize
 
 * Abschließendes
 
