@@ -13,16 +13,16 @@ Hauptmenü:
 Lager erstellen:
     Hier kann ein Lager nach Wunsch erstellt werden. Regale und Gänge können frei gestaltet, und mehrere Eingänge frei gewählt werden.
 
-
-
-
-
+    
 Lager beobachten:
 
-     Hier wird das aktuelle Lager angezeigt und Arbeiter visuell dargestellt. Pro Regalzugriff verändert sich die Färbung des Regals, sodass sich eine Heatmap seit Laden der Seite entwickelt. Je kräftiger das Rot ist, desto öfter wurde auf das entsprechende Regal zugegriffen.
+     Hier wird das aktuelle Lager angezeigt.
+     In der linken Seitenleiste werden eingehende Bestellungen angezeigt, die jeweils von einen eigenen Arbeiter visuell darstellt werden.
+     Pro Regalzugriff verändert sich die Färbung des Regals, sodass sich eine Heatmap seit Laden der Seite entwickelt. Je kräftiger das Rot ist, desto öfter wurde auf das entsprechende Regal zugegriffen.
      Per Klick auf das Regal wird der Regalinhalt angezeigt, sowie häufig zusammengekaufte Artikel.
     
     
 Lager optimieren:
 
-    Hier wird das aktuelle Lager angezeigt mit aktueller (rot) und optimierter (grün) Sortierung. Es wird automatisch zwischen beiden Zuständen gewechselt.
+    Hier wird das aktuelle Lager angezeigt mit aktueller (rot) und optimierter (grün) Sortierung. Es wird automatisch zwischen beiden Zuständen gewechselt und von beiden Zuständen der Regalinhalt angezeigt werden.
+    
