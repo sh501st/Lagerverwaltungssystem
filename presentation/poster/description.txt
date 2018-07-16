@@ -1,0 +1,28 @@
+
+Projektbeschreibung:
+    Das LVS soll ein unterstützendes Tool für den Lagerlogistiker sein. Es soll Zugriffe auf das Lager aufzeichnen können und aus diesen Daten Heatmaps generieren und bessere Lagereinrichtungen vorschlagen. Zudem dient es als Bestandsübersicht.
+    Außerdem kann erkannt werden, welche Produkte häufig mit einem anderen zusammen bestellt werden.
+
+ 
+Hauptmenü:
+    - Create Storage zum Anlegen eines Lagers und anschließender Befüllung
+    - View Storage erlaubt Live-Ansicht eines bereits erstellten Lagers
+    - Plan Storage führt zu Optimierungseinstellungen hinsichtlich Lageraufbau
+ 
+ 
+Lager erstellen:
+    Hier kann ein Lager nach Wunsch erstellt werden. Regale und Gänge können frei gestaltet, und mehrere Eingänge frei gewählt werden.
+
+
+
+
+
+Lager beobachten:
+
+     Hier wird das aktuelle Lager angezeigt und Arbeiter visuell dargestellt. Pro Regalzugriff verändert sich die Färbung des Regals, sodass sich eine Heatmap seit Laden der Seite entwickelt. Je kräftiger das Rot ist, desto öfter wurde auf das entsprechende Regal zugegriffen.
+     Per Klick auf das Regal wird der Regalinhalt angezeigt, sowie häufig zusammengekaufte Artikel.
+    
+    
+Lager optimieren:
+
+    Hier wird das aktuelle Lager angezeigt mit aktueller (rot) und optimierter (grün) Sortierung. Es wird automatisch zwischen beiden Zuständen gewechselt.
