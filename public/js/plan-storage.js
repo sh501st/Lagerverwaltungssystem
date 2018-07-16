@@ -43,11 +43,19 @@ function setupAccessSlider() {
     accessSlider.noUiSlider.on('change', () => {
     accessSlider.setAttribute('disabled', true);
     const [minTime, maxTime] = getSliderMinMaxValues();
+    let minDate = new Date(minTime * 1000);
+    let maxDate = new Date(maxTime * 1000);
     requestOptimizedStorageSetupPreview(minTime, maxTime);
-    document.getElementById('accessSliderlabel_from').innerHTML = 'From: ' 
-        + new Date(minTime * 1000).toISOString();
-        document.getElementById('accessSliderlabel_to').innerHTML = 'To: ' 
-        + new Date(maxTime * 1000).toISOString();
+    document.getElementById('accessSliderlabel_from').innerHTML = 'From: <br>' 
+        + minDate.getDate()+"."+('0'+minDate.getMonth()).slice(-2)+"."+
+        minDate.getFullYear().toString().slice(-2)+" - "+
+        ('0'+minDate.getHours()).slice(-2)+":"+('0'+minDate.getMinutes()).slice(-2)+":"+
+        ('0'+minDate.getSeconds()).slice(-2);
+        document.getElementById('accessSliderlabel_to').innerHTML = 'To: <br>' 
+        + maxDate.getDate()+"."+('0'+maxDate.getMonth()).slice(-2)+"."+
+        maxDate.getFullYear().toString().slice(-2)+" - "+
+        ('0'+maxDate.getHours()).slice(-2)+":"+('0'+maxDate.getMinutes()).slice(-2)+":"+
+        ('0'+maxDate.getSeconds()).slice(-2);
     });
 }
 
