@@ -40,9 +40,9 @@ function main() {
         console.log('Client disconnected');
         removeClient(socket)
     });
-    console.log('Client connected');
-    sendMessage(socket, 'id', { _id: generateSessionID() });
-    sendPresentationModeStatus(socket);
+        console.log('Client connected');
+        sendMessage(socket, 'id', { _id: generateSessionID() });
+        sendPresentationModeStatus(socket);
     });
 
 
@@ -51,12 +51,12 @@ function main() {
 
     db.readInMockArticles((err, articles_db) => {
         if (err) {
-        console.log('Error while reading in mock articles:', err.message);
-        quitServer();
-    } else {
+            console.log('Error while reading in mock articles:', err.message);
+            quitServer();
+        } else {
             articles = articles_db;
-        dispatchWorkers();
-    }
+            dispatchWorkers();
+        }
     });
 }
 
@@ -75,14 +75,14 @@ function generateSessionID() {
 
 function sendMessage(socket, type, data) {
     try {
-    socket.send(JSON.stringify({ type: type, content: data }));
-    if (type !== 'orderupdate') {
-        console.log('Sent:', type);
-    }
+        socket.send(JSON.stringify({ type: type, content: data }));
+        if (type !== 'orderupdate') {
+            console.log('Sent:', type);
+        }
     } catch (err) {
-    console.log('Could not send message to client: ' + err);
-    console.log('Removing client from observer list');
-    removeClient(socket);
+        console.log('Could not send message to client: ' + err);
+        console.log('Removing client from observer list');
+        removeClient(socket);
     }
 }
 
@@ -90,14 +90,14 @@ function sendMessage(socket, type, data) {
 // status updates.
 function removeClient(socket) {
     observingClients.forEach((clients, id) => {
-    let remaining = clients.filter(client => client !== socket);
-    if (remaining.length > 0) {
-        observingClients.set(id, remaining);
-    } else {
-        observingClients.delete(id);
-        activeStorages.delete(id);
-        console.log('Deactivating storage ' + id + ', last observer disconnected.');
-    }
+        let remaining = clients.filter(client => client !== socket);
+        if (remaining.length > 0) {
+            observingClients.set(id, remaining);
+        } else {
+            observingClients.delete(id);
+            activeStorages.delete(id);
+            console.log('Deactivating storage ' + id + ', last observer disconnected.');
+        }
     });
 }
 
@@ -109,16 +109,16 @@ function removeClient(socket) {
 function handleClientMessage(socket, msg) {
     let data;
     try {
-    data = JSON.parse(msg);
+        data = JSON.parse(msg);
     } catch (err) {
-    console.log('Message parsing error: ' + err);
-    console.log(msg);
-    return;
+        console.log('Message parsing error: ' + err);
+        console.log(msg);
+        return;
     }
     if (!data || !data.type || !data.content) {
-    console.log('Received client data not valid.');
-    console.log(msg);
-    return;
+        console.log('Received client data not valid.');
+        console.log(msg);
+        return;
     }
     const type = data.type;
     const content = data.content;
@@ -127,33 +127,33 @@ function handleClientMessage(socket, msg) {
 
     switch (type) {
     case 'newstorage':
-    createNewStorage(content);
-    break;
+        createNewStorage(content);
+        break;
     case 'reqlayout':
-    sendLayoutToClient(content._id, socket, content.observeStorage);
-    break;
+        sendLayoutToClient(content._id, socket, content.observeStorage);
+        break;
     case 'reqpreview':
-    sendOptimizedStoragePreviewToClient(
-        content._id, socket, content.from, content.to);
-    break;
+        sendOptimizedStoragePreviewToClient(
+            content._id, socket, content.from, content.to);
+        break;
     case 'applypreview':
-    applyOptimizedStoragePreview(
-        content._id, content.from, content.to, socket);
-    break;
+        applyOptimizedStoragePreview(
+            content._id, content.from, content.to, socket);
+        break;
     case 'shelfinventory':
-    sendShelfToClient(content._id, content.x, content.y, socket);
-    break;
+        sendShelfToClient(content._id, content.x, content.y, socket);
+        break;
     case 'frequentlyOrderedTogether':
-    sendFrequentlyOrderedTogether(content.storageID, content.productID, socket);
-    break;
+        sendFrequentlyOrderedTogether(content.storageID, content.productID, socket);
+        break;
     case 'reqrange':
-    sendAccessTimeRangeToClient(content._id, socket);
-    break;
+        sendAccessTimeRangeToClient(content._id, socket);
+        break;
     case 'presentation':
-    togglePresentationMode(socket);
-    break;
+        togglePresentationMode(socket);
+        break;
     default:
-    console.log('Unknown type provided in client message:', type);
+        console.log('Unknown type provided in client message:', type);
     }
 }
 
@@ -161,23 +161,23 @@ function handleClientMessage(socket, msg) {
 // loaded from mem cache or json file on disk when not active
 async function sendLayoutToClient(storageID, socket, observeStorage = true) {
     if (!storageID) {
-    storageID = getTemplateStorageID();
+        storageID = getTemplateStorageID();
     }
     let storage = activeStorages.get(storageID);
     if (!storage) {
-    storage = await loadStorageFromJSONFile(storageID, observeStorage);
+        storage = await loadStorageFromJSONFile(storageID, observeStorage);
     }
     if (observeStorage) {
-    let observers = observingClients.get(storage._id);
-    if (!observers) {
-        observingClients.set(storage._id, [socket]);
-    } else {
-        observers.push(socket);
-    }
-    observingClients.forEach((clients, id) => {
-        console.log('Clients observing storage \"' + id + '\":', clients.length);
-    });
-    console.log('Active storages:', activeStorages.size);
+        let observers = observingClients.get(storage._id);
+        if (!observers) {
+            observingClients.set(storage._id, [socket]);
+        } else {
+            observers.push(socket);
+        }
+        observingClients.forEach((clients, id) => {
+            console.log('Clients observing storage \"' + id + '\":', clients.length);
+        });
+        console.log('Active storages:', activeStorages.size);
     }
     sendMessage(socket, 'storage', storage);
 }
@@ -188,18 +188,18 @@ async function sendLayoutToClient(storageID, socket, observeStorage = true) {
 // were to be rearranged.
 async function sendOptimizedStoragePreviewToClient(storageID, socket, fromTime, toTime) {
     if (!storageID) {
-    storageID = getTemplateStorageID();
+        storageID = getTemplateStorageID();
     }
     const observeStorage = false;
     const storage = await loadStorageFromJSONFile(storageID, observeStorage);
     if (storage) {
-    optimize.rearrangeSubShelves(storage, fromTime, toTime, (optimizedStorage) => {
-        console.log('Storage "' + storage._id + '" optimized');
-        sendMessage(socket, 'preview', {
-        regular: storage,
-        optimized: optimizedStorage
+        optimize.rearrangeSubShelves(storage, fromTime, toTime, (optimizedStorage) => {
+            console.log('Storage "' + storage._id + '" optimized');
+            sendMessage(socket, 'preview', {
+                regular: storage,
+                optimized: optimizedStorage
+            });
         });
-    });
     }
 }
 
@@ -208,19 +208,19 @@ async function sendOptimizedStoragePreviewToClient(storageID, socket, fromTime, 
 // a new file, preserving the original storage setup.
 async function applyOptimizedStoragePreview(storageID, fromTime, toTime, socket) {
     if (!storageID) {
-    storageID = getTemplateStorageID();
+        storageID = getTemplateStorageID();
     }
     if (!(storageID > 0) || fromTime === 0 || toTime === 10) {
-    console.log('Provided optimization parameters are not valid.');
-    return;
+        console.log('Provided optimization parameters are not valid.');
+        return;
     }
     const storage = await loadStorageFromJSONFile(storageID, false);
     optimize.rearrangeSubShelves(storage, fromTime, toTime, (optimizedStorage) => {
-    optimize.updateOrderCache(optimizedStorage);
-    const updatedID = writeStorageToJSONFile(optimizedStorage);
-    if (updatedID > 0) {
-        sendMessage(socket, 'applied', { _id: updatedID });
-    }
+        optimize.updateOrderCache(optimizedStorage);
+        const updatedID = writeStorageToJSONFile(optimizedStorage);
+        if (updatedID > 0) {
+            sendMessage(socket, 'applied', { _id: updatedID });
+        }
     });
 }
 
@@ -228,26 +228,26 @@ async function applyOptimizedStoragePreview(storageID, fromTime, toTime, socket)
 // contents of that very shelf in a tabular layout.
 async function sendShelfToClient(storageID, shelfX, shelfY, socket) {
     if (!storageID) {
-    storageID = getTemplateStorageID();
+        storageID = getTemplateStorageID();
     }
     let storage = activeStorages.get(storageID);
     if (storage && (shelfX >= 0 || shelfX <= storage.width) &&
-    (shelfY >= 0 || shelfY <= storage.height))
+        (shelfY >= 0 || shelfY <= storage.height))
     {
-    let shelf = storage.shelves.find((elem) => {
-        return elem.x === shelfX && elem.y == shelfY;
-    });
-    for (let i = 0; i < shelf.sub.length; i++) {
-        let sub = shelf.sub[i];
-        sub.accessCounter = await db.accessById(sub.article.id, 0, util.unix(), storageID);
-    }
-    sendMessage(socket, 'shelfinventory', shelf);
+        let shelf = storage.shelves.find((elem) => {
+            return elem.x === shelfX && elem.y == shelfY;
+        });
+        for (let i = 0; i < shelf.sub.length; i++) {
+            let sub = shelf.sub[i];
+            sub.accessCounter = await db.accessById(sub.article.id, 0, util.unix(), storageID);
+        }
+        sendMessage(socket, 'shelfinventory', shelf);
     }
 }
 
 async function sendFrequentlyOrderedTogether(storageID, productID, socket) {
     if (!storageID) {
-    storageID = getTemplateStorageID();
+        storageID = getTemplateStorageID();
     }
     let content = {};
     content.top6 = await db.getFrequentlyOrderedTogether(productID,storageID);
@@ -261,12 +261,12 @@ async function sendFrequentlyOrderedTogether(storageID, productID, socket) {
 // given id.
 function sendAccessTimeRangeToClient(storageID, socket) {
     if (!storageID) {
-    storageID = getTemplateStorageID();
+        storageID = getTemplateStorageID();
     }
     db.getTimeRange(storageID, (minTime, maxTime) => {
-    if (minTime >= 0 && maxTime <= util.unix()) {
-        sendMessage(socket, 'range', { min: minTime, max: maxTime });
-    }
+        if (minTime >= 0 && maxTime <= util.unix()) {
+            sendMessage(socket, 'range', { min: minTime, max: maxTime });
+        }
     });
 }
 
@@ -274,16 +274,16 @@ function sendAccessTimeRangeToClient(storageID, socket) {
 // generation rate of workers and orders respectively.
 function togglePresentationMode(socket) {
     if (!this.presentationMode) {
-    this.presentationMode = true;
+        this.presentationMode = true;
     } else {
-    this.presentationMode = !this.presentationMode;
+        this.presentationMode = !this.presentationMode;
     }
     sendPresentationModeStatus(socket);
 }
 
 function sendPresentationModeStatus(socket) {
     sendMessage(socket, 'presentation', {
-    enabled: this.presentationMode ? this.presentationMode : false
+        enabled: this.presentationMode ? this.presentationMode : false
     });
 }
 
@@ -296,16 +296,16 @@ function dispatchWorkers() {
 
     const moveSpeedInTilesPerSec = 4;
     let f = () => {
-    activeStorages.forEach((storage) => {
-        let order = orders.takeOrderFromQueue(storage);
-        if (order) {
-        order.path = pathfinding.generateWorkerPath(storage, order);
-        order.speed = this.presentationMode ? moveSpeedInTilesPerSec * 10 : moveSpeedInTilesPerSec;
-        notifyObservingClients(storage, order, true);
-        db.updateLog(storage, order);
-        }
-    });
-    setTimeout(f, this.presentationMode ? generationDelayInMs : generationDelayInMs * 10);
+        activeStorages.forEach((storage) => {
+            let order = orders.takeOrderFromQueue(storage);
+            if (order) {
+                order.path = pathfinding.generateWorkerPath(storage, order);
+                order.speed = this.presentationMode ? moveSpeedInTilesPerSec * 10 : moveSpeedInTilesPerSec;
+                notifyObservingClients(storage, order, true);
+                db.updateLog(storage, order);
+            }
+        });
+        setTimeout(f, this.presentationMode ? generationDelayInMs : generationDelayInMs * 10);
     };
     f();
 }
@@ -313,12 +313,12 @@ function dispatchWorkers() {
 function notifyObservingClients(storage, order, removed = false) {
     let clients = observingClients.get(storage._id);
     if (clients) {
-    clients.forEach((client) => {
-        sendMessage(client, 'orderupdate', {
-        order: order,
-        removed: removed
+        clients.forEach((client) => {
+            sendMessage(client, 'orderupdate', {
+                order: order,
+                removed: removed
+            });
         });
-    });
     }
 }
 
@@ -329,25 +329,25 @@ function notifyObservingClients(storage, order, removed = false) {
 // same article.
 function fillShelvesRandomly(shelves) {
     if (articles.length === 0) {
-    console.log('No articles available, database running?');
-    return;
+        console.log('No articles available, database running?');
+        return;
     }
     util.shuffle(articles);
     let articleIdx = 0;
     for (let shelf of shelves) {
-    const numSubShelves = 4;
-    shelf.sub = [];
-    for (let i = 0; i < numSubShelves; i++) {
-        let acopy = Object.assign({
-        shelfX: shelf.x,
-        shelfY: shelf.y
-        }, articles[articleIdx++]);
-        let subshelf = {
-        article: acopy,
-        count: util.randInt(1, 100)
-        };
-        shelf.sub[i] = subshelf;
-    }
+        const numSubShelves = 4;
+        shelf.sub = [];
+        for (let i = 0; i < numSubShelves; i++) {
+            let acopy = Object.assign({
+                shelfX: shelf.x,
+                shelfY: shelf.y
+            }, articles[articleIdx++]);
+            let subshelf = {
+                article: acopy,
+                count: util.randInt(1, 100)
+            };
+            shelf.sub[i] = subshelf;
+        }
     }
 }
 
@@ -359,15 +359,15 @@ function createNewStorage(storage) {
     // TODO: check reachability as well and not trust client to avoid
     // problems down the road?
     if (!storage || !storage.shelves) {
-    console.log("Can't access shelves in newly created storage");
-    return;
+        console.log("Can't access shelves in newly created storage");
+        return;
     }
     if (storage.width < 5 || storage.height < 5 ||
-    storage.width > 20 || storage.height > 20)
+        storage.width > 20 || storage.height > 20)
     {
-    console.log('Storage dimensions are invalid, need to be within 5x5 to 20x20:',
-            storage.width, storage.height);
-    return;
+        console.log('Storage dimensions are invalid, need to be within 5x5 to 20x20:',
+                    storage.width, storage.height);
+        return;
     }
     fillShelvesRandomly(storage.shelves);
     writeStorageToJSONFile(storage);
@@ -379,20 +379,20 @@ function createNewStorage(storage) {
 // default template.json over and over again.
 function writeStorageToJSONFile(storage) {
     try {
-    let storageCopy;
-    let filename = 'data/storages/' + storage._id + '.json';
-    if (fs.existsSync(filename)) {
-        storageCopy = JSON.parse(JSON.stringify(storage));
-        storageCopy._id = generateSessionID();
-        filename = 'data/storages/' + storageCopy._id + '.json';
-    }
-    const serialized = JSON.stringify(storageCopy ? storageCopy : storage);
-    fs.writeFileSync(filename, serialized, 'utf8');
-    console.log("Storage written sucessfully");
-    return storageCopy ? storageCopy._id : storage._id;
+        let storageCopy;
+        let filename = 'data/storages/' + storage._id + '.json';
+        if (fs.existsSync(filename)) {
+            storageCopy = JSON.parse(JSON.stringify(storage));
+            storageCopy._id = generateSessionID();
+            filename = 'data/storages/' + storageCopy._id + '.json';
+        }
+        const serialized = JSON.stringify(storageCopy ? storageCopy : storage);
+        fs.writeFileSync(filename, serialized, 'utf8');
+        console.log("Storage written sucessfully");
+        return storageCopy ? storageCopy._id : storage._id;
     } catch (err) {
-    console.log("Couldn't write storage json to disk:", err);
-    return -1;
+        console.log("Couldn't write storage json to disk:", err);
+        return -1;
     }
 }
 
@@ -402,14 +402,14 @@ function writeStorageToJSONFile(storage) {
 // write-back after generating the order cache.
 function bindOrderCacheToStorageFile(storage) {
     try {
-    let filename = 'data/storages/' + storage._id + '.json';
-    if (fs.existsSync(filename)) {
-        fs.writeFileSync(filename, JSON.stringify(storage), 'utf8');
-    } else {
-        console.log("Can't bind order cache since storageID is not valid");
-    }
+        let filename = 'data/storages/' + storage._id + '.json';
+        if (fs.existsSync(filename)) {
+            fs.writeFileSync(filename, JSON.stringify(storage), 'utf8');
+        } else {
+            console.log("Can't bind order cache since storageID is not valid");
+        }
     } catch (err) {
-    console.log("Couldn't update storage's order cache:", err);
+        console.log("Couldn't update storage's order cache:", err);
     }
 }
 
@@ -426,38 +426,38 @@ async function loadStorageFromJSONFile(sessionID, observeStorage = true) {
     const toLoad = fs.existsSync(sessionFile) ? sessionFile : templateFile;
 
     try {
-    let storage = JSON.parse(fs.readFileSync(toLoad, 'utf8'));
-    if (observeStorage) {
+        let storage = JSON.parse(fs.readFileSync(toLoad, 'utf8'));
+        if (observeStorage) {
             storage.orderCounter = await db.getLatestOrderCounter(storage);
-        storage.orders = [];
-        if (!storage.orderCache) {
-        orders.generateOrderCache(storage);
-        bindOrderCacheToStorageFile(storage);
+            storage.orders = [];
+            if (!storage.orderCache) {
+                orders.generateOrderCache(storage);
+                bindOrderCacheToStorageFile(storage);
+            }
+            activeStorages.set(storage._id, storage);
         }
-        activeStorages.set(storage._id, storage);
-    }
-    return storage;
+        return storage;
     } catch (err) {
-    console.log("Couldn't read-in storage file with given sessionID:", err);
-    return;
+        console.log("Couldn't read-in storage file with given sessionID:", err);
+        return;
     }
 }
 
 function getTemplateStorageID() {
     if (this.templateStorageID) {
-    return this.templateStorageID;
+        return this.templateStorageID;
     }
     const templateFile = 'data/storages/template.json';
     if (!fs.existsSync(templateFile)) {
-    console.log("Couldn't find the template storage");
-    return -1;
+        console.log("Couldn't find the template storage");
+        return -1;
     }
     try {
-    const storage = JSON.parse(fs.readFileSync(templateFile, 'utf8'));
-    this.templateStorageID = storage._id;
-    return storage._id;
+        const storage = JSON.parse(fs.readFileSync(templateFile, 'utf8'));
+        this.templateStorageID = storage._id;
+        return storage._id;
     } catch (err) {
-    console.log("Couldn't read-in template storage file:", err);
-    return -1;
+        console.log("Couldn't read-in template storage file:", err);
+        return -1;
     }
 }

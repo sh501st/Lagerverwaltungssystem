@@ -1,90 +1,91 @@
 <!doctype html>
 <html lang="en">
 
-<head>
-    <meta charset="utf-8" />
-    <title>Plan storage</title>
-    <link rel="stylesheet" type="text/css" href="/css/storage.css" />
-    <link rel="stylesheet" type="text/css" href="/css/nouislider.min.css" />
-    <link rel="stylesheet" type="text/css" href="/css/w3.css" />
-</head>
+    <head>
+        <meta charset="utf-8" />
+        <title>Plan storage</title>
+        <link rel="stylesheet" type="text/css" href="/css/storage.css" />
+        <link rel="stylesheet" type="text/css" href="/css/nouislider.min.css" />
+        <link rel="stylesheet" type="text/css" href="/css/w3.css" />
+    </head>
 
-<body class="grid-container">
+    <body class="grid-container">
 
-    <div id="menu">
-        <div class="inside_menu" style="height: 8.7vh">
-            <button class="button" style="background-color: darkred" onclick="location.href='index.html';">
-            <span> Cancel </span></button>
+        <div id="menu">
+            <div class="inside_menu" style="height: 8.7vh">
+                <button class="button" style="background-color: darkred" onclick="location.href='index.html';">
+                    <span> Cancel </span></button>
 
-            <div class="tooltip">
-                <button class="button" style="background-color:deepskyblue"><span> Help </span></button>
-                <span class="tooltiptext">Hold left click: add<br>Hold right click: remove<br>Middle click: add entrance</span></div>
-        </div>
-
-
-
-        <div class="inside_menu" style="padding-top: 2.2vh;">
-            Unoptim.storage:
-            <form action="">
-                <div class="custom-select">
-                    <select>
-                <option>s1</option>
-                <option>s2</option>
-                <option>s3</option>
-                   </select>
+                <div class="tooltip">
+                    <button class="button" style="background-color:deepskyblue">
+                        <span> Help </span>
+                    </button>
+                    <span class="tooltiptext">Hold left click: add<br>
+                        Hold right click: remove<br>
+                        Middle click: add entrance
+                    </span>
                 </div>
-            </form>
-            <div>Access range:<br></div>
-            <label id="accessSliderlabel_from"></label><br>
-            <label id="accessSliderlabel_to"></label><br>
-            <div id="accessSlider"></div>
-        </div>
+            </div>
 
+            <div class="inside_menu" style="padding-top: 2.2vh;">
+                Unoptim.storage:
+                <form action="">
+                    <div class="custom-select">
+                        <select>
+                            <option>s1</option>
+                            <option>s2</option>
+                            <option>s3</option>
+                        </select>
+                    </div>
+                </form>
+                <div>Access range:<br></div>
+                <label id="accessSliderlabel_from"></label><br>
+                <label id="accessSliderlabel_to"></label><br>
+                <div id="accessSlider"></div>
+            </div>
 
-        <div class="inside_menu" style="height: 15vh; padding-top: 2.2vh;">
-            Live sort:<br> Assign. wrks: 3/7<br>
-        </div><br>
+            <div class="inside_menu" style="height: 15vh; padding-top: 2.2vh;">
+                Live sort:<br> Assign. wrks: 3/7<br>
+            </div><br>
 
+            <div class="inside_menu" style="height: 15vh; padding-top: 2.2vh;">
+                Closed storage
+            </div>
 
-        <div class="inside_menu" style="height: 15vh; padding-top: 2.2vh;">
-            Closed storage
-        </div>
-
-        <div class="inside_menu" style="height: 8.5vh; border-bottom-style: none; padding-top: 2.2vh;">
-            <button class="button" style="width: 18vw; background-color: forestgreen;" onclick="requestSavingOptimization();">
-            <span> Optimize </span>
-      </button>
-        </div>
-    </div>
-
-    <div id="mainContainer" oncontextmenu="return false;"></div>
-    <div id="invModal" class="modal" style="font-size: 1.5vw">
-        <div class="modal-content w3-animate-top">
-            <span class="modal-close-button" onclick="closeModalDialog();">&times;</span>
-            <h3>Shelf inventory:</h3>
-            <div>
-                <table style="width:100%">
-                    <thead>
-                        <tr>
-                            <th align="left">article</th>
-                            <th align="left">stored</th>
-                            <th align="left">accessed</th>
-                        </tr>
-                    </thead>
-                    <tbody id="inventory"></tbody>
-                </table>
+            <div class="inside_menu" style="height: 8.5vh; border-bottom-style: none; padding-top: 2.2vh;">
+                <button class="button" style="width: 18vw; background-color: forestgreen;" onclick="requestSavingOptimization();">
+                    <span> Optimize </span>
+                </button>
             </div>
         </div>
-    </div>
 
-    <script>
-        window.addEventListener('DOMContentLoaded', () => main());
+        <div id="mainContainer" oncontextmenu="return false;"></div>
+        <div id="invModal" class="modal" style="font-size: 1.5vw">
+            <div class="modal-content w3-animate-top">
+                <span class="modal-close-button" onclick="closeModalDialog();">&times;</span>
+                <h3>Shelf inventory:</h3>
+                <div>
+                    <table style="width:100%">
+                        <thead>
+                            <tr>
+                                <th align="left">article</th>
+                                <th align="left">stored</th>
+                                <th align="left">accessed</th>
+                            </tr>
+                        </thead>
+                        <tbody id="inventory"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
 
-    </script>
-    <script src="/js/nouislider.min.js"></script>
-    <script src="/js/konva.min.js"></script>
-    <script src="/js/plan-storage.js"></script>
-    <script src="/js/select.js"></script>
-</body>
+        <script>
+            window.addEventListener('DOMContentLoaded', () => main());
+        </script>
+        <script src="/js/nouislider.min.js"></script>
+        <script src="/js/konva.min.js"></script>
+        <script src="/js/plan-storage.js"></script>
+        <script src="/js/select.js"></script>
+    </body>
 
 </html>

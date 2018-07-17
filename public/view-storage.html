@@ -1,96 +1,94 @@
 <!doctype html>
 <html lang="en">
 
-<head>
-    <meta charset="utf-8" />
-    <title>View storage</title>
-    <link rel="stylesheet" type="text/css" href="/css/storage.css" />
-    <link rel="stylesheet" type="text/css" href="/css/w3.css" />
-</head>
+    <head>
+        <meta charset="utf-8" />
+        <title>View storage</title>
+        <link rel="stylesheet" type="text/css" href="/css/storage.css" />
+        <link rel="stylesheet" type="text/css" href="/css/w3.css" />
+    </head>
 
-<body class="grid-container">
-    <div id="menu">
-        <div class="inside_menu" style="height: 8.7vh">
-            <button class="button" style="background-color: darkred" onclick="location.href='index.html';">
-            <span> Cancel </span></button>
+    <body class="grid-container">
+        <div id="menu">
+            <div class="inside_menu" style="height: 8.7vh">
+                <button class="button" style="background-color: darkred" onclick="location.href='index.html';">
+                    <span> Cancel </span></button>
 
-            <div class="tooltip">
-                <button class="button" style="background-color:deepskyblue"><span> Help </span></button>
-                <span class="tooltiptext">No help info</span></div>
-        </div>
-
-
-
-        <div class="inside_menu" style="height: 11.5vh;padding-top: 1vh">
-            View storage:
-            <form action="">
-                <div class="custom-select">
-                    <select>
-                <option>s1</option>
-                <option>s2</option>
-                <option>s3</option>
-                   </select>
+                <div class="tooltip">
+                    <button class="button" style="background-color:deepskyblue"><span> Help </span></button>
+                    <span class="tooltiptext">No help info</span>
                 </div>
-            </form>
-            <div id="size"></div>
-        </div>
+            </div>
 
+            <div class="inside_menu" style="height: 11.5vh;padding-top: 1vh">
+                View storage:
+                <form action="">
+                    <div class="custom-select">
+                        <select>
+                            <option>s1</option>
+                            <option>s2</option>
+                            <option>s3</option>
+                        </select>
+                    </div>
+                </form>
+                <div id="size"></div>
+            </div>
 
-        <div class="inside_menu" style="height: 64vh; overflow-y: hidden; padding-top: 1vh">
-            <div id="orderlist" style="font-size: 1.5vw;"></div>
-        </div>
+            <div class="inside_menu" style="height: 64vh; overflow-y: hidden; padding-top: 1vh">
+                <div id="orderlist" style="font-size: 1.5vw;"></div>
+            </div>
 
-        <div class="inside_menu" style="border-bottom-style: none;padding-top: 1vh;">
-            <button class="button" style="width: 18vw; background-color: forestgreen;" onclick="location.href='plan-storage.html'">
-              <span> Planning </span>
-        </button>
-        </div>
-    </div>
-    
-    <div id="mainContainer" oncontextmenu="return false;"></div>
-    <div id="invModal" class="modal" style="font-size: 1.5vw">
-        <div class="modal-content w3-animate-top">
-            <span id="inv-modal-close-button" class="modal-close-button">&times;</span>
-            <h3>Shelf inventory:</h3>
-            <div>
-                <table style="width:100%">
-                    <thead>
-                        <tr>
-                            <th align="left">article</th>
-                            <th align="left">stored</th>
-                            <th align="left">accessed</th>
-                        </tr>
-                    </thead>
-                    <tbody id="inventory"></tbody>
-                </table>
+            <div class="inside_menu" style="border-bottom-style: none;padding-top: 1vh;">
+                <button class="button" style="width: 18vw; background-color: forestgreen;" onclick="location.href='plan-storage.html'">
+                    <span> Planning </span>
+                </button>
             </div>
         </div>
-    </div>
-    <div id="fotModal" class="modal" style="font-size: 1.5vw">
-        <div class="modal-content w3-animate-top">
-            <span id="fot-modal-close-button" class="modal-close-button">&times;</span>
-            <h3>Frequently ordered together:</h3>
-            <div>
-                <table style="width:100%">
-                    <thead>
-                        <tr>
-                            <th align="left">article</th>
-                            <th align="left">occurrences (absolute)</th>
-                            <th align="left">occurrences (relative)</th>
-                        </tr>
-                    </thead>
-                    <tbody id="fot"></tbody>
-                </table>
+
+        <div id="mainContainer" oncontextmenu="return false;"></div>
+        <div id="invModal" class="modal" style="font-size: 1.5vw">
+            <div class="modal-content w3-animate-top">
+                <span id="inv-modal-close-button" class="modal-close-button">&times;</span>
+                <h3>Shelf inventory:</h3>
+                <div>
+                    <table style="width:100%">
+                        <thead>
+                            <tr>
+                                <th align="left">article</th>
+                                <th align="left">stored</th>
+                                <th align="left">accessed</th>
+                            </tr>
+                        </thead>
+                        <tbody id="inventory"></tbody>
+                    </table>
+                </div>
             </div>
         </div>
-    </div>
+        <div id="fotModal" class="modal" style="font-size: 1.5vw">
+            <div class="modal-content w3-animate-top">
+                <span id="fot-modal-close-button" class="modal-close-button">&times;</span>
+                <h3>Frequently ordered together:</h3>
+                <div>
+                    <table style="width:100%">
+                        <thead>
+                            <tr>
+                                <th align="left">article</th>
+                                <th align="left">occurrences (absolute)</th>
+                                <th align="left">occurrences (relative)</th>
+                            </tr>
+                        </thead>
+                        <tbody id="fot"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
 
-    <script>
-        window.addEventListener('DOMContentLoaded', () => main());
-    </script>
-    <script src="/js/konva.min.js"></script>
-    <script src="/js/view-storage.js"></script>
-    <script src="/js/select.js"></script>
-</body>
+        <script>
+            window.addEventListener('DOMContentLoaded', () => main());
+        </script>
+        <script src="/js/konva.min.js"></script>
+        <script src="/js/view-storage.js"></script>
+        <script src="/js/select.js"></script>
+    </body>
 
 </html>

@@ -20,9 +20,9 @@ exports.manhattanDistance = (fromX, fromY, toX, toY) => {
 // fisher-yates shuffle the provided array
 exports.shuffle = (array) => {
     for (let i = array.length - 1; i > 0; i--) {
-    const j = module.exports.randInt(0, i);
-    const tmp = array[i];
-    array[i] = array[j];
-    array[j] = tmp;
+        const j = module.exports.randInt(0, i);
+        const tmp = array[i];
+        array[i] = array[j];
+        array[j] = tmp;
     }
 }

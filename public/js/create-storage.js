@@ -50,14 +50,14 @@ function initUiElements() {
 function setupStageCanvas() {
     const canvasContainer = document.querySelector('#mainContainer');
     stage = new Konva.Stage({
-    container: 'mainContainer',
-    width: canvasContainer.offsetWidth,
-    height: canvasContainer.offsetHeight,
-    x: -1, y: -1 // to counter border overlap
+        container: 'mainContainer',
+        width: canvasContainer.offsetWidth,
+        height: canvasContainer.offsetHeight,
+        x: -1, y: -1 // to counter border overlap
     });
     window.addEventListener('resize', () => {
-    scaleStageToContainer(canvasContainer);
-    scaleBorders(canvasContainer, layer);
+        scaleStageToContainer(canvasContainer);
+        scaleBorders(canvasContainer, layer);
     });
 
     layer = new Konva.Layer();
@@ -68,10 +68,10 @@ function setupStageCanvas() {
     const maxVisCol = document.getElementById('widthslider').max;
     const maxVisRow = document.getElementById('heightslider').max;
     for (let row = 0; row < maxVisRow; row++) {
-    for (let col = 0; col < maxVisCol; col++) {
-        const visible = col < cols && row < rows;
-        createTile(col, row, visible);
-    }
+        for (let col = 0; col < maxVisCol; col++) {
+            const visible = col < cols && row < rows;
+            createTile(col, row, visible);
+        }
     }
 
     scaleStageToContainer(canvasContainer);
@@ -84,13 +84,13 @@ function getMinStageScale(container) {
     const tilemapWidth = tileSize * cols;
     const tilemapHeight = tileSize * rows;
     return Math.min(container.offsetWidth / tilemapWidth,
-            container.offsetHeight / tilemapHeight);
+                    container.offsetHeight / tilemapHeight);
 }
 
 function scaleStageToContainer(container) {
     stage.scale({
-    x: getMinStageScale(container),
-    y: getMinStageScale(container)
+        x: getMinStageScale(container),
+        y: getMinStageScale(container)
     });
     stage.width(container.offsetWidth);
     stage.height(container.offsetHeight);
@@ -112,8 +112,8 @@ function scaleBorders(container, layer) {
 function clearSessionStorage() {
     let storage = window['sessionStorage'];
     if (!storage) {
-    console.log('Session storage not available in your browser. Are your cookies disabled?');
-    return;
+        console.log('Session storage not available in your browser. Are your cookies disabled?');
+        return;
     }
     storage.clear();
 }
@@ -124,12 +124,12 @@ function clearSessionStorage() {
 function writeToSessionStorage(key, value) {
     let storage = window['sessionStorage'];
     if (!storage) {
-    console.log('Session storage not available in your browser. Are your cookies disabled?');
-    return;
+        console.log('Session storage not available in your browser. Are your cookies disabled?');
+        return;
     }
     if (!key || !value) {
-    console.log("Can't store provided key value pair:", key, value);
-    return;
+        console.log("Can't store provided key value pair:", key, value);
+        return;
     }
     storage.setItem(key, value);
 }
@@ -137,10 +137,10 @@ function writeToSessionStorage(key, value) {
 function connectToServer() {
     socket = new WebSocket('ws://localhost:8080');
     socket.onopen = () => {
-    console.log('Connected to server');
+        console.log('Connected to server');
     };
     socket.onmessage = (msg) => {
-    handleServerMessage(msg);
+        handleServerMessage(msg);
     };
 }
 
@@ -152,23 +152,23 @@ function connectToServer() {
 function handleServerMessage(msg) {
     let data, type, content;
     try {
-    data = JSON.parse(msg.data);
-    type = data.type;
-    content = data.content;
+        data = JSON.parse(msg.data);
+        type = data.type;
+        content = data.content;
     } catch (err) {
-    console.log('Message parsing error: ' + err);
-    console.log(msg);
-    return;
+        console.log('Message parsing error: ' + err);
+        console.log(msg);
+        return;
     }
 
     switch (type) {
     case 'id':
-    sessionID = content._id;
-    break;
+        sessionID = content._id;
+        break;
     case 'presentation':
-    break;
+        break;
     default:
-    console.log('Unknown type provided in server message:', type);
+        console.log('Unknown type provided in server message:', type);
     }
 }
 
@@ -193,17 +193,17 @@ function changeStorageHeight(height) {
 // which are no longer edge tiles upon rescaling
 function updateTileVisibility() {
     layer.find('Rect').each((tile) => {
-    const tileX = Math.floor(tile.x() / tileSize);
-    const tileY = Math.floor(tile.y() / tileSize);
-    const visible = tileX < cols && tileY < rows;
-    const isEntrance = tile.fill() === Color.ENTRANCE ||
-          tile.fill() === Color.INVALIDENTRANCE;
-    const isEdgeTile = tileX === 0 || tileX === cols-1 ||
-          tileY === 0 || tileY === rows-1;
-    if (!visible || (isEntrance && !isEdgeTile)) {
-        tile.fill(Color.DEFAULT);
-    }
-    tile.visible(visible);
+        const tileX = Math.floor(tile.x() / tileSize);
+        const tileY = Math.floor(tile.y() / tileSize);
+        const visible = tileX < cols && tileY < rows;
+        const isEntrance = tile.fill() === Color.ENTRANCE ||
+              tile.fill() === Color.INVALIDENTRANCE;
+        const isEdgeTile = tileX === 0 || tileX === cols-1 ||
+              tileY === 0 || tileY === rows-1;
+        if (!visible || (isEntrance && !isEdgeTile)) {
+            tile.fill(Color.DEFAULT);
+        }
+        tile.visible(visible);
     });
     layer.batchDraw();
 }
@@ -218,58 +218,58 @@ function changeStorageWorkers(workerCount) {
 // hook up the necessary mouse actions.
 function createTile(col, row, visible) {
     let quad = new Konva.Rect({
-    x: col * tileSize,
-    y: row * tileSize,
-    width: tileSize,
-    height: tileSize,
-    fill: Color.DEFAULT,
-    stroke: Color.BORDER,
-    visible: visible,
-    strokeWidth: 1,
+        x: col * tileSize,
+        y: row * tileSize,
+        width: tileSize,
+        height: tileSize,
+        fill: Color.DEFAULT,
+        stroke: Color.BORDER,
+        visible: visible,
+        strokeWidth: 1,
     });
     // workaround since konva has no mouseDownMove (w/o drag) event
     quad.on('mouseenter', (e) => {
-    if (mode === Mode.NONE) {
-        return;
-    }
-    let obj = e.target;
-    if (mode === Mode.ADD) {
-        obj.fill(Color.SHELF);
-        layer.batchDraw();
-    } else if (mode === Mode.REM) {
-        obj.fill(Color.DEFAULT);
-        layer.batchDraw();
-    }
+        if (mode === Mode.NONE) {
+            return;
+        }
+        let obj = e.target;
+        if (mode === Mode.ADD) {
+            obj.fill(Color.SHELF);
+            layer.batchDraw();
+        } else if (mode === Mode.REM) {
+            obj.fill(Color.DEFAULT);
+            layer.batchDraw();
+        }
     });
     quad.on('mousedown', (e) => {
-    let obj = e.target;
-    let btn = e.evt.button;
-    if (btn === 0) { /* left mb */
-        mode = Mode.ADD;
-        obj.fill(Color.SHELF);
-        layer.batchDraw();
-    } else if (btn === 2) { /* right mb */
-        mode = Mode.REM;
-        obj.fill(Color.DEFAULT);
-        layer.batchDraw()
-    } else {
-        mode = Mode.NONE;
-    }
+        let obj = e.target;
+        let btn = e.evt.button;
+        if (btn === 0) { /* left mb */
+            mode = Mode.ADD;
+            obj.fill(Color.SHELF);
+            layer.batchDraw();
+        } else if (btn === 2) { /* right mb */
+            mode = Mode.REM;
+            obj.fill(Color.DEFAULT);
+            layer.batchDraw()
+        } else {
+            mode = Mode.NONE;
+        }
     });
     quad.on('mouseup', (e) => {
-    mode = Mode.NONE;
-    if (e.evt.button === 1) { /* middle mb */
-        let obj = e.target;
-        const col = Math.floor(obj.x() / tileSize);
-        const row = Math.floor(obj.y() / tileSize);
-        // if edge tile, add entrance
-        if (col === 0 || col === cols - 1 ||
-        row === 0 || row === rows - 1)
-        {
-        obj.fill(Color.ENTRANCE);
-        layer.batchDraw();
+        mode = Mode.NONE;
+        if (e.evt.button === 1) { /* middle mb */
+            let obj = e.target;
+            const col = Math.floor(obj.x() / tileSize);
+            const row = Math.floor(obj.y() / tileSize);
+            // if edge tile, add entrance
+            if (col === 0 || col === cols - 1 ||
+                row === 0 || row === rows - 1)
+            {
+                obj.fill(Color.ENTRANCE);
+                layer.batchDraw();
+            }
         }
-    }
     });
     layer.add(quad);
 }
@@ -282,7 +282,7 @@ function createTile(col, row, visible) {
 function areAllShelvesReachable() {
     let grid = [];
     for (let col = 0; col < cols; col++) {
-    grid[col] = [];
+        grid[col] = [];
     }
 
     let placed = 0;
@@ -290,53 +290,53 @@ function areAllShelvesReachable() {
     let unreachableEntrances = 0;
     let nodes = [];
     layer.find('Rect').each((r) => {
-    if (!r.visible()) { return; }
-    const col = Math.floor(r.x() / tileSize);
-    const row = Math.floor(r.y() / tileSize);
-    grid[col][row] = r;
-    r.visited = false;
+        if (!r.visible()) { return; }
+        const col = Math.floor(r.x() / tileSize);
+        const row = Math.floor(r.y() / tileSize);
+        grid[col][row] = r;
+        r.visited = false;
 
-    if (r.fill() === Color.SHELF || r.fill() === Color.UNREACHABLE) {
-        r.fill(Color.UNREACHABLE);
-        placed++;
-        unreachableShelves++;
-    } else if (r.fill() === Color.ENTRANCE ||
-           r.fill() === Color.INVALIDENTRANCE) {
-        if (nodes.length === 0) {
-        nodes.push([col, row]);
-        } else {
-        r.fill(Color.INVALIDENTRANCE);
-        unreachableEntrances++;
+        if (r.fill() === Color.SHELF || r.fill() === Color.UNREACHABLE) {
+            r.fill(Color.UNREACHABLE);
+            placed++;
+            unreachableShelves++;
+        } else if (r.fill() === Color.ENTRANCE ||
+                   r.fill() === Color.INVALIDENTRANCE) {
+            if (nodes.length === 0) {
+                nodes.push([col, row]);
+            } else {
+                r.fill(Color.INVALIDENTRANCE);
+                unreachableEntrances++;
+            }
         }
-    }
     });
 
     while (nodes.length > 0) {
-    const node = nodes.pop();
-    const col = node[0];
-    const row = node[1];
-    let rect = grid[col][row];
-    rect.visited = true;
+        const node = nodes.pop();
+        const col = node[0];
+        const row = node[1];
+        let rect = grid[col][row];
+        rect.visited = true;
 
-    let visitTile = (c, r) => {
-        const alt = grid[c][r];
-        if (!alt.visited && alt.fill() === Color.DEFAULT) {
-        nodes.push([c, r]);
-        } else if (!alt.visited && alt.fill() === Color.UNREACHABLE) {
-        alt.visited = true;
-        alt.fill(Color.SHELF);
-        unreachableShelves--;
-        } else if (!alt.visited && alt.fill() === Color.INVALIDENTRANCE) {
-        alt.fill(Color.ENTRANCE);
-        nodes.push([c, r]);
-        unreachableEntrances--;
-        }
-    };
+        let visitTile = (c, r) => {
+            const alt = grid[c][r];
+            if (!alt.visited && alt.fill() === Color.DEFAULT) {
+                nodes.push([c, r]);
+            } else if (!alt.visited && alt.fill() === Color.UNREACHABLE) {
+                alt.visited = true;
+                alt.fill(Color.SHELF);
+                unreachableShelves--;
+            } else if (!alt.visited && alt.fill() === Color.INVALIDENTRANCE) {
+                alt.fill(Color.ENTRANCE);
+                nodes.push([c, r]);
+                unreachableEntrances--;
+            }
+        };
 
-    if (col > 0) { visitTile(col-1, row); } // left
-    if (col < cols - 1) { visitTile(col+1, row) } // right
-    if (row > 0) { visitTile(col, row-1); } // up
-    if (row < rows - 1) { visitTile(col, row+1); } // down
+        if (col > 0) { visitTile(col-1, row); } // left
+        if (col < cols - 1) { visitTile(col+1, row) } // right
+        if (row > 0) { visitTile(col, row-1); } // up
+        if (row < rows - 1) { visitTile(col, row+1); } // down
     }
 
     layer.batchDraw();
@@ -351,33 +351,33 @@ function areAllShelvesReachable() {
 // used as a filename on the server-side.
 function sendJSONToServer() {
     if (!areAllShelvesReachable()) {
-    console.log('Not all shelves are reachable or not all entrances ' +
-            'are connected with each other, not sending');
-    return;
+        console.log('Not all shelves are reachable or not all entrances ' +
+                    'are connected with each other, not sending');
+        return;
     }
     let data = {
-    _id: sessionID,
-    width: cols,
-    height: rows,
-    shelves: [],
-    entrances: []
+        _id: sessionID,
+        width: cols,
+        height: rows,
+        shelves: [],
+        entrances: []
     };
     layer.find('Rect').each((r) => {
-    const col = Math.floor(r.x() / tileSize);
-    const row = Math.floor(r.y() / tileSize);
-    if (r.fill() === Color.SHELF) {
-        data.shelves.push({ x: col, y: row, sub: [] });
-    } else if (r.fill() === Color.ENTRANCE) {
-        data.entrances.push({ x: col, y: row });
-    }
+        const col = Math.floor(r.x() / tileSize);
+        const row = Math.floor(r.y() / tileSize);
+        if (r.fill() === Color.SHELF) {
+            data.shelves.push({ x: col, y: row, sub: [] });
+        } else if (r.fill() === Color.ENTRANCE) {
+            data.entrances.push({ x: col, y: row });
+        }
     });
 
     if (socket && socket.readyState === socket.OPEN && data._id > 0) {
-    sendMessage('newstorage', data);
-    writeToSessionStorage('sessionID', sessionID);
-    window.location.href = "view-storage.html";
+        sendMessage('newstorage', data);
+        writeToSessionStorage('sessionID', sessionID);
+        window.location.href = "view-storage.html";
     } else {
-    console.log("Connection to server isn't ready");
+        console.log("Connection to server isn't ready");
     }
 }
 
@@ -387,11 +387,11 @@ function sendJSONToServer() {
 function sendMessage(type, data) {
     console.log('Sent:', type);
     try {
-    socket.send(JSON.stringify({
-        type: type,
-        content: data
-    }));
+        socket.send(JSON.stringify({
+            type: type,
+            content: data
+        }));
     } catch (err) {
-    console.log('Could not send message to server: ' + err);
+        console.log('Could not send message to server: ' + err);
     }
 }
