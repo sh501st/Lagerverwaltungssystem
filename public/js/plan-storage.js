@@ -43,20 +43,18 @@ function setupAccessSlider() {
     accessSlider.noUiSlider.on('change', () => {
         accessSlider.setAttribute('disabled', true);
         const [minTime, maxTime] = getSliderMinMaxValues();
-        let minDate = new Date(minTime * 1000);
-        let maxDate = new Date(maxTime * 1000);
+        setTimeRangeLabels(minTime, maxTime);
         requestOptimizedStorageSetupPreview(minTime, maxTime);
-        document.getElementById('accessSliderlabel_from').innerHTML = 'From: <br>'
-            + minDate.getDate()+"."+('0'+minDate.getMonth()).slice(-2)+"."+
-            minDate.getFullYear().toString().slice(-2)+" - "+
-            ('0'+minDate.getHours()).slice(-2)+":"+('0'+minDate.getMinutes()).slice(-2)+":"+
-            ('0'+minDate.getSeconds()).slice(-2);
-        document.getElementById('accessSliderlabel_to').innerHTML = 'To: <br>'
-            + maxDate.getDate()+"."+('0'+maxDate.getMonth()).slice(-2)+"."+
-            maxDate.getFullYear().toString().slice(-2)+" - "+
-            ('0'+maxDate.getHours()).slice(-2)+":"+('0'+maxDate.getMinutes()).slice(-2)+":"+
-            ('0'+maxDate.getSeconds()).slice(-2);
     });
+}
+
+// set time tange labels associated with the access range slider.
+// minTime and maxTime are unix timestamps
+function setTimeRangeLabels(minTime, maxTime) {
+    document.getElementById('accessSliderlabel_from').innerHTML =
+        new Date(minTime * 1000).toLocaleString('de-DE');
+    document.getElementById('accessSliderlabel_to').innerHTML =
+        new Date(maxTime * 1000).toLocaleString('de-DE');
 }
 
 function getSliderMinMaxValues() {
@@ -312,6 +310,7 @@ function sliderTimeRangeReceived(minTime, maxTime) {
             range: { min: minTime, max: maxTime },
             start: [minTime, maxTime]
         }, true);
+        setTimeRangeLabels(minTime, maxTime);
         requestOptimizedStorageSetupPreview(minTime, maxTime);
     } else {
         requestTemplateStorageLayout();
