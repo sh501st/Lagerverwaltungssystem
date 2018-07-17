@@ -264,9 +264,7 @@ function sendAccessTimeRangeToClient(storageID, socket) {
         storageID = getTemplateStorageID();
     }
     db.getTimeRange(storageID, (minTime, maxTime) => {
-        if (minTime >= 0 && maxTime <= util.unix()) {
-            sendMessage(socket, 'range', { min: minTime, max: maxTime });
-        }
+        sendMessage(socket, 'range', { min: minTime, max: maxTime });
     });
 }
 

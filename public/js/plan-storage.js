@@ -303,7 +303,9 @@ function optimizationPreviewReceived(defStorage, optStorage) {
     }
 }
 
-// response from server with min and max timestamps from db log
+// response from server with min and max timestamps from db log; in
+// case there is nothing to receive server-wise display the empty
+// default without any kind of animation storage instead.
 function sliderTimeRangeReceived(minTime, maxTime) {
     if (minTime >= 0 && maxTime <= Date.now() / 1000 && minTime !== maxTime) {
         accessSlider.noUiSlider.updateOptions({
@@ -311,7 +313,27 @@ function sliderTimeRangeReceived(minTime, maxTime) {
             start: [minTime, maxTime]
         }, true);
         requestOptimizedStorageSetupPreview(minTime, maxTime);
+    } else {
+        requestTemplateStorageLayout();
     }
+}
+
+function requestTemplateStorageLayout() {
+    sendMessage('reqlayout', { _id: null, observeStorage: false });
+}
+
+// when log db is empty and nothing can be optimized, show the empty
+// template storage without transition animation instead.
+function templateStorageReceived(storage) {
+    if (!storage || !storage.width || !storage.height) {
+        console.log("Requested storage layout is not valid:", storage);
+        return;
+    }
+    defaultStorage = storage;
+    cols = defaultStorage.width;
+    rows = defaultStorage.height;
+    defaultLayer = new Konva.Layer();
+    recreateStorageLayout(defaultStorage, defaultLayer);
 }
 
 // response from server when 'optimize' button was pressed, provided
@@ -416,7 +438,9 @@ function handleServerMessage(msg) {
     }
     switch (type) {
     case 'id': break;
-    case 'storage': break;
+    case 'storage':
+        templateStorageReceived(content);
+        break;
     case 'shelfinventory': break;
     case 'orderupdate': break;
     case 'preview':
