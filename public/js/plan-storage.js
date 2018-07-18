@@ -297,6 +297,9 @@ function optimizationPreviewReceived(defStorage, optStorage) {
     }
 
     if (firstRun) {
+        document.getElementById('session-option').text =
+            defaultStorage.name ? defaultStorage.name : defaultStorage._id;
+        requestAvailableStorages();
         animatePreviewTransition();
     }
 }
@@ -331,6 +334,8 @@ function templateStorageReceived(storage) {
     defaultStorage = storage;
     cols = defaultStorage.width;
     rows = defaultStorage.height;
+    document.getElementById('session-option').text = storage.name ? storage.name : storage._id;
+    requestAvailableStorages();
     defaultLayer = new Konva.Layer();
     recreateStorageLayout(defaultStorage, defaultLayer);
 }
@@ -343,6 +348,36 @@ function optimizedStorageIDReceived(storageID) {
         writeToSessionStorage('sessionID', storageID);
         window.location.href = 'view-storage.html';
     }
+}
+
+// populate the loading dropbox with loadable and valid storages on
+// the server side; storages consists only of [{_id, name}, {_id,
+// name}, ...], not the complete storage object.
+function receivedAvailableStorages(storages) {
+    if (!storages || storages.length < 1) {
+        console.log("No valid storages available for loading:", storages);
+        return;
+    }
+    let dropdown = document.getElementById('load-select')
+    storages.forEach(str => {
+        let option = document.createElement("option");
+        option.value = str._id;
+        option.text = str.name ? str.name : str._id;
+        dropdown.appendChild(option);
+    });
+    dropdown.onchange = (event) => loadSelectedStorage(event.target.value);
+    dropdown.disabled = false;
+}
+
+// utilize page reloading to clear running worker animations and
+// resetting the server connection.
+function loadSelectedStorage(id) {
+    if (id === "session") {
+        console.log("Not requesting the currently loaded storage layout again.");
+        return;
+    }
+    writeToSessionStorage('sessionID', id);
+    window.location.reload(true);
 }
 
 // we're using html5 storage to keep the sessionID between 'create'
@@ -453,6 +488,9 @@ function handleServerMessage(msg) {
         break;
     case 'presentation':
         break;
+    case 'available':
+        receivedAvailableStorages(content);
+        break;
     default:
         console.log('Unknown type provided in server message:', type);
     }
@@ -477,6 +515,10 @@ function requestOptimizedStorageSetupPreview(accessRangeFrom, accessRangeTo)
 // log to set the slider accordingly
 function requestAccessSliderRange() {
     sendMessage('reqrange', { _id: sessionID });
+}
+
+function requestAvailableStorages() {
+    sendMessage('available', { current: defaultStorage._id });
 }
 
 // ask the server to transform the regular storage into the optimized
