@@ -441,7 +441,7 @@ async function collectValidStorages(currentID) {
             validStorages.push(candidate);
         }
     }
-    return validStorages;
+    return validStorages.sort((a,b) => a._id < b._id ? 1 : -1); // newest on top
 }
 
 // when client requests a certain file via the provided sessionID we
