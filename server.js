@@ -152,6 +152,9 @@ function handleClientMessage(socket, msg) {
     case 'presentation':
         togglePresentationMode(socket);
         break;
+    case 'available':
+        sendAvailableStoragesToClient(content.current, socket);
+        break;
     default:
         console.log('Unknown type provided in client message:', type);
     }
@@ -180,6 +183,13 @@ async function sendLayoutToClient(storageID, socket, observeStorage = true) {
         console.log('Active storages:', activeStorages.size);
     }
     sendMessage(socket, 'storage', storage);
+}
+
+async function sendAvailableStoragesToClient(currentID, socket) {
+    const storages = await collectValidStorages(currentID);
+    sendMessage(socket, 'available', storages.map(str => {
+        return {_id: str._id, name: str.name};
+    }));
 }
 
 // client sends storage ID and log access range and expects and
@@ -409,6 +419,29 @@ function bindOrderCacheToStorageFile(storage) {
     } catch (err) {
         console.log("Couldn't update storage's order cache:", err);
     }
+}
+
+// validation process checks for the usual suspects such as correct
+// width and height, but also verifies that file modification
+// timestamp is greater than the modification time of the database, so
+// we don't have to check each shelf and subshelf for valid articles.
+async function collectValidStorages(currentID) {
+    let validStorages = [];
+    const dbModTime = fs.statSync('datenbankmodell/programmierpraktikum.sql').mtime;
+    let basenames = fs.readdirSync('data/storages/')
+        .filter(file => fs.statSync('data/storages/' + file).mtime > dbModTime)
+        .map(path => path.slice(0, -5)); // crop '.json'
+    for (let name of basenames) {
+        const candidate = await loadStorageFromJSONFile(name, false);
+        if (candidate._id > 0 && candidate._id !== currentID &&
+            candidate.width >= 5 && candidate.width <= 20 &&
+            candidate.height >= 5 && candidate.height <= 20 &&
+            candidate.shelves.length > 0 && candidate.entrances.length > 0)
+        {
+            validStorages.push(candidate);
+        }
+    }
+    return validStorages;
 }
 
 // when client requests a certain file via the provided sessionID we
