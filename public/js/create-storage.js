@@ -164,6 +164,7 @@ function handleServerMessage(msg) {
     switch (type) {
     case 'id':
         sessionID = content._id;
+        document.getElementById('storage-name').value = content._id;
         break;
     case 'presentation':
         break;
@@ -357,6 +358,7 @@ function sendJSONToServer() {
     }
     let data = {
         _id: sessionID,
+        name: document.getElementById('storage-name').value,
         width: cols,
         height: rows,
         shelves: [],
