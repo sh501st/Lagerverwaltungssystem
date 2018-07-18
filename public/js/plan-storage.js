@@ -300,7 +300,9 @@ function optimizationPreviewReceived(defStorage, optStorage) {
         document.getElementById('session-option').text =
             defaultStorage.name ? defaultStorage.name : defaultStorage._id;
         requestAvailableStorages();
-        animatePreviewTransition();
+        if (defaultStorage.heatmapMaxAccessCounter > 0 && optimizedStorage.heatmapMaxAccessCounter > 0) {
+            animatePreviewTransition();
+        }
     }
 }
 
@@ -314,30 +316,8 @@ function sliderTimeRangeReceived(minTime, maxTime) {
             start: [minTime, maxTime]
         }, true);
         setTimeRangeLabels(minTime, maxTime);
-        requestOptimizedStorageSetupPreview(minTime, maxTime);
-    } else {
-        requestTemplateStorageLayout();
     }
-}
-
-function requestTemplateStorageLayout() {
-    sendMessage('reqlayout', { _id: null, observeStorage: false });
-}
-
-// when log db is empty and nothing can be optimized, show the empty
-// template storage without transition animation instead.
-function templateStorageReceived(storage) {
-    if (!storage || !storage.width || !storage.height) {
-        console.log("Requested storage layout is not valid:", storage);
-        return;
-    }
-    defaultStorage = storage;
-    cols = defaultStorage.width;
-    rows = defaultStorage.height;
-    document.getElementById('session-option').text = storage.name ? storage.name : storage._id;
-    requestAvailableStorages();
-    defaultLayer = new Konva.Layer();
-    recreateStorageLayout(defaultStorage, defaultLayer);
+    requestOptimizedStorageSetupPreview(minTime, maxTime);
 }
 
 // response from server when 'optimize' button was pressed, provided
@@ -472,9 +452,7 @@ function handleServerMessage(msg) {
     }
     switch (type) {
     case 'id': break;
-    case 'storage':
-        templateStorageReceived(content);
-        break;
+    case 'storage': break;
     case 'shelfinventory': break;
     case 'orderupdate': break;
     case 'preview':
