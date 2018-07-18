@@ -320,8 +320,8 @@ auf dem lokalen Gerät läuft, navigiere zu localhost:8080
 ** Ausblick
 
 *** Lager
-Veränderbare Lager- und Regalstrukturen, laden bereits erstellter
-Lager sowie Handling von Nachbestellungen und Überschuss.
+Veränderbare Lager- und Regalstrukturen sowie Handling von
+Nachbestellungen und Überschuss.
 
 *** Mitarbeiter
 Wegfindung sollte Mitarbeiter und deren individuellen Wege
