@@ -33,7 +33,39 @@ function storageReceivedFromServer() {
     cols = storage.width;
     rows = storage.height;
     heatmapMaxAccessCounter = 0;
+    document.getElementById('session-option').text = storage.name ? storage.name : storage._id;
+    requestAvailableStorages();
     recreateStorageLayout();
+}
+
+// populate the loading dropbox with loadable and valid storages on
+// the server side; storages consists only of [{_id, name}, {_id,
+// name}, ...], not the complete storage object.
+function receivedAvailableStorages(storages) {
+    if (!storages || storages.length < 1) {
+        console.log("No valid storages available for loading:", storages);
+        return;
+    }
+    let dropdown = document.getElementById('load-select')
+    storages.forEach(str => {
+        let option = document.createElement("option");
+        option.value = str._id;
+        option.text = str.name ? str.name : str._id;
+        dropdown.appendChild(option);
+    });
+    dropdown.onchange = (event) => loadSelectedStorage(event.target.value);
+    dropdown.disabled = false;
+}
+
+// utilize page reloading to clear running worker animations and
+// resetting the server connection.
+function loadSelectedStorage(id) {
+    if (id === "session") {
+        console.log("Not requesting the currently loaded storage layout again.");
+        return;
+    }
+    writeToSessionStorage('sessionID', id);
+    window.location.reload(true);
 }
 
 // initialize the canvas and setup all the graphical fluff (tiles,
@@ -320,6 +352,21 @@ function readFromSessionStorage(key) {
     return storage.getItem(key);
 }
 
+// save the session id of the selected storage from the dropdown menu
+// so that we can request that very layout upon page refresh.
+function writeToSessionStorage(key, value) {
+    let storage = window['sessionStorage'];
+    if (!storage) {
+        console.log('Session storage not available in your browser. Are your cookies disabled?');
+        return;
+    }
+    if (!key || !value) {
+        console.log("Can't store provided key value pair:", key, value);
+        return;
+    }
+    storage.setItem(key, value);
+}
+
 // only accepting server messages in the following object form:
 // {
 //     type: '...',
@@ -362,6 +409,9 @@ function handleServerMessage(msg) {
         break;
     case 'presentation':
         this.presentationMode = content.enabled;
+        break;
+    case 'available':
+        receivedAvailableStorages(content);
         break;
     default:
         console.log('Unknown type provided in server message:', type);
@@ -515,6 +565,10 @@ function spawnWorker(order) {
         moveAnimations.push(moving);
     });
     moveAnimations.shift().start();
+}
+
+function requestAvailableStorages() {
+    sendMessage('available', { current: storage._id });
 }
 
 function requestStorageLayoutFromServer(sessionID) {
