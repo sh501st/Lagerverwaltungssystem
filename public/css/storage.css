@@ -42,7 +42,7 @@ body {
     border-radius: 0.5vw;
     border: solid 1.5px gray;
     text-align: center;
-    color: azure;
+    color: white;
     padding-left: 1vw;
     padding-right: 1vw;
     width: 9.3vw;
@@ -50,6 +50,19 @@ body {
     cursor: pointer;
     margin-top: 1vh;
     margin-bottom: 0.5vh;
+}
+
+.okButton {
+    background-color: #3b8c1d;
+    width: 100%;
+}
+
+.cancelButton {
+    background-color: #ee3060;
+}
+
+.helpButton {
+    background-color: #30aaee;
 }
 
 .button span {
