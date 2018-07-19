@@ -223,6 +223,11 @@ input[type=range]::-webkit-slider-thumb {
     border: solid 1.5px gray;
 }
 
+.inside_menu td {
+    padding: 0vw;
+    padding-right: 0.25vw;
+}
+
 td {
     padding: 0.5vw;
     text-align: left;
