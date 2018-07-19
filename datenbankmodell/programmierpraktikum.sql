@@ -1,11 +1,11 @@
 -- phpMyAdmin SQL Dump
--- version 4.8.1
+-- version 4.8.2
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Erstellungszeit: 17. Jun 2018 um 23:15
--- Server-Version: 10.1.33-MariaDB
--- PHP-Version: 7.2.6
+-- Erstellungszeit: 19. Jul 2018 um 19:56
+-- Server-Version: 10.1.34-MariaDB
+-- PHP-Version: 7.2.7
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET AUTOCOMMIT = 0;
@@ -21,21 +21,6 @@ SET time_zone = "+00:00";
 --
 -- Datenbank: `programmierpraktikum`
 --
-
--- --------------------------------------------------------
-
---
--- Tabellenstruktur für Tabelle `compartments`
---
-
-CREATE TABLE `compartments` (
-  `id` int(11) NOT NULL,
-  `x` int(11) NOT NULL,
-  `y` int(11) NOT NULL,
-  `no` int(11) NOT NULL,
-  `amount` int(11) NOT NULL,
-  `product` int(11) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
 
@@ -1637,13 +1622,6 @@ INSERT INTO `products` (`id`, `name`, `producer`, `description`, `max-amount`) V
 --
 
 --
--- Indizes für die Tabelle `compartments`
---
-ALTER TABLE `compartments`
-  ADD PRIMARY KEY (`id`),
-  ADD KEY `compartments-product-id2` (`product`);
-
---
 -- Indizes für die Tabelle `log`
 --
 ALTER TABLE `log`
@@ -1661,12 +1639,6 @@ ALTER TABLE `products`
 --
 
 --
--- AUTO_INCREMENT für Tabelle `compartments`
---
-ALTER TABLE `compartments`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
-
---
 -- AUTO_INCREMENT für Tabelle `products`
 --
 ALTER TABLE `products`
@@ -1675,12 +1647,6 @@ ALTER TABLE `products`
 --
 -- Constraints der exportierten Tabellen
 --
-
---
--- Constraints der Tabelle `compartments`
---
-ALTER TABLE `compartments`
-  ADD CONSTRAINT `compartments-product-id2` FOREIGN KEY (`product`) REFERENCES `products` (`id`) ON DELETE SET NULL ON UPDATE CASCADE;
 
 --
 -- Constraints der Tabelle `log`
