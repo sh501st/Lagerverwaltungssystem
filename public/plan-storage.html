@@ -11,8 +11,8 @@
 
     <body class="grid-container">
 
-        <div id="menu">
-            <div class="inside_menu" style="height: 8.7vh">
+        <div id="menu" style="display:flex; flex-direction: column;">
+            <div class="inside_menu">
                 <button class="button cancelButton" onclick="location.href='index.html';">
                     <span> Cancel </span></button>
 
@@ -27,7 +27,7 @@
                 </div>
             </div>
 
-            <div class="inside_menu" style="padding-top: 2.2vh;">
+            <div class="inside_menu">
                 Unoptim.storage:
                 <form action="">
                     <div class="select">
@@ -38,7 +38,7 @@
                 </form>
             </div>
 
-            <div class="inside_menu" style="padding-top: 2.2vh;">
+            <div class="inside_menu" style="flex: 1;">
                 Access range:
                 <div id="accessSlider"></div>
                 <table style="pointer-events: none; width: 100%">
@@ -47,15 +47,7 @@
                 </table>
             </div>
 
-            <div class="inside_menu" style="height: 15vh; padding-top: 2.2vh;">
-                Live sort:<br> Assign. wrks: 3/7<br>
-            </div><br>
-
-            <div class="inside_menu" style="height: 15vh; padding-top: 2.2vh;">
-                Closed storage
-            </div>
-
-            <div class="inside_menu" style="height: 8.5vh; border-bottom-style: none; padding-top: 2.2vh;">
+            <div class="inside_menu" style="border-bottom: none">
                 <button class="button okButton" onclick="requestSavingOptimization();">
                     <span> Optimize </span>
                 </button>

@@ -9,8 +9,8 @@
     </head>
 
     <body class="grid-container">
-        <div id="menu">
-            <div class="inside_menu" style="height: 8.7vh">
+        <div id="menu" style="display:flex; flex-direction: column;">
+            <div class="inside_menu">
                 <button class="button cancelButton" onclick="location.href='index.html';">
                     <span> Cancel </span></button>
 
@@ -20,7 +20,7 @@
                 </div>
             </div>
 
-            <div class="inside_menu" style="height: 11.5vh;padding-top: 1vh">
+            <div class="inside_menu">
                 View storage:
                 <form action="">
                     <div class="select">
@@ -32,11 +32,11 @@
                 <div id="size"></div>
             </div>
 
-            <div class="inside_menu" style="height: 64vh; overflow-y: hidden; padding-top: 1vh">
+            <div class="inside_menu" style="overflow-y: hidden; flex: 1;">
                 <div id="orderlist"></div>
             </div>
 
-            <div class="inside_menu" style="border-bottom-style: none;padding-top: 1vh;">
+            <div class="inside_menu" style="border-bottom: none">
                 <button class="button okButton" onclick="location.href='plan-storage.html'">
                     <span> Planning </span>
                 </button>
