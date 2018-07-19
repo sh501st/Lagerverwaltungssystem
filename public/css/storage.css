@@ -4,14 +4,14 @@ body {
     font-family: serif;
     float: left;
     font-size: 1vw;
-    margin: 5px;
     padding: 0px;
+    margin: 0px;
 }
 
 .grid-container {
     display: grid;
-    grid-template-columns: 20.5vw 78.5vw;
-    grid-template-rows: 98vh;
+    grid-template-columns: 21vw 79vw;
+    grid-template-rows: 100vh;
 }
 
 #menu {
