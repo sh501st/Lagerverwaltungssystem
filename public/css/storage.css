@@ -56,7 +56,7 @@ body {
     cursor: pointer;
     display: inline-block;
     position: relative;
-    transition: padding 0.5s;
+    transition: padding 0.2s;
 }
 
 .button span:after {
@@ -65,7 +65,7 @@ body {
     opacity: 0;
     top: 0;
     right: -1vw;
-    transition: 0.5s;
+    transition: 0.2s;
 }
 
 .button:hover span {
