@@ -238,6 +238,7 @@ Ansonsten HTML5, CSS, ECMAScript 2017.
 | GitHub Wiki      | User-Stories, Mockups, Dokumentation, Notizen |
 | Telegram         | Gruppenchat, Absprachen                       |
 | Inkscape         | Vektorzeichenprogramm für Mockups, Grafiken   |
+| GIPHY            | Webservice zum Erstellen von GIFs             |
 
 * Installationsbeschreibung
 
