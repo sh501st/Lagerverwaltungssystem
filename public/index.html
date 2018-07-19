@@ -6,10 +6,14 @@
         <title>Lagerverwaltungssystem</title>
 
         <style type="text/css">
+            * {
+                font-size: 5vw;
+                font-weight: 900;
+                font-family: sans-serif;
+            }
             body {
                 background-color: azure;
                 text-align: center;
-                font-family: monospace;
             }
 
             .content {
@@ -28,8 +32,6 @@
                 width: 93vw;
                 height: 5vw;
                 float: left;
-                font-weight: bold;
-                font-size: 3.5vw;
                 text-align: center;
                 color: darkblue;
             }
@@ -74,23 +76,19 @@
 
             .text {
                 color: darkblue;
-                font-size: 3.5vw;
                 position: absolute;
                 top: 50%;
                 left: 50%;
                 transform: translate(-50%, -50%);
                 -ms-transform: translate(-50%, -50%);
                 text-align: center;
-                font-weight: 900;
             }
-
         </style>
-
     </head>
 
     <body>
         <div class="content">
-            <div_title>Lagerverwaltungsystem</div_title>
+            <div_title>Lagerverwaltungsystem</div_title><br>
             <div_image class="container" onclick="location.href='create-storage.html';" style="background-image: url(/image/create.gif); ">
                 <div class="overlay" style="background-color: brown">
                     <div class="text">Create Storage</div>

@@ -1,9 +1,12 @@
+* {
+    font-size: 1.5vw;
+    font-weight: bold;
+    font-family: sans-serif;
+}
+
 body {
     background-color: azure;
-    font-weight: bold;
-    font-family: serif;
     float: left;
-    font-size: 1vw;
     padding: 0px;
     margin: 0px;
 }
@@ -24,7 +27,6 @@ body {
     border: 1.5px gray;
     border-style: none;
     border-bottom-style: solid;
-    font-size: 2vh;
 }
 
 #mainContainer {
@@ -40,8 +42,6 @@ body {
     border-radius: 0.5vw;
     border: solid 1.5px gray;
     text-align: center;
-    font-size: 1vw;
-    font-weight: 900;
     color: azure;
     padding-left: 1vw;
     padding-right: 1vw;
@@ -80,7 +80,6 @@ body {
 .input {
     border-radius: 0.5vw;
     border: solid 1.5px gray;
-    font-size: 1.5vw;
     width: 18.6vw;
     height: 5vh;
     background-color: azure;
@@ -114,11 +113,9 @@ body {
     visibility: visible;
 }
 
-
 select {
     border-radius: 0.5vw;
     border: solid 1.5px gray;
-    font-size: 1.5vw;
     width: 18.6vw;
     height: 5vh;
     background-color: azure;
@@ -163,7 +160,7 @@ select {
 .modal-close-button {
     color: #aaa;
     float: right;
-    font-size: 28px;
+    font-size: 3vw;
     font-weight: bold;
 }
 
@@ -175,7 +172,8 @@ select {
 }
 
 .modal-content h3 {
-    font-weight: unset;
+    font-size: 2vw;
+    font-weight: bold;
 }
 
 input[type=range] {
