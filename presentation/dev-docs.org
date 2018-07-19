@@ -46,6 +46,8 @@ DEADLINE: <2018-07-23 Mon>
 
 ** Vorstellung
 
+Das LVS soll ein unterstützendes Tool für den Lagerlogistiker sein. Es soll Zugriffe auf das Lager aufzeichnen können und aus diesen Daten Heatmaps generieren und bessere Lagereinrichtungen vorschlagen. Zudem soll es als Bestandsübersicht dienen.
+
 #+begin_center
 #+ATTR_LATEX: :width 0.9\textwidth
 [[../graphics/milestone_1_user_stories_storage.png]]
@@ -114,7 +116,7 @@ Lager zu irren.
 
 ** User-Stories: Umräumung
 
-Welche Optimierungen sind denkbar und wie gilt es, diese umzusetzen?
+Welche Optimierungen sind denkbar und wie gilt es diese umzusetzen?
 
 \footnotesize
 
@@ -240,9 +242,9 @@ Ansonsten HTML5, CSS, ECMAScript 2017.
 | Inkscape         | Vektorzeichenprogramm für Mockups, Grafiken   |
 | GIPHY            | Webservice zum Erstellen von GIFs             |
 
-* Installationsbeschreibung
+* Installation und Nutzung
 
-** Installation (ausführlicher auf GitHub)
+** Installation
 - Projekt von GitHub clonen
 - =node=, =npm= und =mariadb= installieren
 - =npm install= ausführen, um Abhängigkeiten herunterzuladen
@@ -258,7 +260,7 @@ mysql -u root
 create database programmierpraktikum;
 use programmierpraktikum;
 create user 'programmierpraktikum'@'localhost'
-      identified by 'aasfayzpu8pvleff';
+      identified by 'AaSfayZPU8Pvleff';
 grant all privileges on programmierpraktikum.* to
       'programmierpraktikum'@'localhost' with grant option;
 source datenbankmodell/programmierpraktikum.sql;
