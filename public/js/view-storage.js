@@ -218,7 +218,8 @@ function showFrequentlyOrderedTogether(content) {
     let tableBody = document.getElementById('fot');
     for (let i=0; i<content.top6.length; i++){
         let row = document.createElement('tr');
-        const items = [content.top6[i].product, content.top6[i].cnt, Math.round((100/content.amountOfOrders*content.top6[i].cnt)*100)/100+"%"];
+        const relOccurr = Math.min(100, Math.round((100 / content.amountOfOrders * content.top6[i].cnt) * 100) /100);
+        const items = [content.top6[i].product, content.top6[i].cnt, relOccurr + "%"];
         items.forEach((item) => {
             let cell = document.createElement('td');
             const text = document.createTextNode(item);
