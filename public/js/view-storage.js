@@ -193,11 +193,14 @@ function showShelfInventory(shelf) {
             const text = document.createTextNode(item);
             cell.appendChild(text);
             row.appendChild(cell);
-            //request list of frequentlyOrderedTogether
-            row.onclick = function () {
-                sendMessage('frequentlyOrderedTogether', { storageID: storage._id, productID: sub.article.id });
+            //request list of frequentlyOrderedTogether, but only if
+            //access counter > 0, otherwise we would see "null, null, NAN%"
+            if (sub.accessCounter > 0) {
+                row.onclick = function () {
+                    sendMessage('frequentlyOrderedTogether', { storageID: storage._id, productID: sub.article.id });
+                }
+                row.style.cursor = "pointer";
             }
-            row.style.cursor = "pointer";
         });
         tableBody.appendChild(row);
     });
