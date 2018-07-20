@@ -46,12 +46,15 @@ DEADLINE: <2018-07-23 Mon>
 
 ** Vorstellung
 
-Das LVS soll ein unterstützendes Tool für den Lagerlogistiker sein. Es soll Zugriffe auf das Lager aufzeichnen können und aus diesen Daten Heatmaps generieren und bessere Lagereinrichtungen vorschlagen. Zudem soll es als Bestandsübersicht dienen.
-
 #+begin_center
-#+ATTR_LATEX: :width 0.9\textwidth
+#+ATTR_LATEX: :width 0.55\textwidth
 [[../graphics/milestone_1_user_stories_storage.png]]
 #+end_center
+
+Das LVS soll ein unterstützendes Tool für den Lagerlogistiker sein. Es
+soll Zugriffe auf das Lager aufzeichnen können, aus diesen Daten
+Heatmaps generieren und bessere Lagereinrichtungen vorschlagen. Zudem
+soll es als Bestandsübersicht dienen.
 
 ** Mockup-Ansätze
 
