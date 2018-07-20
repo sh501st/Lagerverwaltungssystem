@@ -433,8 +433,7 @@ async function collectValidStorages(currentID) {
         .map(path => path.slice(0, -5)); // crop '.json'
     for (let name of basenames) {
         const candidate = await loadStorageFromJSONFile(name, false);
-        if (candidate._id > 0 && candidate._id !== currentID &&
-            candidate.width >= 5 && candidate.width <= 20 &&
+        if (candidate._id > 0 && candidate.width >= 5 && candidate.width <= 20 &&
             candidate.height >= 5 && candidate.height <= 20 &&
             candidate.shelves.length > 0 && candidate.entrances.length > 0)
         {

@@ -339,7 +339,7 @@ function receivedAvailableStorages(storages) {
         return;
     }
     let dropdown = document.getElementById('load-select')
-    storages.forEach(str => {
+    storages.filter(str => str._id !== defaultStorage._id).forEach(str => {
         let option = document.createElement("option");
         option.value = str._id;
         option.text = str.name ? str.name : str._id;
