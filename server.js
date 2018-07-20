@@ -429,7 +429,7 @@ async function collectValidStorages(currentID) {
     let validStorages = [];
     const dbModTime = fs.statSync('datenbankmodell/programmierpraktikum.sql').mtime;
     let basenames = fs.readdirSync('data/storages/')
-        .filter(file => fs.statSync('data/storages/' + file).mtime > dbModTime)
+        .filter(file => fs.statSync('data/storages/' + file).mtime > dbModTime | file == "template.json")
         .map(path => path.slice(0, -5)); // crop '.json'
     for (let name of basenames) {
         const candidate = await loadStorageFromJSONFile(name, false);
