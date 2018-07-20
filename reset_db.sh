@@ -1,4 +1,4 @@
-#!/bin/bash 
+#!/bin/bash
 
 if $(systemctl is-active --quiet mariadb.service); then
     echo "MariaDB service is running..."
@@ -8,7 +8,7 @@ else
 fi
 
 echo "Deleting old tables..."
-mysql -u "programmierpraktikum" "-pAaSfayZPU8Pvleff" "-Dprogrammierpraktikum" "-eDROP TABLE compartments, log, products;"
+mysql -u "programmierpraktikum" "-pAaSfayZPU8Pvleff" "-Dprogrammierpraktikum" "-eDROP TABLE log, products;"
 
 echo "Importing new tables..."
 mysql -u "programmierpraktikum" "-pAaSfayZPU8Pvleff" "programmierpraktikum" < "datenbankmodell/programmierpraktikum.sql"
