@@ -21,16 +21,12 @@ Since names need to match exactly to work in combination with nodeJS, it's recom
 - give required permissions to user: =GRANT ALL PRIVILEGES ON programmierpraktikum.* TO 'programmierpraktikum'@'localhost' WITH GRANT OPTION;=
 - include and execute predefined sql project configuration (inside of mariadb): =SOURCE datenbankmodell/programmierpraktikum.sql;=
 
-*** Database setup (graphical, GUI):
-
-TODO: specify procedure.
-
 ** Usage
 
 - Start the server on the command line: =./server.sh= (If mariadb isn't running at this point it will be started, asking you for a password to start the system service)
 - Open your favorite browser and type [[http://localhost:8080][localhost:8080]] into the address bar to connect a new client to the server
-- To create a storage, click on "Create Storage". Left klick to create shelves, middleclick to create entrance, rightclick to remove shelve/entrance
-- Click on "View Storage" to get a live view of a prior created storage. Press "f" or "p" to enter presentation mode to generate data more quickly.
-- During a live session click on "Optimize" to get an optimized version of viewed storage.
+- To create a storage, click on *Create Storage*. Left klick to create shelves, middleclick to create entrance, rightclick to remove shelve/entrance
+- Click on *View Storage* to get a live view of a prior created storage. Press *f* or *p* to enter presentation mode to generate data more quickly.
+- During a live session click on *Optimize* to get an optimized preview of the current storage.
 
 Server handles multiple clients (browser tabs) and storages in parallel. Clients that request the same storage layout will both see the same orders and shelf accesses.
