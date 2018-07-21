@@ -1,6 +1,8 @@
 * Lagerverwaltungssystem (TUCProgPrak18)
 
-[[https://github.com/dwdv/Lagerverwaltungssystem/blob/master/graphics/screenshots/view.png]]
+[[https://github.com/dwdv/Lagerverwaltungssystem/blob/master/graphics/screenshots/combi.png]]
+
+[[https://github.com/dwdv/Lagerverwaltungssystem/tree/master/graphics/screenshots][More screenshots]]
 
 ** Installation
 

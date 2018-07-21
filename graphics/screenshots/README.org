@@ -1,0 +1,33 @@
+* Screenshots
+
+** Overview
+[[https://github.com/dwdv/Lagerverwaltungssystem/blob/master/graphics/screenshots/combi.png]]
+
+** Multiple clients connected
+[[https://github.com/dwdv/Lagerverwaltungssystem/blob/master/graphics/screenshots/server.png]]
+
+** Index
+[[https://github.com/dwdv/Lagerverwaltungssystem/blob/master/graphics/screenshots/index.png]]
+
+** Create storage
+[[https://github.com/dwdv/Lagerverwaltungssystem/blob/master/graphics/screenshots/create.png]]
+
+** View storage, live view
+[[https://github.com/dwdv/Lagerverwaltungssystem/blob/master/graphics/screenshots/view.png]]
+
+*** Shelf inventory
+[[https://github.com/dwdv/Lagerverwaltungssystem/blob/master/graphics/screenshots/view-inventory.png]]
+
+*** Articles frequently ordered together
+[[https://github.com/dwdv/Lagerverwaltungssystem/blob/master/graphics/screenshots/view-together.png]]
+
+*** Help tooltip
+[[https://github.com/dwdv/Lagerverwaltungssystem/blob/master/graphics/screenshots/view-help.png]]
+
+** Optimization (in certain time range)
+
+*** before
+[[https://github.com/dwdv/Lagerverwaltungssystem/blob/master/graphics/screenshots/plan-before.png]]
+
+*** after
+[[https://github.com/dwdv/Lagerverwaltungssystem/blob/master/graphics/screenshots/plan-after.png]]
