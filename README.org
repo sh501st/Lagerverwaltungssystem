@@ -1,16 +1,12 @@
-* Lagerverwaltungssystem
+* Lagerverwaltungssystem (TUCProgPrak18)
 
-TUCProgPrak18
+[[https://github.com/dwdv/Lagerverwaltungssystem/blob/master/graphics/screenshots/view.png]]
 
 ** Installation
 
 - clone or unzip this project from github
 - install =node=, =npm= and =mariadb= (or =mysql=) via distro's package manager or manually on windows
 - run in project's root folder to download necessary dependencies: =npm install=
-
-(If package dependencies change throughout the coming weeks it might
-me necessary to rerun =npm install=, but I'll keep you posted on that
-matter.)
 
 *** Database setup (linux command line):
 
@@ -25,21 +21,16 @@ Since names need to match exactly to work in combination with nodeJS, it's recom
 - give required permissions to user: =GRANT ALL PRIVILEGES ON programmierpraktikum.* TO 'programmierpraktikum'@'localhost' WITH GRANT OPTION;=
 - include and execute predefined sql project configuration (inside of mariadb): =SOURCE datenbankmodell/programmierpraktikum.sql;=
 
-Unfortunately, some of these steps need to be repeated whenever the predefined sql file changes, which shouldn't happen that often.
-
 *** Database setup (graphical, GUI):
 
 TODO: specify procedure.
 
 ** Usage
 
-- Make sure the database is running in the background, if not, start it from your favourite GUI or the command line: =systemctl start mysql.service=
-- Start the server on the command line: =./server.sh= (or reset the database =./reset_db.sh= and run =node server.js= )
-- Open your favorite browser and type =localhost:8080= into the address bar to connect a new client to the server
-- in "View Storage" mode press "f" or "p" to enter presentation mode to generate data more quickly 
-
+- Start the server on the command line: =./server.sh= (If mariadb isn't running at this point it will be started, asking you for a password to start the system service)
+- Open your favorite browser and type [[http://localhost:8080][localhost:8080]] into the address bar to connect a new client to the server
 - To create a storage, click on "Create Storage". Left klick to create shelves, middleclick to create entrance, rightclick to remove shelve/entrance
-- Click on "View Storage" to get a live view of a prior created storage.
+- Click on "View Storage" to get a live view of a prior created storage. Press "f" or "p" to enter presentation mode to generate data more quickly.
 - During a live session click on "Optimize" to get an optimized version of viewed storage.
 
-Server handles multiple clients (browser tabs) and storages in parallel. Clients that request the same storage layout will both the same orders and shelf accesses.
+Server handles multiple clients (browser tabs) and storages in parallel. Clients that request the same storage layout will both see the same orders and shelf accesses.
